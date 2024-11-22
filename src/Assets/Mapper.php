@@ -14,5 +14,5 @@ interface Mapper
 	/**
 	 * Returns asset instance for given reference.
 	 */
-	public function getAsset(string $reference, array $options = []): Asset;
+	public function getAsset(string $reference, array $options = []): ?Asset;
 }

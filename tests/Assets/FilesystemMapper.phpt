@@ -16,7 +16,6 @@ test('Basic mapper functionality', function () {
 
 	Assert::same('http://example.com/assets/test.txt?v=2700000000', $asset->getUrl());
 	Assert::same(__DIR__ . '/fixtures/test.txt', $asset->getPath());
-	Assert::true($asset->exists());
 });
 
 test('URL without trailing slash', function () {
@@ -28,10 +27,7 @@ test('URL without trailing slash', function () {
 
 test('Non-existent file version handling', function () {
 	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
-	$asset = $mapper->getAsset('missing.txt');
-
-	Assert::same('http://example.com/assets/missing.txt', $asset->getUrl());
-	Assert::false($asset->exists());
+	Assert::null($mapper->getAsset('missing.txt'));
 });
 
 test('Mandatory extension autodetection', function () {
@@ -41,21 +37,13 @@ test('Mandatory extension autodetection', function () {
 		['gif', 'jpg'],
 	);
 
-	$exact = $mapper->getAsset('image.gif');
-	Assert::match('http://example.com/assets/image.gif?v=%d%', $exact->getUrl());
-	Assert::true($exact->exists());
+	Assert::null($mapper->getAsset('image.gif'));
 
 	$gif = $mapper->getAsset('image');
 	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
-	Assert::true($gif->exists());
 
-	$notFound = $mapper->getAsset('missing');
-	Assert::same('http://example.com/assets/missing.gif', $notFound->getUrl());
-	Assert::false($notFound->exists());
-
-	$subdir = $mapper->getAsset('subdir');
-	Assert::same('http://example.com/assets/subdir.gif', $subdir->getUrl());
-	Assert::false($subdir->exists());
+	Assert::null($mapper->getAsset('missing'));
+	Assert::null($mapper->getAsset('subdir'));
 });
 
 test('Optional extension autodetection', function () {
@@ -65,13 +53,13 @@ test('Optional extension autodetection', function () {
 		['gif', 'jpg', ''],
 	);
 
+	$exact = $mapper->getAsset('image.gif');
+	Assert::match('http://example.com/assets/image.gif?v=%d%', $exact->getUrl());
+
 	$gif = $mapper->getAsset('image');
 	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
-	Assert::true($gif->exists());
 
-	$notFound = $mapper->getAsset('missing');
-	Assert::same('http://example.com/assets/missing', $notFound->getUrl());
-	Assert::false($notFound->exists());
+	Assert::null($mapper->getAsset('missing'));
 });
 
 test('Option validation', function () {

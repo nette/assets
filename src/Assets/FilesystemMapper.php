@@ -27,14 +27,17 @@ class FilesystemMapper implements Mapper
 	/**
 	 * Returns asset instance for given reference.
 	 */
-	public function getAsset(string $reference, array $options = []): FileAsset
+	public function getAsset(string $reference, array $options = []): ?FileAsset
 	{
 		Helpers::checkOptions($options);
 		$path = $this->resolvePath($reference);
-		$ext = $this->extensions && !is_file($path)
+		$path .= $ext = $this->extensions
 			? $this->findExtension($path)
 			: '';
-		return new FileAsset($this->buildUrl($reference . $ext, $options), $path . $ext);
+
+		return is_file($path)
+			? new FileAsset($this->buildUrl($reference . $ext, $options), $path)
+			: null;
 	}
 
 

@@ -48,10 +48,10 @@ final class Registry
 	/**
 	 * Returns asset instance for given mapper-qualified reference.
 	 */
-	public function getAsset(string $qualifiedRef, array $options = []): Asset
+	public function getAsset(string $qualifiedRef, array $options = []): ?Asset
 	{
 		$cacheKey = $qualifiedRef . ($options ? '?' . http_build_query($options) : '');
-		if (isset($this->cache[$cacheKey])) {
+		if (array_key_exists($cacheKey, $this->cache)) {
 			return $this->cache[$cacheKey];
 		}
 

@@ -20,9 +20,4 @@ interface Asset
 	 * Shortcut for getUrl()
 	 */
 	public function __toString(): string;
-
-	/**
-	 * Checks if the asset file exists in the filesystem.
-	 */
-	public function exists(): bool;
 }

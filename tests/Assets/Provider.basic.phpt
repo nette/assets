@@ -90,3 +90,11 @@ test('Getting asset with mapper prefix', function () {
 
 	Assert::same($asset, $registry->getAsset('images:test.jpg'));
 });
+
+test('Getting asset with array', function () {
+	$registry = new Registry;
+	$asset = new MockAsset;
+	$registry->addMapper('images', new MockMapper($asset));
+
+	Assert::same($asset, $registry->getAsset(['images', 'test.jpg']));
+});

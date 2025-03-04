@@ -26,10 +26,10 @@ final class LatteExtension extends Extension
 	{
 		return [
 			'asset' => $this->registry->getAsset(...),
-			'assetWidth' => fn(string $qualifiedPath, array $options = []): ?int => $this->registry
+			'assetWidth' => fn(string|array $qualifiedPath, array $options = []): ?int => $this->registry
 				->getAsset($qualifiedPath, $options)
 				->getWidth(),
-			'assetHeight' => fn(string $qualifiedPath, array $options = []): ?int => $this->registry
+			'assetHeight' => fn(string|array $qualifiedPath, array $options = []): ?int => $this->registry
 				->getAsset($qualifiedPath, $options)
 				->getHeight(),
 		];

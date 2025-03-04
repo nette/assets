@@ -48,15 +48,16 @@ final class Registry
 	/**
 	 * Returns asset instance for given mapper-qualified reference.
 	 */
-	public function getAsset(string $qualifiedRef, array $options = []): ?Asset
+	public function getAsset(string|array $qualifiedRef, array $options = []): ?Asset
 	{
-		$cacheKey = $qualifiedRef . ($options ? '?' . http_build_query($options) : '');
+		[$mapper, $path] = is_string($qualifiedRef) ? $this->parsePath($qualifiedRef) : $qualifiedRef;
+
+		$cacheKey = $mapper . ':' . $path . ($options ? '?' . http_build_query($options) : '');
 		if (array_key_exists($cacheKey, $this->cache)) {
 			return $this->cache[$cacheKey];
 		}
 
-		[$mapper, $path] = $this->parsePath($qualifiedRef);
-		$asset = $this->getMapper($mapper)->getAsset($path, $options);
+		$asset = $this->getMapper($mapper)->getAsset((string) $path, $options);
 
 		if (count($this->cache) >= self::MaxCacheSize) {
 			array_shift($this->cache);

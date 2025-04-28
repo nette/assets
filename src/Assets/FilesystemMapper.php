@@ -96,7 +96,7 @@ class FilesystemMapper implements Mapper
 	/**
 	 * Searches for an existing file by appending configured extensions to the base path.
 	 */
-	private function findExtension(string $path): string
+	private function findExtension(string $basePath): string
 	{
 		foreach ($this->extensions as $ext) {
 			if ($ext === '') {
@@ -105,7 +105,7 @@ class FilesystemMapper implements Mapper
 				$ext = '.' . $ext;
 				$defaultExt ??= $ext;
 			}
-			if (is_file($path . $ext)) {
+			if (is_file($basePath . $ext)) {
 				return $ext;
 			}
 		}

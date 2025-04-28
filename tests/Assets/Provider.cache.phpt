@@ -58,12 +58,12 @@ test('Cache has limited size', function () {
 	$registry->addMapper('test', new MockMapper);
 	$assets = [];
 
-	for ($i = 0; $i < 12; $i++) { // current cache size is 10
+	for ($i = 0; $i < 102; $i++) { // current cache size is 100
 		$assets[$i] = $registry->getAsset("test:asset$i.jpg");
 	}
 
 	$first = $registry->getAsset('test:asset0.jpg');
-	$last = $registry->getAsset('test:asset11.jpg');
+	$last = $registry->getAsset('test:asset101.jpg');
 
 	Assert::notSame(reset($assets), $first); // First asset should be removed from cache
 	Assert::same(end($assets), $last); // Last asset should still be in cache

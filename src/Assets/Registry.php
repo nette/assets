@@ -10,11 +10,11 @@ namespace Nette\Assets;
  * for retrieving Assets using qualified references (mapper:reference).
  * Includes a simple cache for resolved assets.
  */
-final class Registry
+class Registry
 {
 	public const DefaultScope = '';
 	private const MapperSeparator = ':';
-	private const MaxCacheSize = 10;
+	private const MaxCacheSize = 100;
 
 	/** @var array<string, Mapper> */
 	private array $mappers = [];

@@ -149,7 +149,7 @@ echo $asset->getUrl();
 Usage in Latte
 --------------
 
-Assuming Latte helpers (`asset`, `assetWidth`, `assetHeight`) are registered to call the `Registry`:
+Assuming Latte helper `asset` is registered to call the `Registry`:
 
 ```latte
 {* Using the default mapper (mapper identifier omitted) *}
@@ -193,7 +193,7 @@ Image Dimensions
 When using `FilesystemMapper` (or any mapper returning a `FileAsset`), you can easily retrieve image dimensions (assuming corresponding Latte helpers are registered):
 
 ```latte
-<img src={asset('images:logo.png')} width={assetWidth('images:logo.png')} height={assetHeight('images:logo.png')}>
+<img src={asset('images:logo.png')} width={asset('images:logo.png')->getWidth()} height={asset('images:logo.png')->getHeight()}>
 
 {* alternative *}
 {do $asset = asset('images:logo.png')}

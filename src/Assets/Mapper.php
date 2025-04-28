@@ -13,6 +13,7 @@ interface Mapper
 {
 	/**
 	 * Retrieves an Asset instance for a given mapper-specific reference string.
+	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
-	public function getAsset(string $reference, array $options = []): ?Asset;
+	public function getAsset(string $reference, array $options = []): Asset;
 }

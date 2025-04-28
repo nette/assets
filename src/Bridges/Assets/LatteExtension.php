@@ -10,7 +10,8 @@ use Nette\Assets\Registry;
 
 /**
  * Latte extension that provides asset-related functions:
- * - asset(): returns asset URL
+ * - asset(): returns asset URL or throws AssetNotFoundException if asset not found
+ * - tryAsset(): returns asset URL or null if asset not found
  */
 final class LatteExtension extends Extension
 {
@@ -24,6 +25,7 @@ final class LatteExtension extends Extension
 	{
 		return [
 			'asset' => $this->registry->getAsset(...),
+			'tryAsset' => $this->registry->tryGetAsset(...),
 		];
 	}
 }

@@ -78,6 +78,21 @@ class Registry
 
 
 	/**
+	 * Attempts to retrieve an Asset instance using a qualified reference, but returns null if not found.
+	 * Accepts either 'mapper:reference' or ['mapper', 'reference'].
+	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 */
+	public function tryGetAsset(string|array $qualifiedRef, array $options = []): ?Asset
+	{
+		try {
+			return $this->getAsset($qualifiedRef, $options);
+		} catch (AssetNotFoundException) {
+			return null;
+		}
+	}
+
+
+	/**
 	 * Splits a potentially qualified reference 'mapper:reference' into a [mapper, reference] array.
 	 * @return array{string, string}
 	 */

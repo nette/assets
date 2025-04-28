@@ -42,8 +42,8 @@ Core Concepts
 The library revolves around a few key components:
 
 - **Asset:** An interface representing a single static asset (like an image or script). Its main purpose is to provide a public URL via `getUrl()`. `FileAsset` is a concrete implementation for assets backed by local files, offering additional methods like `getWidth()`, `getHeight()`, `getDuration()`.
-- **Mapper:** An interface responsible for taking an asset reference (like `app.js` or `images/logo.png`) and resolving it into an `Asset` object. Different mappers can fetch assets from various sources (filesystem, CDN, cloud storage, manifest files). `FilesystemMapper` is the built-in implementation for serving files from a local directory.
-- **Registry:** A central service that holds all configured `Mapper` instances, each identified by a unique string ID (e.g., `'default'`, `'audio'`, `'images'`). It provides the main entry point (`getAsset()`) for retrieving assets using a **qualified reference**.
+- **Mapper:** An interface responsible for taking an asset reference (like `app.js` or `images/logo.png`) and resolving it into an `Asset` object. Different mappers can fetch assets from various sources (filesystem, CDN, cloud storage, manifest files). `FilesystemMapper` is the built-in implementation for serving files from a local directory. If the requested asset cannot be found, the mapper throws an `AssetNotFoundException`.
+- **Registry:** A central service that holds all configured `Mapper` instances, each identified by a unique string ID (e.g., `'default'`, `'audio'`, `'images'`). It provides the main entry point (`getAsset()`) for retrieving assets using a **qualified reference**. Like mappers, the Registry throws `AssetNotFoundException` if the requested asset cannot be found.
 - **Qualified Reference:** This identifies the specific asset you want to retrieve via the `Registry`. It supports three formats:
 	- A simple string `reference` (e.g., `'app.js'`) which uses the `default` mapper.
 	- A prefixed string `mapper:reference` (e.g., `'audio:podcast.mp3'`) which specifies the mapper explicitly.
@@ -140,8 +140,13 @@ Retrieve assets via the `Registry` service, typically injected where needed. The
 // Assume $assets is Nette\Assets\Registry obtained via dependency injection or service locator
 
 $reference = 'images:logo.png'; // Or ['images', 'logo.png'], or just 'logo.png' for default mapper
-$asset = $assets->getAsset($reference);
-echo $asset->getUrl();
+try {
+    $asset = $assets->getAsset($reference);
+    echo $asset->getUrl();
+} catch (Nette\Assets\AssetNotFoundException $e) {
+    // Handle asset not found situation
+    echo 'Asset not found: ' . $e->getMessage();
+}
 ```
 
  <!---->

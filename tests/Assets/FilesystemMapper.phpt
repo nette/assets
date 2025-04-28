@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Nette\Assets\AssetNotFoundException;
 use Nette\Assets\FilesystemMapper;
 use Tester\Assert;
 
@@ -21,7 +22,11 @@ test('Basic mapper functionality', function () {
 
 test('Non-existent file version handling', function () {
 	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
-	Assert::null($mapper->getAsset('missing.txt'));
+	Assert::exception(
+		fn() => $mapper->getAsset('missing.txt'),
+		AssetNotFoundException::class,
+		"Asset file 'missing.txt' not found at path: '" . __DIR__ . "/fixtures/missing.txt'",
+	);
 });
 
 
@@ -32,13 +37,24 @@ test('Mandatory extension autodetection', function () {
 		['gif', 'jpg'],
 	);
 
-	Assert::null($mapper->getAsset('image.gif'));
+	Assert::exception(
+		fn() => $mapper->getAsset('image.gif'),
+		AssetNotFoundException::class,
+		"Asset file 'image.gif' not found at path: '" . __DIR__ . "/fixtures/image.gif.gif'",
+	);
 
 	$gif = $mapper->getAsset('image');
 	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
 
-	Assert::null($mapper->getAsset('missing'));
-	Assert::null($mapper->getAsset('subdir'));
+	Assert::exception(
+		fn() => $mapper->getAsset('missing'),
+		AssetNotFoundException::class,
+	);
+
+	Assert::exception(
+		fn() => $mapper->getAsset('subdir'),
+		AssetNotFoundException::class,
+	);
 });
 
 
@@ -55,7 +71,10 @@ test('Optional extension autodetection', function () {
 	$gif = $mapper->getAsset('image');
 	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
 
-	Assert::null($mapper->getAsset('missing'));
+	Assert::exception(
+		fn() => $mapper->getAsset('missing'),
+		AssetNotFoundException::class,
+	);
 });
 
 

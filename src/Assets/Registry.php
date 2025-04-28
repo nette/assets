@@ -18,7 +18,7 @@ class Registry
 	/** @var array<string, Mapper> */
 	private array $mappers = [];
 
-	/** @var array<string, ?Asset> */
+	/** @var array<string, Asset> */
 	private array $cache = [];
 
 
@@ -48,8 +48,9 @@ class Registry
 	/**
 	 * Retrieves an Asset instance using a qualified reference. Accepts either 'mapper:reference' or ['mapper', 'reference'].
 	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
-	public function getAsset(string|array $qualifiedRef, array $options = []): ?Asset
+	public function getAsset(string|array $qualifiedRef, array $options = []): Asset
 	{
 		[$mapper, $reference] = is_string($qualifiedRef)
 			? Helpers::parseReference($qualifiedRef)
@@ -62,13 +63,17 @@ class Registry
 			return $this->cache[$cacheKey];
 		}
 
-		$asset = $this->getMapper($mapperDef)->getAsset($reference, $options);
+		try {
+			$asset = $this->getMapper($mapperDef)->getAsset($reference, $options);
 
-		if (count($this->cache) >= self::MaxCacheSize) {
-			array_shift($this->cache); // remove the oldest entry
+			if (count($this->cache) >= self::MaxCacheSize) {
+				array_shift($this->cache); // remove the oldest entry
+			}
+
+			return $this->cache[$cacheKey] = $asset;
+		} catch (AssetNotFoundException $e) {
+			throw $mapper ? $e->qualifyReference($mapperDef, $reference) : $e;
 		}
-
-		return $this->cache[$cacheKey] = $asset;
 	}
 
 

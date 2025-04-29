@@ -28,7 +28,7 @@ final class Helpers
 	{
 		$args['url'] = $url;
 		$args['file'] = $path;
-		$mime = (string) self::guessMimeTypeFromExtension($url);
+		$mime = (string) $args['mimeType'] ??= self::guessMimeTypeFromExtension($url);
 		$class = match (true) {
 			$mime === 'application/javascript' => ScriptAsset::class,
 			$mime === 'text/css' => StyleAsset::class,

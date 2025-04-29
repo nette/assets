@@ -298,6 +298,10 @@ echo $image->url;  // Just returns URL, no file reading
 
 echo $image->width;  // NOW it reads the file header to get dimensions
 echo $image->height; // Already loaded, no additional file reading
+
+// Even generic assets lazy-load their MIME type
+$file = $assets->getAsset('document.pdf');
+echo $file->mimeType; // Now it detects: 'application/pdf'
 ```
 
 
@@ -431,7 +435,7 @@ For MP3 files, duration is estimated (most accurate for Constant Bitrate files):
 ```latte
 {var $audio = asset('audio:episode-01.mp3')}
 <audio controls>
-	<source src={$audio}>
+	<source src={$audio} type={$audio->mimeType}>
 	Your browser doesn't support audio playback.
 </audio>
 <p>Duration: {$audio->duration|round} seconds</p>
@@ -446,7 +450,7 @@ Video files provide dimensions and can work with poster images:
 	height={$video->height}
 	poster={asset('videos:intro-poster.jpg')}
 	controls>
-	<source src={$video}>
+	<source src={$video} type={$video->mimeType}>
 </video>
 ```
 

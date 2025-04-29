@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Nette\Assets;
 
+use Nette\Utils\Html;
+
 
 /**
  * Image asset.
  */
-class ImageAsset implements Asset
+class ImageAsset implements Asset, HtmlRenderable
 {
 	use LazyLoad;
 
@@ -47,5 +49,28 @@ class ImageAsset implements Asset
 	private function getSize(): void
 	{
 		[$this->width, $this->height] = $this->file ? getimagesize($this->file) : null;
+	}
+
+
+	public function getHtmlElement(): Html
+	{
+		return Html::el('img', array_filter([
+			'src' => $this->url,
+			'width' => $this->width ? (string) $this->width : null,
+			'height' => $this->height ? (string) $this->height : null,
+			'alt' => $this->alternative,
+			'loading' => $this->lazyLoad ? 'lazy' : null,
+		], fn($value) => $value !== null));
+	}
+
+
+	public function getHtmlPreloadElement(): Html
+	{
+		return Html::el('link', array_filter([
+			'rel' => 'preload',
+			'href' => $this->url,
+			'as' => 'image',
+			'type' => $this->mimeType,
+		], fn($value) => $value !== null));
 	}
 }

@@ -15,8 +15,8 @@ test('Basic mapper functionality', function () {
 	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
 	$asset = $mapper->getAsset('test.txt');
 
-	Assert::same('http://example.com/assets/test.txt?v=2700000000', $asset->getUrl());
-	Assert::same(__DIR__ . '/fixtures/test.txt', $asset->getPath());
+	Assert::same('http://example.com/assets/test.txt?v=2700000000', $asset->url);
+	Assert::same(__DIR__ . '/fixtures/test.txt', $asset->file);
 });
 
 
@@ -44,7 +44,7 @@ test('Mandatory extension autodetection', function () {
 	);
 
 	$gif = $mapper->getAsset('image');
-	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
+	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->url);
 
 	Assert::exception(
 		fn() => $mapper->getAsset('missing'),
@@ -66,10 +66,10 @@ test('Optional extension autodetection', function () {
 	);
 
 	$exact = $mapper->getAsset('image.gif');
-	Assert::match('http://example.com/assets/image.gif?v=%d%', $exact->getUrl());
+	Assert::match('http://example.com/assets/image.gif?v=%d%', $exact->url);
 
 	$gif = $mapper->getAsset('image');
-	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->getUrl());
+	Assert::match('http://example.com/assets/image.gif?v=%d%', $gif->url);
 
 	Assert::exception(
 		fn() => $mapper->getAsset('missing'),

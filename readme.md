@@ -69,7 +69,7 @@ public function renderDefault(): void
 Then in your template:
 
 ```latte
-<img src={$logo} width={$logo->getWidth()} height={$logo->getHeight()} alt="Logo">
+<img src={$logo} width={$logo->width} height={$logo->height} alt="Logo">
 ```
 
  <!---->
@@ -88,9 +88,9 @@ An asset is any static file in your application - images, stylesheets, scripts, 
 
 ```php
 $image = $assets->getAsset('photo.jpg');
-echo $image->getUrl();    // '/assets/photo.jpg?v=1699123456'
-echo $image->getWidth();  // 800
-echo $image->getHeight(); // 600
+echo $image->url;    // '/assets/photo.jpg?v=1699123456'
+echo $image->width;  // 800
+echo $image->height; // 600
 ```
 
 
@@ -232,7 +232,7 @@ try {
 // This returns null if file doesn't exist
 $banner = $assets->tryGetAsset('images/banner.jpg');
 if ($banner) {
-	echo $banner->getUrl();
+	echo $banner->url;
 }
 ```
 
@@ -263,13 +263,13 @@ The library automatically detects file types and provides relevant properties:
 ```php
 // Images
 $image = $assets->getAsset('photo.jpg');
-echo $image->getWidth();   // 1920
-echo $image->getHeight();  // 1080
-echo $image->getUrl();     // '/assets/photo.jpg?v=1699123456'
+echo $image->width;   // 1920
+echo $image->height;  // 1080
+echo $image->url;     // '/assets/photo.jpg?v=1699123456'
 
 // Audio files (MP3)
 $audio = $assets->getAsset('episode-01.mp3');
-echo $audio->getDuration();  // 3600.5 (seconds)
+echo $audio->duration;  // 3600.5 (seconds)
 
 // All assets can be cast to string (returns URL)
 $url = (string) $assets->getAsset('document.pdf');
@@ -285,10 +285,10 @@ Properties like image dimensions, audio duration, or MIME types are retrieved on
 $image = $assets->getAsset('large-photo.jpg');
 // No file operations yet
 
-echo $image->getUrl();  // Just returns URL, no file reading
+echo $image->url;  // Just returns URL, no file reading
 
-echo $image->getWidth();  // NOW it reads the file header to get dimensions
-echo $image->getHeight(); // Already loaded, no additional file reading
+echo $image->width;  // NOW it reads the file header to get dimensions
+echo $image->height; // Already loaded, no additional file reading
 ```
 
 
@@ -315,8 +315,8 @@ Use the `asset()` function:
 {var $logo = asset('images/logo.png')}
 <img
 	src={$logo}
-	width={$logo->getWidth()}
-	height={$logo->getHeight()}
+	width={$logo->width}
+	height={$logo->height}
 	alt="Logo"
 	srcset="{asset('images/logo@2x.png')} 2x"
 >
@@ -410,8 +410,8 @@ Image dimensions are loaded lazily when accessed:
 {var $hero = asset('images:hero-image.jpg')}
 <img
 	src={$hero}
-	width={$hero->getWidth()}
-	height={$hero->getHeight()}
+	width={$hero->width}
+	height={$hero->height}
 	alt="Hero Image"
 	loading="lazy"
 >
@@ -425,7 +425,7 @@ For MP3 files, duration is estimated (most accurate for Constant Bitrate files):
 	<source src={$audio}>
 	Your browser doesn't support audio playback.
 </audio>
-<p>Duration: {$audio->getDuration()|round} seconds</p>
+<p>Duration: {$audio->duration|round} seconds</p>
 ```
 
 Video files provide dimensions and can work with poster images:
@@ -433,8 +433,8 @@ Video files provide dimensions and can work with poster images:
 ```latte
 {var $video = asset('videos:intro.mp4')}
 <video
-	width={$video->getWidth()}
-	height={$video->getHeight()}
+	width={$video->width}
+	height={$video->height}
 	poster={asset('videos:intro-poster.jpg')}
 	controls>
 	<source src={$video}>

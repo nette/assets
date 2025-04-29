@@ -41,7 +41,7 @@ Core Concepts
 
 The library revolves around a few key components:
 
-- **Asset:** An interface representing a single static asset (like an image or script). Its main purpose is to provide a public URL via `getUrl()`. `FileAsset` is a concrete implementation for assets backed by local files, offering additional methods like `getWidth()`, `getHeight()`, `getDuration()`.
+- **Asset:** An interface representing a single static asset (like an image or script). Its main purpose is to provide a public URL via `$asset->url`. `FileAsset` is a concrete implementation for assets backed by local files, offering additional properties like `$width`, `$height`, `$duration`.
 - **Mapper:** An interface responsible for taking an asset reference (like `app.js` or `images/logo.png`) and resolving it into an `Asset` object. Different mappers can fetch assets from various sources (filesystem, CDN, cloud storage, manifest files). `FilesystemMapper` is the built-in implementation for serving files from a local directory. If the requested asset cannot be found, the mapper throws an `AssetNotFoundException`.
 - **Registry:** A central service that holds all configured `Mapper` instances, each identified by a unique string ID (e.g., `'default'`, `'audio'`, `'images'`). It provides the main entry point (`getAsset()`) for retrieving assets using a **qualified reference**, which throws `AssetNotFoundException` if the requested asset cannot be found. For cases where handling non-existent assets without exceptions is preferred, it also provides `tryGetAsset()`, which returns `null` instead of throwing an exception.
 - **Qualified Reference:** This identifies the specific asset you want to retrieve via the `Registry`. It supports three formats:
@@ -143,7 +143,7 @@ Retrieve assets via the `Registry` service, typically injected where needed. The
 $reference = 'images:logo.png'; // Or ['images', 'logo.png'], or just 'logo.png' for default mapper
 try {
     $asset = $assets->getAsset($reference);
-    echo $asset->getUrl();
+    echo $asset->url;
 } catch (Nette\Assets\AssetNotFoundException $e) {
     // Handle asset not found situation
     echo 'Asset not found: ' . $e->getMessage();
@@ -151,7 +151,7 @@ try {
 
 // Option 2: Using tryGetAsset() for nullable return value
 $asset = $assets->tryGetAsset($reference);
-echo $asset?->getUrl();
+echo $asset?->url;
 ```
 
  <!---->
@@ -178,7 +178,7 @@ Assuming Latte helper `asset` is registered to call the `Registry`:
 <img n:if=$asset src=$asset alt="Optional Image">
 ```
 
-The resulting URL string obtained from `$asset->getUrl()` or `{asset(...)}` will include versioning information if provided by the mapper.
+The resulting URL string obtained from `$asset->url` or `{asset(...)}` will include versioning information if provided by the mapper.
 
  <!---->
 
@@ -207,11 +207,11 @@ Image Dimensions
 When using `FilesystemMapper` (or any mapper returning a `FileAsset`), you can easily retrieve image dimensions (assuming corresponding Latte helpers are registered):
 
 ```latte
-<img src={asset('images:logo.png')} width={asset('images:logo.png')->getWidth()} height={asset('images:logo.png')->getHeight()}>
+<img src={asset('images:logo.png')} width={asset('images:logo.png')->width} height={asset('images:logo.png')->height}>
 
 {* alternative *}
 {do $asset = asset('images:logo.png')}
-<img src={$asset} width={$asset->getWidth()} height={$asset->getHeight()}>
+<img src={$asset} width={$asset->width} height={$asset->height}>
 ```
 
-`FileAsset` provides `getDuration()` for estimating MP3 duration (most reliable for Constant Bitrate files).
+`FileAsset` provides `$duration` property for estimating MP3 duration (most reliable for Constant Bitrate files).

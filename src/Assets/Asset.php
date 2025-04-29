@@ -6,15 +6,14 @@ namespace Nette\Assets;
 
 
 /**
- * Represents a static asset (image, script, stylesheet, etc.).
- * Provides a way to retrieve its public URL.
+ * Base asset interface with minimal API.
+ * @property-read string $url The public URL
+ * @property-read ?string $sourcePath The local file path if available
  */
 interface Asset
 {
-	/**
-	 * Returns the public URL of the asset.
-	 */
-	public function getUrl(): string;
+	//public string $url { get; }
+	//public ?string $sourcePath { get; }
 
 	/**
 	 * Allows direct echoing of the object to get the URL.

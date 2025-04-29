@@ -17,7 +17,8 @@ Nette Assets is a powerful asset management library for PHP that helps you:
 ✅ handle asset versioning automatically<br>
 ✅ get image dimensions without hassle<br>
 ✅ verify asset existence<br>
-✅ support multiple storage backends
+✅ support multiple storage backends<br>
+✅ integrate with Vite for modern frontend development
 
 The library provides a clean and intuitive API to manage static assets in your web applications with a focus on developer experience and performance.
 
@@ -98,6 +99,15 @@ assets:
 		cdn_styles:
 			path: /var/www/shared/readonly       # this absolute path is used
 			url: https://cdn.example.com/css/    # this absolute URL is used
+
+		# Vite integration
+		vite:
+			type: vite                          # specifies ViteMapper
+			manifestPath: dist/manifest.json    # path to Vite's manifest file
+			baseUrl: /dist                      # base URL for Vite assets
+			extension: [js, mjs, css]           # auto-extensions to try
+			devServerUrl: http://localhost:5173 # URL to Vite dev server (optional)
+			debug: %debugMode%                  # enable dev mode based on app's debug flag
 ```
 
  <!---->
@@ -211,7 +221,7 @@ generates, for example:
 /assets/app.js?v=1699944800
 ```
 
-This helps with browser cache invalidation.
+This helps with browser cache invalidation. Custom mappers can implement different versioning strategies (e.g., using content hashes from a build manifest).
 
 You can disable versioning per asset:
 
@@ -249,3 +259,29 @@ When using `FilesystemMapper` (or any mapper returning a `FileAsset`), you can e
 ```
 
 `FileAsset` provides `$duration` property for estimating MP3 duration (most reliable for Constant Bitrate files).
+
+ <!---->
+
+Entry Points and Bundle Support
+------------------------------
+
+Nette Assets supports modern bundlers and build tools that generate multiple files from a single entry point:
+
+- The `EntryAsset` class implements both `ScriptAsset` and `StyleAsset` interfaces
+- It manages dependencies automatically and provides information about the main entry point
+- The `renderAsset` Latte function automatically generates HTML tags for all related files
+
+### Vite Integration
+
+Vite integration automatically handles:
+- Main entry points
+- Dynamic imports (chunks)
+- CSS extraction
+- Development mode with HMR support
+
+### Usage in Latte Templates
+
+```latte
+{* Renders all necessary script and link tags for this entry point *}
+{renderAsset('vite:src/main.js')}
+```

@@ -7,6 +7,7 @@ namespace Nette\Bridges\Assets;
 use Nette;
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\Registry;
+use Nette\Assets\ViteMapper;
 use Nette\DI\Definitions\Statement;
 use Nette\Http\UrlImmutable;
 use Nette\Schema\Expect;
@@ -38,6 +39,13 @@ final class DIExtension extends Nette\DI\CompilerExtension
 						'extension' => Expect::anyOf(Expect::string(), Expect::arrayOf('string')),
 						'versioning' => Expect::bool(),
 					]),
+					Expect::structure([
+						'type' => Expect::string('vite'),
+						'url' => Expect::string()->dynamic(),
+						'path' => Expect::string()->required()->dynamic(),
+						'manifest' => Expect::string()->dynamic(),
+						'debug' => Expect::bool()->dynamic(),
+					]),
 					Expect::type(Statement::class),
 				),
 			),
@@ -67,10 +75,12 @@ final class DIExtension extends Nette\DI\CompilerExtension
 		foreach ($mapping as $scope => $item) {
 			if (is_string($item)) {
 				$mapper = $this->createFileMapper((object) ['path' => $item]);
-			} elseif ($item instanceof \stdClass) {
-				$mapper = $this->createFileMapper($item);
-			} else {
+			} elseif (!$item instanceof \stdClass) {
 				$mapper = $item;
+			} elseif (($item->type ?? null) === 'vite') {
+				$mapper = $this->createViteMapper($item);
+			} else {
+				$mapper = $this->createFileMapper($item);
 			}
 
 			$registry->addSetup('addMapper', [$scope, $mapper]);
@@ -86,6 +96,20 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			'basePath' => $this->callOrDefer([FileSystem::class, 'resolvePath'], [$this->basePath, $config->path]),
 			'extensions' => (array) ($config->extension ?? null),
 			'versioning' => $config->versioning ?? $this->config->versioning ?? true,
+		]);
+	}
+
+
+	private function createViteMapper(\stdClass $config): Statement
+	{
+		$url = $this->callOrDefer([$this->baseUrl, 'resolve'], [$config->url ?? $config->path]);
+		$path = $this->callOrDefer([FileSystem::class, 'resolvePath'], [$this->basePath, $config->path]);
+		//$debug = $config->debug ?? false;
+		//$devServerUrl = $debug ? ($config->devServerUrl ?? null) : null;
+		return new Statement(ViteMapper::class, [
+			'baseUrl' => $this->callOrDefer([$url, 'getAbsoluteUrl']),
+			'basePath' => $path,
+			'manifestPath' => $config->manifest ? $this->callOrDefer([FileSystem::class, 'resolvePath'], [$path, $config->manifest]) : null,
 		]);
 	}
 

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Nette\Assets\ImageAsset;
+use Nette\Utils\Html;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -43,4 +44,29 @@ test('Image dimensions are null without file', function () {
 	Assert::type(Nette\Assets\ImageAsset::class, $asset);
 	Assert::same(null, $asset->width);
 	Assert::same(null, $asset->height);
+});
+
+
+test('getHtmlElement()', function () {
+	$asset = new ImageAsset('/img/image.jpg', 'image/jpeg', null, 800, 600, 'Image description', true);
+
+	Assert::equal(Html::el('img', [
+		'src' => '/img/image.jpg',
+		'width' => '800',
+		'height' => '600',
+		'alt' => 'Image description',
+		'loading' => 'lazy',
+	]), $asset->getImportElement());
+});
+
+
+test('getHtmlPreloadElement()', function () {
+	$asset = new ImageAsset('/img/image.jpg', 'image/jpeg');
+
+	Assert::equal(Html::el('link', [
+		'rel' => 'preload',
+		'href' => '/img/image.jpg',
+		'as' => 'image',
+		'type' => 'image/jpeg',
+	]), $asset->getPreloadElement());
 });

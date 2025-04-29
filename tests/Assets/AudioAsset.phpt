@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Nette\Assets\AudioAsset;
+use Nette\Utils\Html;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -28,4 +29,26 @@ test('Invalid MP3 file throws exception', function () {
 		RuntimeException::class,
 		'Failed to find MP3 frame sync bits.',
 	);
+});
+
+
+test('getHtmlElement()', function () {
+	$asset = new AudioAsset('/audio/sound.mp3', 'audio/mpeg', duration: 120.5);
+
+	Assert::equal(Html::el('audio', [
+		'src' => '/audio/sound.mp3',
+		'type' => 'audio/mpeg',
+	]), $asset->getImportElement());
+});
+
+
+test('getHtmlPreloadElement()', function () {
+	$asset = new AudioAsset('/audio/sound.mp3', 'audio/mpeg');
+
+	Assert::equal(Html::el('link', [
+		'rel' => 'preload',
+		'href' => '/audio/sound.mp3',
+		'as' => 'audio',
+		'type' => 'audio/mpeg',
+	]), $asset->getPreloadElement());
 });

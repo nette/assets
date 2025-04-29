@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace Nette\Assets;
 
+use Nette\Utils\Html;
+
 
 /**
  * Audio asset.
  */
-class AudioAsset implements Asset
+class AudioAsset implements Asset, HtmlRenderable
 {
 	use LazyLoad;
 
@@ -31,5 +33,25 @@ class AudioAsset implements Asset
 	public function __toString(): string
 	{
 		return $this->url;
+	}
+
+
+	public function getImportElement(): Html
+	{
+		return Html::el('audio', [
+			'src' => $this->url,
+			'type' => $this->mimeType,
+		]);
+	}
+
+
+	public function getPreloadElement(): Html
+	{
+		return Html::el('link', array_filter([
+			'rel' => 'preload',
+			'href' => $this->url,
+			'as' => 'audio',
+			'type' => $this->mimeType,
+		], fn($value) => $value !== null));
 	}
 }

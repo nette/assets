@@ -40,7 +40,7 @@ test('Invalid image dimensions throws', function () {
 test('MP3 duration', function () {
 	$asset = new FileAsset('http://example.com/audio.mp3', __DIR__ . '/fixtures/audio.mp3');
 
-	Assert::same(149, $asset->getDuration());
+	Assert::same(149.45, round($asset->getDuration(), 2));
 });
 
 test('Invalid MP3 throws', function () {

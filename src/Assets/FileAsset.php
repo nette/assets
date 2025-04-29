@@ -14,7 +14,7 @@ use Nette;
 class FileAsset implements Asset
 {
 	private array $size;
-	private int $duration;
+	private float $duration;
 
 
 	public function __construct(
@@ -90,7 +90,7 @@ class FileAsset implements Asset
 	 * Returns the estimated duration in seconds for an MP3 audio file (assumes CBR).
 	 * @throws \RuntimeException If the file is not a valid MP3 or cannot be read.
 	 */
-	public function getDuration(): int
+	public function getDuration(): float
 	{
 		return $this->duration ??= Helpers::guessMP3Duration($this->getPath());
 	}

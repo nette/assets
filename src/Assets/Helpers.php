@@ -33,7 +33,7 @@ final class Helpers
 	 * Estimates the duration (in seconds) of an MP3 file, assuming constant bitrate (CBR).
 	 * @throws \RuntimeException If the file cannot be opened, MP3 sync bits aren't found, or bitrate is invalid/unsupported.
 	 */
-	public static function guessMP3Duration(string $path): int
+	public static function guessMP3Duration(string $path): float
 	{
 		if (
 			($header = @file_get_contents($path, length: 10000)) === false // @ - file may not exist
@@ -55,6 +55,6 @@ final class Helpers
 			throw new \RuntimeException('Invalid or unsupported bitrate index.');
 		}
 
-		return (int) round($fileSize * 8 / $bitrate / 1000);
+		return $fileSize * 8 / $bitrate / 1000;
 	}
 }

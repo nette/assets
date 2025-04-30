@@ -8,11 +8,13 @@ namespace Nette\Assets;
 /**
  * Base asset interface with minimal API.
  * @property-read string $url The public URL
+ * @property-read ?string $mimeType The MIME type if available
  * @property-read ?string $sourcePath The local file path if available
  */
 interface Asset
 {
 	//public string $url { get; }
+	//public ?string $mimeType { get; }
 	//public ?string $sourcePath { get; }
 
 	/**

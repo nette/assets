@@ -12,7 +12,12 @@ class StyleAsset implements Asset
 {
 	public function __construct(
 		public readonly string $url,
+		public readonly ?string $mimeType = null,
 		public readonly ?string $sourcePath = null,
+		/** Media query for the stylesheet */
+		public readonly ?string $media = null,
+		/** SRI integrity hash */
+		public readonly ?string $integrity = null,
 	) {
 	}
 

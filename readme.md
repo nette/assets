@@ -156,11 +156,11 @@ Retrieve assets via the `Registry` service, typically injected where needed. The
 // Option 1: Using getAsset() with try/catch for handling exceptions
 $reference = 'images:logo.png'; // Or ['images', 'logo.png'], or just 'logo.png' for default mapper
 try {
-    $asset = $assets->getAsset($reference);
-    echo $asset->url;
+	$asset = $assets->getAsset($reference);
+	echo $asset->url;
 } catch (Nette\Assets\AssetNotFoundException $e) {
-    // Handle asset not found situation
-    echo 'Asset not found: ' . $e->getMessage();
+	// Handle asset not found situation
+	echo 'Asset not found: ' . $e->getMessage();
 }
 
 // Option 2: Using tryGetAsset() for nullable return value
@@ -199,7 +199,7 @@ The resulting URL string obtained from `$asset->url` or `{asset(...)}` will incl
 Asset Versioning
 ----------------
 
-The built-in `FilesystemMapper` automatically appends a version query parameter based on the file's last modification time (`filemtime`):
+The built-in `FilesystemMapper` supports asset versioning. By default, it automatically appends a version query parameter based on the file's last modification time (`filemtime`):
 
 ```latte
 {asset('app.js')}
@@ -211,7 +211,27 @@ generates, for example:
 /assets/app.js?v=1699944800
 ```
 
-This helps with browser cache invalidation. Custom mappers can implement different versioning strategies (e.g., using content hashes from a build manifest). You can also override the `getVersion()` and `applyVersion()` methods in a custom class extending `FilesystemMapper`.
+This helps with browser cache invalidation.
+
+You can disable versioning per asset:
+
+```php
+$asset = $mapper->getAsset('app.js', ['versioning' => false]);
+```
+
+Or in configuration file:
+
+```neon
+assets:
+	# Global versioning setting (defaults to true)
+	versioning: false
+
+	mapping:
+		default:
+			path: assets
+			# Disable versioning for this mapper only
+			versioning: false
+```
 
  <!---->
 

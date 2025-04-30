@@ -14,6 +14,42 @@ final class Helpers
 {
 	use Nette\StaticClass;
 
+	private const ExtensionToMime = [
+		'avif' => 'image/avif', 'gif' => 'image/gif', 'ico' => 'image/vnd.microsoft.icon', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'png' => 'image/png', 'svg' => 'image/svg+xml', 'webp' => 'image/webp',
+		'js' => 'application/javascript', 'mjs' => 'application/javascript',
+		'css' => 'text/css',
+		'aac' => 'audio/aac', 'flac' => 'audio/flac', 'm4a' => 'audio/mp4', 'mp3' => 'audio/mpeg', 'ogg' => 'audio/ogg', 'wav' => 'audio/wav',
+		'avi' => 'video/x-msvideo', 'mkv' => 'video/x-matroska', 'mov' => 'video/quicktime', 'mp4' => 'video/mp4', 'ogv' => 'video/ogg', 'webm' => 'video/webm',
+		'woff' => 'font/woff', 'woff2' => 'font/woff2', 'ttf' => 'font/ttf',
+	];
+
+
+	public static function createAssetFromUrl(string $url, ?string $path = null, array $args = []): Asset
+	{
+		$args['url'] = $url;
+		$args['file'] = $path;
+		$mime = (string) self::guessMimeTypeFromExtension($url);
+		$class = match (true) {
+			$mime === 'application/javascript' => ScriptAsset::class,
+			$mime === 'text/css' => StyleAsset::class,
+			str_starts_with($mime, 'image/') => ImageAsset::class,
+			str_starts_with($mime, 'audio/') => AudioAsset::class,
+			str_starts_with($mime, 'video/') => VideoAsset::class,
+			$mime === 'font/woff' || $mime === 'font/woff2' || $mime === 'font/ttf' => FontAsset::class,
+			default => GenericAsset::class,
+		};
+		return new $class(...$args);
+	}
+
+
+	public static function guessMimeTypeFromExtension(string $url): ?string
+	{
+		return preg_match('~\.([a-z0-9]{1,5})([?#]|$)~i', $url, $m)
+			? self::ExtensionToMime[strtolower($m[1])] ?? null
+			: null;
+	}
+
+
 	/**
 	 * Splits a potentially qualified reference 'mapper:reference' into a [mapper, reference] array.
 	 * @return array{?string, string}

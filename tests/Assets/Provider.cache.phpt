@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Nette\Assets\Asset;
+use Nette\Assets\GenericAsset;
 use Nette\Assets\Mapper;
 use Nette\Assets\Registry;
 use Tester\Assert;
@@ -10,25 +11,11 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-class MockAsset implements Asset
-{
-	public function getUrl(): string
-	{
-		return 'test.jpg';
-	}
-
-
-	public function __toString(): string
-	{
-		return $this->getUrl();
-	}
-}
-
 class MockMapper implements Mapper
 {
-	public function getAsset(string $reference, array $options = []): MockAsset
+	public function getAsset(string $reference, array $options = []): Asset
 	{
-		return new MockAsset;
+		return new GenericAsset('test.jpg');
 	}
 }
 

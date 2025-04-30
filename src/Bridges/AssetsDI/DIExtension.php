@@ -27,6 +27,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 		return Expect::structure([
 			'basePath' => Expect::string()->dynamic(),
 			'baseUrl' => Expect::string()->dynamic(),
+			'versioning' => Expect::bool(),
 			'mapping' => Expect::arrayOf(
 				Expect::anyOf(
 					Expect::string(),
@@ -34,6 +35,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 						'path' => Expect::string()->dynamic(),
 						'url' => Expect::string()->dynamic(),
 						'extension' => Expect::anyOf(Expect::string(), Expect::arrayOf('string')),
+						'versioning' => Expect::bool(),
 					]),
 					Expect::type(Statement::class),
 				),
@@ -80,6 +82,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			'baseUrl' => $this->resolveUrl($config),
 			'basePath' => $this->resolvePath($config),
 			'extensions' => (array) ($config->extension ?? null),
+			'versioning' => $config->versioning ?? $this->config->versioning ?? true,
 		]);
 	}
 

@@ -365,7 +365,15 @@ echo $file->mimeType; // Now it detects: 'application/pdf'
 Working with Options
 --------------------
 
-Mappers can support additional options to control their behavior. Different mappers may support different options. Custom mappers can define their own options to provide additional functionality.
+Mappers can support additional options to control their behavior. For example, the `FilesystemMapper` supports the `version` option:
+
+```php
+// Disable versioning for specific asset
+$asset = $assets->getAsset('style.css', ['version' => false]);
+echo $asset->url;  // '/assets/style.css' (no ?v=... parameter)
+```
+
+Different mappers may support different options. Custom mappers can define their own options to provide additional functionality.
 
  <!---->
 
@@ -455,6 +463,30 @@ The `FilesystemMapper` automatically adds version parameters based on file modif
 ```
 
 When you update the CSS file, the timestamp changes, forcing browsers to download the new version.
+
+You can disable versioning at multiple levels:
+
+```neon
+assets:
+	# Global versioning setting (defaults to true)
+	versioning: false
+
+	mapping:
+		default:
+			path: assets
+			# Enable versioning for this mapper only
+			versioning: true
+```
+
+Or per asset using asset options:
+
+```php
+// In PHP
+$asset = $assets->getAsset('style.css', ['version' => false]);
+
+// In Latte
+{asset 'style.css', [version: false]}
+```
 
 
  <!---->

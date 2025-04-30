@@ -7,27 +7,30 @@ namespace Nette\Assets;
 
 /**
  * Maps asset references to files within a specified local directory.
- * Supports versioning based on file modification time and optional extension auto-detection.
+ * Supports configurable versioning and optional extension auto-detection.
  */
 class FilesystemMapper implements Mapper
 {
+	private const OptionVersion = 'version';
+
+
 	public function __construct(
 		protected readonly string $baseUrl,
 		protected readonly string $basePath,
 		protected readonly array $extensions = [],
+		protected readonly bool $versioning = true,
 	) {
 	}
 
 
 	/**
-	 * Resolves a relative reference to a asset within the configured base path.
-	 * Attempts to find a matching extension if configured.
-	 * @throws \InvalidArgumentException For unsupported options.
-	 * @throws AssetNotFoundException when the file doesn't exist
+	 * Resolves a relative reference to an asset within the configured base path.
+	 * Attempts to find a matching extension if configured and applies versioning if enabled.
+	 * Available options: 'version' => bool: Whether to apply versioning (defaults to true)
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
 	{
-		Helpers::checkOptions($options);
+		Helpers::checkOptions($options, [self::OptionVersion]);
 		$path = $this->resolvePath($reference);
 		$path .= $ext = $this->findExtension($path);
 
@@ -35,7 +38,11 @@ class FilesystemMapper implements Mapper
 			throw new AssetNotFoundException("Asset file '$reference' not found at path: '$path'");
 		}
 
-		return Helpers::createAssetFromUrl($this->buildUrl($reference . $ext, $options), $path);
+		$url = $this->resolveUrl($reference . $ext);
+		if ($options[self::OptionVersion] ?? $this->versioning) {
+			$url = $this->applyVersion($url, $path);
+		}
+		return Helpers::createAssetFromUrl($url, $path);
 	}
 
 
@@ -57,35 +64,12 @@ class FilesystemMapper implements Mapper
 	}
 
 
-	/**
-	 * Builds the final public URL, potentially including a version query parameter.
-	 */
-	protected function buildUrl(string $reference, array $options): string
+	protected function applyVersion(string $url, string $path): string
 	{
-		$url = $this->resolveUrl($reference);
-		if ($version = $this->getVersion($reference)) {
-			$url = $this->applyVersion($url, $version);
+		if (is_int($version = filemtime($path))) {
+			$url .= (str_contains($url, '?') ? '&' : '?') . 'v=' . $version;
 		}
 		return $url;
-	}
-
-
-	/**
-	 * Determines the version string for an asset, typically based on file modification time.
-	 */
-	protected function getVersion(string $reference): ?string
-	{
-		$path = $this->resolvePath($reference);
-		return is_file($path) && is_int($tmp = filemtime($path)) ? (string) $tmp : null;
-	}
-
-
-	/**
-	 * Appends the version string to the URL as a query parameter '?v=...'.
-	 */
-	protected function applyVersion(string $url, string $version): string
-	{
-		return $url . '?v=' . $version;
 	}
 
 

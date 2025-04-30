@@ -93,6 +93,15 @@ echo $image->width;  // 800
 echo $image->height; // 600
 ```
 
+Different file types have different properties. The library automatically detects the file type and creates the appropriate asset:
+
+- **ImageAsset** - Images with width, height, alternative text, and lazy loading support
+- **ScriptAsset** - JavaScript files with types and integrity hashes
+- **StyleAsset** - CSS files with media queries
+- **AudioAsset** - Audio files with duration information
+- **VideoAsset** - Video files with dimensions, duration, poster image, and autoplay settings
+- **GenericAsset** - Generic files with mime types
+
 
 Where Assets Come From (Mappers)
 --------------------------------

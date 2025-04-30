@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Class Nette\\Assets\\AudioAsset has an uninitialized readonly property \$duration\. Assign it in the constructor\.$#'
+			identifier: property.uninitializedReadonly
+			count: 1
+			path: src/Assets/AudioAsset.php
+
+		-
+			message: '#^Readonly property Nette\\Assets\\ImageAsset\:\:\$height is already assigned\.$#'
+			identifier: assign.readOnlyProperty
+			count: 1
+			path: src/Assets/ImageAsset.php
+
+		-
+			message: '#^Readonly property Nette\\Assets\\ImageAsset\:\:\$height is assigned outside of the constructor\.$#'
+			identifier: property.readOnlyAssignNotInConstructor
+			count: 1
+			path: src/Assets/ImageAsset.php
+
+		-
+			message: '#^Readonly property Nette\\Assets\\ImageAsset\:\:\$width is already assigned\.$#'
+			identifier: assign.readOnlyProperty
+			count: 1
+			path: src/Assets/ImageAsset.php
+
+		-
+			message: '#^Readonly property Nette\\Assets\\ImageAsset\:\:\$width is assigned outside of the constructor\.$#'
+			identifier: property.readOnlyAssignNotInConstructor
+			count: 1
+			path: src/Assets/ImageAsset.php

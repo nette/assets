@@ -20,12 +20,12 @@ class FilesystemMapper implements Mapper
 
 
 	/**
-	 * Resolves a relative reference to a FileAsset within the configured base path.
+	 * Resolves a relative reference to a asset within the configured base path.
 	 * Attempts to find a matching extension if configured.
 	 * @throws \InvalidArgumentException For unsupported options.
 	 * @throws AssetNotFoundException when the file doesn't exist
 	 */
-	public function getAsset(string $reference, array $options = []): FileAsset
+	public function getAsset(string $reference, array $options = []): Asset
 	{
 		Helpers::checkOptions($options);
 		$path = $this->resolvePath($reference);
@@ -35,7 +35,7 @@ class FilesystemMapper implements Mapper
 			throw new AssetNotFoundException("Asset file '$reference' not found at path: '$path'");
 		}
 
-		return new FileAsset($this->buildUrl($reference . $ext, $options), $path);
+		return Helpers::createAssetFromUrl($this->buildUrl($reference . $ext, $options), $path);
 	}
 
 

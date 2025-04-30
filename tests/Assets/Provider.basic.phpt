@@ -4,26 +4,12 @@ declare(strict_types=1);
 
 use Nette\Assets\Asset;
 use Nette\Assets\AssetNotFoundException;
+use Nette\Assets\GenericAsset;
 use Nette\Assets\Mapper;
 use Nette\Assets\Registry;
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
-
-
-class MockAsset implements Asset
-{
-	public function getUrl(): string
-	{
-		return 'test.jpg';
-	}
-
-
-	public function __toString(): string
-	{
-		return $this->getUrl();
-	}
-}
 
 
 class MockMapper implements Mapper
@@ -52,7 +38,7 @@ class ThrowingMockMapper implements Mapper
 
 test('Adding and getting mapper', function () {
 	$registry = new Registry;
-	$mapper = new MockMapper(new MockAsset);
+	$mapper = new MockMapper(new GenericAsset('test.jpg'));
 
 	$registry->addMapper('test', $mapper);
 	Assert::same($mapper, $registry->getMapper('test'));
@@ -60,7 +46,7 @@ test('Adding and getting mapper', function () {
 
 test('Adding duplicate mapper throws', function () {
 	$registry = new Registry;
-	$mapper = new MockMapper(new MockAsset);
+	$mapper = new MockMapper(new GenericAsset('test.jpg'));
 
 	$registry->addMapper('test', $mapper);
 	Assert::exception(
@@ -71,9 +57,8 @@ test('Adding duplicate mapper throws', function () {
 });
 
 test('Getting unknown mapper throws', function () {
-	$registry = new Registry;
 	Assert::exception(
-		fn() => $registry->getMapper('unknown'),
+		fn() => (new Registry)->getMapper('unknown'),
 		InvalidArgumentException::class,
 		"Unknown asset mapper 'unknown'.",
 	);
@@ -81,7 +66,7 @@ test('Getting unknown mapper throws', function () {
 
 test('Getting asset without mapper prefix uses default scope', function () {
 	$registry = new Registry;
-	$asset = new MockAsset;
+	$asset = new GenericAsset('test.jpg');
 	$registry->addMapper('', new MockMapper($asset));
 
 	Assert::same($asset, $registry->getAsset('test.jpg'));
@@ -89,7 +74,7 @@ test('Getting asset without mapper prefix uses default scope', function () {
 
 test('Getting asset with mapper prefix', function () {
 	$registry = new Registry;
-	$asset = new MockAsset;
+	$asset = new GenericAsset('test.jpg');
 	$registry->addMapper('images', new MockMapper($asset));
 
 	Assert::same($asset, $registry->getAsset('images:test.jpg'));
@@ -97,7 +82,7 @@ test('Getting asset with mapper prefix', function () {
 
 test('Getting asset with array', function () {
 	$registry = new Registry;
-	$asset = new MockAsset;
+	$asset = new GenericAsset('test.jpg');
 	$registry->addMapper('images', new MockMapper($asset));
 
 	Assert::same($asset, $registry->getAsset(['images', 'test.jpg']));
@@ -105,7 +90,7 @@ test('Getting asset with array', function () {
 
 test('tryGetAsset returns asset when exists', function () {
 	$registry = new Registry;
-	$asset = new MockAsset;
+	$asset = new GenericAsset('test.jpg');
 	$registry->addMapper('images', new MockMapper($asset));
 
 	Assert::same($asset, $registry->tryGetAsset('images:test.jpg'));

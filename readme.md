@@ -41,13 +41,27 @@ Core Concepts
 
 The library revolves around a few key components:
 
-- **Asset:** An interface representing a single static asset (like an image or script). Its main purpose is to provide a public URL via `$asset->url`. `FileAsset` is a concrete implementation for assets backed by local files, offering additional properties like `$width`, `$height`, `$duration`.
+- **Asset:** An interface representing a single static asset. All assets provide a public URL via `__toString()`. Different asset types (like `ImageAsset`, `ScriptAsset`, `AudioAsset`) provide type-specific properties.
 - **Mapper:** An interface responsible for taking an asset reference (like `app.js` or `images/logo.png`) and resolving it into an `Asset` object. Different mappers can fetch assets from various sources (filesystem, CDN, cloud storage, manifest files). `FilesystemMapper` is the built-in implementation for serving files from a local directory. If the requested asset cannot be found, the mapper throws an `AssetNotFoundException`.
 - **Registry:** A central service that holds all configured `Mapper` instances, each identified by a unique string ID (e.g., `'default'`, `'audio'`, `'images'`). It provides the main entry point (`getAsset()`) for retrieving assets using a **qualified reference**, which throws `AssetNotFoundException` if the requested asset cannot be found. For cases where handling non-existent assets without exceptions is preferred, it also provides `tryGetAsset()`, which returns `null` instead of throwing an exception.
 - **Qualified Reference:** This identifies the specific asset you want to retrieve via the `Registry`. It supports three formats:
 	- A simple string `reference` (e.g., `'app.js'`) which uses the `default` mapper.
 	- A prefixed string `mapper:reference` (e.g., `'audio:podcast.mp3'`) which specifies the mapper explicitly.
 	- An array `[mapper, reference]` (e.g., `['images', 'logo.png']`) which also specifies the mapper explicitly.
+
+ <!---->
+
+Asset Types
+-----------
+
+The library provides specialized asset interfaces and implementations for different content types:
+
+- **ImageAsset** - Images with width, height, alternative text, and lazy loading support
+- **ScriptAsset** - JavaScript files with dependencies, integrity hashes, and development mode support
+- **StyleAsset** - CSS files with media queries and dependencies
+- **AudioAsset** - Audio files with duration information
+- **VideoAsset** - Video files with dimensions, duration, poster image, and autoplay settings
+- **GenericAsset** - Generic files
 
  <!---->
 
@@ -132,7 +146,7 @@ assets:
  <!---->
 
 Retrieving Assets
----------------
+-----------------
 
 Retrieve assets via the `Registry` service, typically injected where needed. The main method is `getAsset()`:
 

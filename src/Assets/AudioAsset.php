@@ -1,0 +1,34 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Nette\Assets;
+
+
+/**
+ * Audio asset.
+ */
+class AudioAsset implements Asset
+{
+	use LazyLoad;
+
+	/** Duration in seconds */
+	public readonly ?float $duration;
+
+
+	public function __construct(
+		public readonly string $url,
+		public readonly ?string $sourcePath = null,
+		?float $duration = null,
+	) {
+		$this->lazyLoad(compact('duration'), fn() => $this->duration = $this->sourcePath
+			? Helpers::guessMP3Duration($this->sourcePath)
+			: null);
+	}
+
+
+	public function __toString(): string
+	{
+		return $this->url;
+	}
+}

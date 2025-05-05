@@ -26,8 +26,8 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	public function getConfigSchema(): Nette\Schema\Schema
 	{
 		return Expect::structure([
-			'path' => Expect::string(),
-			'url' => Expect::string(),
+			'basePath' => Expect::string(),
+			'baseUrl' => Expect::string(),
 			'mapping' => Expect::arrayOf(
 				Expect::anyOf(
 					Expect::string(),
@@ -47,10 +47,10 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$this->baseUrl = $this->config->url
-			? new UrlImmutable(rtrim($this->config->url, '/') . '/')
+		$this->baseUrl = $this->config->baseUrl
+			? new UrlImmutable(rtrim($this->config->baseUrl, '/') . '/')
 			: new Statement('@Nette\Http\IRequest::getUrl');
-		$this->basePath = $this->config->path ?? $builder->parameters['wwwDir'];
+		$this->basePath = $this->config->basePath ?? $builder->parameters['wwwDir'];
 
 		$mapping = $this->config->mapping ?? ['default' => 'assets'];
 

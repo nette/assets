@@ -19,6 +19,10 @@ use Nette\Utils\FileSystem;
  */
 final class DIExtension extends Nette\DI\CompilerExtension
 {
+	private Statement|UrlImmutable $baseUrl;
+	private string $basePath;
+
+
 	public function getConfigSchema(): Nette\Schema\Schema
 	{
 		return Expect::structure([
@@ -43,10 +47,10 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$baseUrl = $this->config->url
+		$this->baseUrl = $this->config->url
 			? new UrlImmutable(rtrim($this->config->url, '/') . '/')
 			: new Statement('@Nette\Http\IRequest::getUrl');
-		$basePath = $this->config->path ?? $builder->parameters['wwwDir'];
+		$this->basePath = $this->config->path ?? $builder->parameters['wwwDir'];
 
 		$mapping = $this->config->mapping ?? ['default' => 'assets'];
 
@@ -60,23 +64,26 @@ final class DIExtension extends Nette\DI\CompilerExtension
 
 		foreach ($mapping as $scope => $item) {
 			if (is_string($item)) {
-				$url = $this->callOrDefer([$baseUrl, 'resolve'], [$item]);
-				$url = $this->callOrDefer([$url, 'getAbsoluteUrl']);
-				$path = $this->callOrDefer([FileSystem::class, 'resolvePath'], [$basePath, $item]);
-				$mapper = new Statement(FilesystemMapper::class, [$url, $path]);
-
+				$mapper = $this->createFileMapper((object) ['path' => $item]);
 			} elseif ($item instanceof \stdClass) {
-				$url = $this->callOrDefer([$baseUrl, 'resolve'], [$item->url ?? $item->path]);
-				$url = $this->callOrDefer([$url, 'getAbsoluteUrl']);
-				$path = $this->callOrDefer([FileSystem::class, 'resolvePath'], [$basePath, $item->path]);
-				$mapper = new Statement(FilesystemMapper::class, [$url, $path, (array) $item->extension]);
-
+				$mapper = $this->createFileMapper($item);
 			} else {
 				$mapper = $item;
 			}
 
 			$registry->addSetup('addMapper', [$scope, $mapper]);
 		}
+	}
+
+
+	private function createFileMapper(\stdClass $config): Statement
+	{
+		$url = $this->callOrDefer([$this->baseUrl, 'resolve'], [$config->url ?? $config->path]);
+		return new Statement(FilesystemMapper::class, [
+			'baseUrl' => $this->callOrDefer([$url, 'getAbsoluteUrl']),
+			'basePath' => $this->callOrDefer([FileSystem::class, 'resolvePath'], [$this->basePath, $config->path]),
+			'extensions' => (array) ($config->extension ?? null),
+		]);
 	}
 
 

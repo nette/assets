@@ -2,8 +2,7 @@
 
 declare(strict_types=1);
 
-// The Nette Tester command-line runner can be
-// invoked through the command: ../vendor/bin/tester .
+use Tester\Assert;
 
 if (@!include __DIR__ . '/../vendor/autoload.php') {
 	echo 'Install Nette Tester using `composer install`';
@@ -50,4 +49,16 @@ function createContainer(string $config): Nette\DI\Container
 	$code = $compiler->setClassName($class)->compile();
 	eval($code);
 	return new $class;
+}
+
+
+function assertAssets(array $expected, array $actual): void
+{
+	Assert::same(array_keys($expected), array_keys($actual));
+	foreach ($expected as $i => $exp) {
+		Assert::type($exp::class, $actual[$i]);
+		foreach ($exp as $prop => $value) {
+			Assert::same($value, $actual[$i]->$prop, "property $$prop");
+		}
+	}
 }

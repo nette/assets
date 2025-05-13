@@ -7,6 +7,7 @@ namespace Nette\Bridges\Assets;
 use Nette;
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\Registry;
+use Nette\Assets\ViteMapper;
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
@@ -18,6 +19,8 @@ use Nette\Schema\Expect;
  */
 final class DIExtension extends Nette\DI\CompilerExtension
 {
+	private const VitePort = 5173;
+
 	private ?string $basePath;
 	private int $needVariable;
 
@@ -32,10 +35,13 @@ final class DIExtension extends Nette\DI\CompilerExtension
 				Expect::anyOf(
 					Expect::string(),
 					Expect::structure([
+						'type' => Expect::string(),
 						'path' => Expect::string()->dynamic(),
 						'url' => Expect::string()->dynamic(),
 						'extension' => Expect::anyOf(Expect::string(), Expect::arrayOf('string')),
 						'versioning' => Expect::bool(),
+						'manifest' => Expect::string()->dynamic(),
+						'devServer' => Expect::anyOf(Expect::string(), Expect::bool())->default(false)->dynamic(),
 					]),
 					Expect::type(Statement::class),
 				),
@@ -59,10 +65,14 @@ final class DIExtension extends Nette\DI\CompilerExtension
 					? new Statement($item)
 					: $this->createFileMapper((object) ['path' => $item]);
 
-			} elseif ($item instanceof \stdClass) {
-				$mapper = $this->createFileMapper($item);
-			} else {
+			} elseif (!$item instanceof \stdClass) {
 				$mapper = $item;
+
+			} elseif (($item->type ?? null) === 'vite') {
+				$mapper = $this->createViteMapper($item);
+
+			} else {
+				$mapper = $this->createFileMapper($item);
 			}
 
 			if ($this->needVariable === 1) {
@@ -83,6 +93,18 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			'basePath' => $this->resolvePath($config),
 			'extensions' => (array) ($config->extension ?? null),
 			'versioning' => $config->versioning ?? $this->config->versioning ?? true,
+		]);
+	}
+
+
+	private function createViteMapper(\stdClass $config): Statement
+	{
+		return new Statement(ViteMapper::class, [
+			'baseUrl' => $this->resolveUrl($config),
+			'basePath' => new Statement('$path = ?', [$this->resolvePath($config)]),
+			'manifestPath' => $config->manifest ? new Statement('Nette\Utils\FileSystem::resolvePath($path, ?)', [$config->manifest]) : null,
+			'devServer' => $this->resolveDevServer($config),
+			'publicMapper' => $this->createFileMapper($config),
 		]);
 	}
 
@@ -111,5 +133,18 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$url = new Statement('$baseUrl->resolve(?)->getAbsoluteUrl()', [$config->url ?? $config->path ?? '']);
 		return new Statement("rtrim(?, '/')", [$url]);
+	}
+
+
+	private function resolveDevServer(\stdClass $config): Statement|string|null
+	{
+		if (empty($this->getContainerBuilder()->parameters['debugMode']) || !$config->devServer) {
+			return null;
+		}
+		$baseUrl = $this->config->baseUrl ?? new Statement([new Statement('@Nette\Http\IRequest::getUrl'), 'getBaseUrl']);
+		$devServer = is_string($config->devServer)
+			? $config->devServer
+			: new Statement('(new Nette\Http\UrlImmutable(?))->withPort(?)->getAbsoluteUrl()', [$baseUrl, self::VitePort]);
+		return new Statement("rtrim(?, '/')", [$devServer]);
 	}
 }

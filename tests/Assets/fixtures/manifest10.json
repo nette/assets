@@ -1,0 +1,22 @@
+{
+	"_ace-BJo1PSDc.js": {
+		"file": "ace-BJo1PSDc.js",
+		"name": "ace",
+		"isDynamicEntry": true,
+		"imports": [
+			"assets/nette.js"
+		]
+	},
+	"assets/nette.js": {
+		"file": "_nette.js",
+		"name": "_nette",
+		"src": "assets/nette.js",
+		"isEntry": true,
+		"imports": [
+			"_ace-BJo1PSDc.js"
+		],
+		"css": [
+			"_nette.css"
+		]
+	}
+}

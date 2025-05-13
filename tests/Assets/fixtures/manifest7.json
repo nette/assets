@@ -1,0 +1,18 @@
+{
+	"_foo-KXjOppzC.js": {
+		"file": "foo-KXjOppzC.js",
+		"name": "foo"
+	},
+	"assets/admin.js": {
+		"file": "admin.js",
+		"name": "admin",
+		"src": "assets/admin.js",
+		"isEntry": true,
+		"imports": [
+			"_foo-KXjOppzC.js"
+		],
+		"css": [
+			"admin--djP3Xwo.css"
+		]
+	}
+}

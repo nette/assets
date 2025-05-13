@@ -11,6 +11,7 @@ namespace Nette\Bridges\AssetsLatte;
 
 use Nette;
 use Nette\Assets\Asset;
+use Nette\Assets\EntryAsset;
 use Nette\Assets\HtmlRenderable;
 use Nette\Assets\Registry;
 
@@ -44,7 +45,18 @@ class Runtime
 			throw new Nette\InvalidArgumentException('This asset type cannot be rendered as HTML.');
 		}
 
-		return (string) $asset->getImportElement();
+		$res = (string) $asset->getImportElement();
+
+		if ($asset instanceof EntryAsset) {
+			foreach ($asset->preloads as $dep) {
+				$res .= $dep->getPreloadElement();
+			}
+			foreach ($asset->imports as $dep) {
+				$res .= $dep->getImportElement();
+			}
+		}
+
+		return $res;
 	}
 
 

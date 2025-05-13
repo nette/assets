@@ -1,0 +1,38 @@
+{
+	"_level3-chunk.js": {
+		"file": "level3-chunk-aaa111.js",
+		"css": [
+			"level3-styles-bbb222.css"
+		]
+	},
+	"_level2-chunk.js": {
+		"file": "level2-chunk-ccc333.js",
+		"imports": [
+			"_level3-chunk.js"
+		],
+		"css": [
+			"level2-styles-ddd444.css"
+		]
+	},
+	"_level1-chunk.js": {
+		"file": "level1-chunk-eee555.js",
+		"imports": [
+			"_level2-chunk.js"
+		],
+		"css": [
+			"level1-styles-fff666.css"
+		]
+	},
+	"assets/deeply-nested.js": {
+		"file": "deeply-nested-ggg777.js",
+		"name": "deeplyNested",
+		"src": "assets/deeply-nested.js",
+		"isEntry": true,
+		"imports": [
+			"_level1-chunk.js"
+		],
+		"css": [
+			"main-styles-hhh888.css"
+		]
+	}
+}

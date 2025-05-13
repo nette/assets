@@ -1,0 +1,16 @@
+{
+	"_foo-B2r9mFhI.css": {
+		"file": "foo-B2r9mFhI.css",
+		"src": "_foo-B2r9mFhI.css"
+	},
+	"assets/admin.js": {
+		"file": "admin-DDCqmGQL.js",
+		"name": "admin",
+		"src": "assets/admin.js",
+		"isEntry": true,
+		"css": [
+			"admin--djP3Xwo.css",
+			"foo-B2r9mFhI.css"
+		]
+	}
+}

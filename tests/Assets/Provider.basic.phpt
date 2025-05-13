@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Nette\Assets\Asset;
+use Nette\Assets\AssetNotFoundException;
 use Nette\Assets\Mapper;
 use Nette\Assets\Registry;
 use Tester\Assert;
@@ -36,6 +37,15 @@ class MockMapper implements Mapper
 	public function getAsset(string $reference, array $options = []): Asset
 	{
 		return $this->asset;
+	}
+}
+
+
+class ThrowingMockMapper implements Mapper
+{
+	public function getAsset(string $reference, array $options = []): Asset
+	{
+		throw new AssetNotFoundException("Asset '$reference' not found");
 	}
 }
 
@@ -91,4 +101,19 @@ test('Getting asset with array', function () {
 	$registry->addMapper('images', new MockMapper($asset));
 
 	Assert::same($asset, $registry->getAsset(['images', 'test.jpg']));
+});
+
+test('tryGetAsset returns asset when exists', function () {
+	$registry = new Registry;
+	$asset = new MockAsset;
+	$registry->addMapper('images', new MockMapper($asset));
+
+	Assert::same($asset, $registry->tryGetAsset('images:test.jpg'));
+});
+
+test('tryGetAsset returns null when asset does not exist', function () {
+	$registry = new Registry;
+	$registry->addMapper('missing', new ThrowingMockMapper());
+
+	Assert::null($registry->tryGetAsset('missing:test.jpg'));
 });

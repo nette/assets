@@ -279,7 +279,16 @@ Basic Retrieval
 The Registry provides two methods for getting assets:
 
 ```php
-$banner = $assets->getAsset('images/banner.jpg');
+// This throws Nette\Assets\AssetNotFoundException if file doesn't exist
+try {
+	$logo = $assets->getAsset('images/logo.png');
+	echo $logo->url;
+} catch (AssetNotFoundException $e) {
+	// Handle missing asset
+}
+
+// This returns null if file doesn't exist
+$banner = $assets->tryGetAsset('images/banner.jpg');
 if ($banner) {
 	echo $banner->getUrl();
 }
@@ -358,6 +367,24 @@ Nette Assets shines in [Latte templates](https://latte.nette.org) with intuitive
 <img src={$logo} width={$logo->getWidth()} height={$logo->getHeight()}>
 ```
 
+
+Handling Optional Assets
+------------------------
+
+For assets that might not exist:
+
+```latte
+{* Using tryAsset() function *}
+{var $banner = tryAsset('images/summer-sale.jpg')}
+{if $banner}
+	<div class="banner">
+		<img src={$banner} alt="Summer Sale">
+	</div>
+{/if}
+
+{* Or with a fallback *}
+<img src={tryAsset('user-avatar.jpg') ?? asset('default-avatar.jpg')} alt="Avatar">
+```
 
  <!---->
 

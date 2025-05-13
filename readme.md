@@ -15,6 +15,22 @@
 ✅ support for multiple file sources<br>
 
 
+Working with static files (images, CSS, JavaScript) in web applications often involves repetitive tasks: generating correct URLs, handling cache invalidation, managing file versions, and dealing with different environments. Nette Assets simplifies all of this.
+
+Without Nette Assets:
+```latte
+{* You need to manually handle paths and versioning *}
+<img src="/images/logo.png?v=2" width="100" height="50">
+<link rel="stylesheet" href="/css/style.css?v=1699123456">
+```
+
+With Nette Assets:
+```latte
+{* Everything is handled automatically *}
+{asset 'images/logo.png'}
+{asset 'css/style.css'}
+```
+
  <!---->
 
 
@@ -39,15 +55,33 @@ Let's start with the simplest possible example. You want to display an image in 
 
 ```latte
 {* In your Latte template *}
-<img src={asset('images/logo.png')} alt="Company Logo" class="logo">
+{asset 'images/logo.png'}
 ```
 
 This single line:
 - Finds your image file
 - Generates the correct URL with automatic versioning
+- Outputs a complete `<img>` tag with proper dimensions
 
 That's it! No configuration needed for basic usage. The library uses sensible defaults and works out of the box.
 
+
+Custom HTML
+-----------
+
+Sometimes you need more control over the HTML:
+
+```latte
+{* Use n:asset when you want to control HTML attributes *}
+<img n:asset="images/logo.png" alt="Company Logo" class="logo">
+```
+
+You can also get just the URL using the `asset()` function:
+
+```latte
+{* Get just the URL without HTML *}
+<img src={asset('images/logo.png')} class="logo">
+```
 
 Using in PHP
 ------------
@@ -69,6 +103,10 @@ public function renderDefault(): void
 Then in your template:
 
 ```latte
+{asset $logo}
+{* or *}
+<img n:asset=$logo>
+{* or *}
 <img src={$logo} width={$logo->width} height={$logo->height} alt="Logo">
 ```
 
@@ -383,6 +421,103 @@ Latte Integration
 
 Nette Assets shines in [Latte templates](https://latte.nette.org) with intuitive tags and functions.
 
+
+Basic Usage with `{asset}` Tag
+------------------------------
+
+The `{asset}` tag renders complete HTML elements:
+
+```latte
+{* Renders: <img src="/assets/hero.jpg?v=123" width="1920" height="1080"> *}
+{asset 'images/hero.jpg'}
+
+{* Renders: <script src="/assets/app.js?v=456"></script> *}
+{asset 'scripts/app.js'}
+
+{* Renders: <link rel="stylesheet" href="/assets/style.css?v=789"> *}
+{asset 'styles/style.css'}
+
+{* Any additional parameters are passed as asset options *}
+{asset 'style.css', version: false}
+```
+
+The tag automatically:
+- Detects the asset type from file extension
+- Generates the appropriate HTML element
+- Adds versioning for cache busting
+- Includes dimensions for images
+
+
+However, if you use the `{asset}` tag inside an HTML attribute, it will only output the URL:
+
+```latte
+<div style="background-image: url({asset 'images/bg.jpg'})">
+	Content
+</div>
+
+<img srcset="{asset 'images/logo@2x.png'} 2x">
+```
+
+
+Using Specific Mappers
+----------------------
+
+Just like in PHP, you can specify which mapper to use:
+
+```latte
+{* Uses the 'images' mapper (via prefix) *}
+{asset 'images:product-photo.jpg'}
+
+{* Uses the 'images' mapper (via array syntax) *}
+{asset ['images', 'product-photo.jpg']}
+```
+
+
+Custom HTML with `n:asset` Attribute
+------------------------------------
+
+When you need control over the HTML attributes:
+
+```latte
+{* The n:asset attribute fills in the appropriate attributes *}
+<img n:asset="images:product.jpg" alt="Product Photo" class="rounded shadow">
+
+{* Works with any relevant HTML element *}
+<a n:asset="images:product.jpg">link to image</a>
+<script n:asset="scripts/analytics.js" defer></script>
+<link n:asset="styles/print.css" media="print">
+<audio n:asset="podcast.mp3" controls></audio>
+<video n:asset="podcast.avi"></video>
+```
+
+The `n:asset` attribute:
+- Sets `src` for images, scripts, and audio/video
+- Sets `href` for stylesheets and preload links
+- Adds dimensions for images and other attributes
+- Preserves all your custom attributes
+
+How to use a variable in `n:asset`?
+
+```latte
+{* The variable can be written quite simply *}
+<img n:asset="$post->image">
+
+{* Use curly brackets when specifying the mapper *}
+<img n:asset="media:{$post->image}">
+
+{* Or you can use array notation *}
+<img n:asset="[images, $post->image]">
+
+{* You can pass options for assets *}
+<link n:asset="styles/print.css, version: false" media="print">
+```
+
+
+Getting Just URLs with Functions
+--------------------------------
+
+For maximum flexibility, use the `asset()` function:
+
 ```latte
 {var $logo = asset('images/logo.png')}
 <img src={$logo} width={$logo->width} height={$logo->height}>
@@ -392,10 +527,21 @@ Nette Assets shines in [Latte templates](https://latte.nette.org) with intuitive
 Handling Optional Assets
 ------------------------
 
-For assets that might not exist:
+You can use optional tags that won't throw exceptions if the asset is missing:
 
 ```latte
-{* Using tryAsset() function *}
+{* Optional asset tag - renders nothing if asset not found *}
+{asset? 'images/optional-banner.jpg'}
+
+{* Optional n:asset attribute - skips the attribute if asset not found *}
+<img n:asset?="images/user-photo.jpg" alt="User Photo" class="avatar">
+```
+
+The optional variants (`{asset?}` and `n:asset?`) silently skip rendering when the asset doesn't exist, making them perfect for optional images, dynamic content, or situations where missing assets shouldn't break your layout.
+
+For maximum flexibility, use the `tryAsset()` function:
+
+```latte
 {var $banner = tryAsset('images/summer-sale.jpg')}
 {if $banner}
 	<div class="banner">
@@ -404,8 +550,33 @@ For assets that might not exist:
 {/if}
 
 {* Or with a fallback *}
-<img src={tryAsset('user-avatar.jpg') ?? asset('default-avatar.jpg')} alt="Avatar">
+<img n:asset="tryAsset('user-avatar.jpg') ?? asset('default-avatar.jpg')" alt="Avatar">
 ```
+
+
+Performance Optimization with Preloading
+----------------------------------------
+
+
+Improve page load performance by preloading critical assets:
+
+```latte
+{* In your <head> section *}
+{preload 'styles/critical.css'}
+{preload 'fonts/heading.woff2'}
+```
+
+Generates:
+
+```html
+<link rel="preload" href="/assets/styles/critical.css?v=123" as="style">
+<link rel="preload" href="/assets/fonts/heading.woff2" as="font" crossorigin>
+```
+
+The `{preload}` tag automatically:
+- Determines the correct `as` attribute
+- Adds `crossorigin` for fonts
+- Uses `modulepreload` for ES modules
 
  <!---->
 
@@ -487,6 +658,28 @@ $asset = $assets->getAsset('style.css', ['version' => false]);
 // In Latte
 {asset 'style.css', version: false}
 ```
+
+
+Working with Fonts
+------------------
+
+Font assets support preloading with proper CORS attributes:
+
+```latte
+{* Generates proper preload with crossorigin attribute *}
+{preload 'fonts:OpenSans-Regular.woff2'}
+
+{* In your CSS *}
+<style>
+	@font-face {
+		font-family: 'Open Sans';
+		src: url('{asset 'fonts:OpenSans-Regular.woff2'}') format('woff2');
+		font-display: swap;
+	}
+</style>
+```
+
+ <!---->
 
 
  <!---->

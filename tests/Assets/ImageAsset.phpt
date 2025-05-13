@@ -47,7 +47,7 @@ test('Image dimensions are null without file', function () {
 });
 
 
-test('getHtmlElement()', function () {
+test('getImportElement()', function () {
 	$asset = new ImageAsset('/img/image.jpg', 'image/jpeg', null, 800, 600, 'Image description', true);
 
 	Assert::equal(Html::el('img', [

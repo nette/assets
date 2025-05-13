@@ -10,11 +10,12 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-test('asset() macro calls Registry::getAsset()', function () {
+test('asset() function calls Registry::getAsset()', function () {
+	$asset = new GenericAsset('asset-url');
 	$mockRegistry = Mockery::mock(Registry::class);
 	$mockRegistry->expects()
 		->getAsset('foo', [123, 'foo' => 'bar'])
-		->andReturn(new GenericAsset('asset-url'));
+		->andReturn($asset);
 
 	$latte = new Latte\Engine;
 	$latte->addExtension(new LatteExtension($mockRegistry));
@@ -22,10 +23,13 @@ test('asset() macro calls Registry::getAsset()', function () {
 
 	$result = $latte->renderToString('{=asset(foo, 123, foo: bar)}');
 	Assert::same('asset-url', $result);
+
+	$result = $latte->renderToString('{=asset($asset, 123, foo: bar)}', ['asset' => $asset]);
+	Assert::same('asset-url', $result);
 });
 
 
-test('tryAsset() macro calls Registry::tryGetAsset()', function () {
+test('tryAsset() function calls Registry::tryGetAsset()', function () {
 	$mockRegistry = Mockery::mock(Registry::class);
 	$mockRegistry->expects()
 		->tryGetAsset('foo', [123, 'foo' => 'bar'])
@@ -39,7 +43,7 @@ test('tryAsset() macro calls Registry::tryGetAsset()', function () {
 	Assert::same('asset-url', $result);
 });
 
-test('tryAsset() macro returns empty string when asset not found', function () {
+test('tryAsset() function returns empty string when asset not found', function () {
 	$mockRegistry = Mockery::mock(Registry::class);
 	$mockRegistry->expects()
 		->tryGetAsset('nonexistent', [])

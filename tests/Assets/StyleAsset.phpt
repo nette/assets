@@ -9,7 +9,7 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-test('getHtmlElement()', function () {
+test('getImportElement()', function () {
 	$asset = new StyleAsset('/css/style.css', 'text/css', null, 'screen and (min-width: 600px)', 'sha256-abc123');
 
 	Assert::equal(Html::el('link', [

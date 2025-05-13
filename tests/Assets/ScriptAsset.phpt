@@ -9,7 +9,7 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-test('getHtmlElement()', function () {
+test('getImportElement()', function () {
 	$asset = new ScriptAsset('/js/script.js', 'application/javascript', integrity: 'sha256-abc123');
 
 	Assert::equal(Html::el('script', [

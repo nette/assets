@@ -9,7 +9,7 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-test('getHtmlElement()', function () {
+test('getImportElement()', function () {
 	$asset = new VideoAsset('/video/movie.mp4', 'video/mp4', null, 1920, 1080, 120.5, '/img/poster.jpg', true);
 
 	Assert::equal(Html::el('video', [

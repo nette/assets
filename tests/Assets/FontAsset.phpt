@@ -9,7 +9,7 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-test('FontAsset->getHtmlElement()', function () {
+test('FontAsset->getImportElement()', function () {
 	$asset = new FontAsset(
 		url: '/fonts/roboto.woff2',
 		mimeType: 'font/woff2',

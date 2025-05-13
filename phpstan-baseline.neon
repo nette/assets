@@ -47,3 +47,9 @@ parameters:
 			identifier: property.nonObject
 			count: 2
 			path: src/Bridges/AssetsDI/DIExtension.php
+
+		-
+			message: '#^Unsafe usage of new static\(\)\.$#'
+			identifier: new.static
+			count: 1
+			path: src/Bridges/AssetsLatte/Nodes/AssetNode.php

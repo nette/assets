@@ -485,7 +485,7 @@ Or per asset using asset options:
 $asset = $assets->getAsset('style.css', ['version' => false]);
 
 // In Latte
-{asset 'style.css', [version: false]}
+{asset 'style.css', version: false}
 ```
 
 

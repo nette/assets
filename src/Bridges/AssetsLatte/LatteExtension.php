@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nette\Bridges\AssetsLatte;
 
 use Latte\Extension;
+use Nette\Assets\Asset;
 use Nette\Assets\Registry;
 
 
@@ -24,8 +25,8 @@ final class LatteExtension extends Extension
 	public function getFunctions(): array
 	{
 		return [
-			'asset' => $this->registry->getAsset(...),
-			'tryAsset' => $this->registry->tryGetAsset(...),
+			'asset' => fn(string|array $reference, ...$options): Asset => $this->registry->getAsset($reference, $options),
+			'tryAsset' => fn(string|array $reference, ...$options): ?Asset => $this->registry->tryGetAsset($reference, $options),
 		];
 	}
 }

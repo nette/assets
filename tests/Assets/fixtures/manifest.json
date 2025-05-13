@@ -1,0 +1,22 @@
+{
+	"src/main.js": {
+		"file": "assets/main-1a2b3c4d.js",
+		"src": "src/main.js",
+		"isEntry": true,
+		"imports": [
+			"src/shared.js"
+		],
+		"css": [
+			"assets/main-a1b2c3d4.css"
+		]
+	},
+	"src/shared.js": {
+		"file": "assets/shared-5e6f7g8h.js",
+		"src": "src/shared.js"
+	},
+	"src/styles.css": {
+		"file": "assets/styles-9i0j1k2l.css",
+		"src": "src/styles.css",
+		"isEntry": true
+	}
+}

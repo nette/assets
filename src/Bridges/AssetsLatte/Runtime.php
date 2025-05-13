@@ -11,8 +11,11 @@ namespace Nette\Bridges\AssetsLatte;
 
 use Nette;
 use Nette\Assets\Asset;
+use Nette\Assets\EntryAsset;
 use Nette\Assets\HtmlRenderable;
 use Nette\Assets\Registry;
+use Nette\Assets\ScriptAsset;
+use Nette\Assets\StyleAsset;
 
 
 /**
@@ -43,7 +46,19 @@ class Runtime
 			throw new Nette\InvalidArgumentException('This asset type cannot be rendered as HTML.');
 		}
 
-		return (string) $asset->getHtmlElement();
+		$res = (string) $asset->getHtmlElement();
+
+		if ($asset instanceof EntryAsset) {
+			foreach ($asset->dependencies as $dep) {
+				$res .= match (true) {
+					$dep instanceof ScriptAsset => $dep->getHtmlPreloadElement(),
+					$dep instanceof StyleAsset => $dep->getHtmlElement(),
+					default => '',
+				};
+			}
+		}
+
+		return $res;
 	}
 
 

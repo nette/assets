@@ -7,6 +7,7 @@ namespace Nette\Bridges\Assets;
 use Nette;
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\Registry;
+use Nette\Assets\ViteMapper;
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Http\UrlImmutable;
@@ -39,6 +40,13 @@ final class DIExtension extends Nette\DI\CompilerExtension
 						'extension' => Expect::anyOf(Expect::string(), Expect::arrayOf('string')),
 						'versioning' => Expect::bool(),
 					]),
+					Expect::structure([
+						'type' => Expect::string('vite'),
+						'path' => Expect::string('')->dynamic(),
+						'url' => Expect::string()->dynamic(),
+						'manifest' => Expect::string()->dynamic(),
+						'debug' => Expect::bool()->dynamic(),
+					]),
 					Expect::type(Statement::class),
 				),
 			)->default(['default' => 'assets']),
@@ -65,10 +73,14 @@ final class DIExtension extends Nette\DI\CompilerExtension
 					? new Statement($item)
 					: $this->createFileMapper((object) ['path' => $item]);
 
-			} elseif ($item instanceof \stdClass) {
-				$mapper = $this->createFileMapper($item);
-			} else {
+			} elseif (!$item instanceof \stdClass) {
 				$mapper = $item;
+
+			} elseif (($item->type ?? null) === 'vite') {
+				$mapper = $this->createViteMapper($item);
+
+			} else {
+				$mapper = $this->createFileMapper($item);
 			}
 
 			$registry->addSetup('addMapper', [$scope, $mapper]);
@@ -85,6 +97,18 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			'basePath' => Expr::call(rtrim(...), $path, '\/'),
 			'extensions' => (array) ($config->extension ?? null),
 			'versioning' => $config->versioning ?? $this->config->versioning ?? true,
+		]));
+	}
+
+
+	private function createViteMapper(\stdClass $config): Statement
+	{
+		$url = $this->baseUrl->call('resolve', $config->url ?? $config->path)->call('getAbsoluteUrl');
+		$path = Expr::call(FileSystem::resolvePath(...), $this->basePath, $config->path);
+		return new Statement(ViteMapper::class, Expr::resolve([
+			'baseUrl' => Expr::call(rtrim(...), $url, '/'),
+			'basePath' => Expr::call(rtrim(...), $path, '\/'),
+			'manifestPath' => $config->manifest ? Expr::call(FileSystem::resolvePath(...), $path, $config->manifest) : null,
 		]));
 	}
 

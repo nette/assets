@@ -13,6 +13,7 @@
 ✅ lazy loading of file properties (dimensions, duration)<br>
 ✅ clean API for PHP and Latte templates<br>
 ✅ support for multiple file sources<br>
+✅ modern bundler integration (Vite)<br>
 
 
 Working with static files (images, CSS, JavaScript) in web applications often involves repetitive tasks: generating correct URLs, handling cache invalidation, managing file versions, and dealing with different environments. Nette Assets simplifies all of this.
@@ -138,6 +139,7 @@ Different file types have different properties. The library automatically detect
 - **StyleAsset** - CSS files with media queries
 - **AudioAsset** - Audio files with duration information
 - **VideoAsset** - Video files with dimensions, duration, poster image, and autoplay settings
+- **EntryAsset** - Entry points with dependecies on scripts and styles
 - **GenericAsset** - Generic files with mime types
 
 
@@ -640,6 +642,177 @@ Font assets support preloading with proper CORS attributes:
 
  <!---->
 
+
+Vite Integration
+================
+
+For modern JavaScript applications, Nette Assets includes a specialized `ViteMapper` that integrates with Vite's build process.
+
+
+Basic Setup
+-----------
+
+Vite integration requires [enabling the build manifest](https://vite.dev/config/build-options#build-manifest) in your `vite.config.ts`:
+
+```js
+export default {
+	build: {
+		manifest: true  // This is required!
+	}
+}
+```
+
+Configure the ViteMapper in your NEON file:
+
+```neon
+assets:
+	mapping:
+		vite:
+			type: vite
+			path: build                       # Where Vite outputs files
+			devServer: http://localhost:5173  # Dev server URL
+```
+
+If you use a custom manifest path in Vite:
+
+```js
+export default {
+	build: {
+		manifest: 'assets-manifest.json'  // Custom manifest filename
+	}
+}
+```
+
+Specify the same path in your NEON configuration:
+
+```neon
+assets:
+	mapping:
+		vite:
+			type: vite
+			path: build
+			manifest: build/assets-manifest.json  # Match your Vite config
+```
+
+
+Development vs Production
+-------------------------
+
+The ViteMapper automatically switches between development and production modes:
+
+**During Development:**
+
+```latte
+{* Serves from Vite dev server with hot module replacement *}
+{asset 'vite:src/main.js'}
+{* Output: <script src="http://localhost:5173/src/main.js" type="module"></script> *}
+```
+
+**In Production:**
+
+```latte
+{* Serves built files with hashed names *}
+{asset 'vite:src/main.js'}
+{* Output: <script src="/build/assets/main-4a8f9c7.js" type="module"></script> *}
+```
+
+
+Understanding Entry Points and Dependencies
+-------------------------------------------
+
+When you build a modern JavaScript application, your bundler (like Vite) often splits code into multiple files for better performance. An "entry point" is your main JavaScript file that imports other modules.
+
+For example, your `src/main.js` might:
+- Import a CSS file
+- Import vendor libraries (like Vue or React)
+- Import your application components
+
+Vite processes this and generates:
+- The main JavaScript file
+- Extracted CSS file(s)
+- Vendor chunks for better caching
+- Dynamic imports for code splitting
+
+The `EntryAsset` class handles this complexity:
+
+```php
+$app = $assets->getAsset('vite:src/main.js');
+// Returns an EntryAsset with:
+// - url: The main JavaScript file
+// - dependencies: Array of CSS files and JS chunks
+```
+
+
+Rendering Entry Points
+----------------------
+
+The `{asset}` tag automatically handles all dependencies. You can reference entry points in two ways:
+
+**By file path**: Use the actual source file path:
+
+```latte
+{asset 'vite:src/main.js'}
+```
+
+**By entry name**: Use the name defined in your Vite config's [rollupOptions.input](https://rollupjs.org/configuration-options/#input):
+
+```latte
+{asset 'vite:main'}
+{asset 'vite:admin'}
+```
+
+Each `{asset}` tag renders everything needed for that entry point:
+
+```html
+<!-- Main entry point -->
+<script src="/build/assets/main-4a8f9c7.js" type="module"></script>
+
+<!-- Extracted CSS -->
+<link rel="stylesheet" href="/build/assets/main-2b9c8d7.css">
+
+<!-- Vendor chunk preload -->
+<link rel="modulepreload" href="/build/assets/vendor-8c7fa9b.js">
+```
+
+Large applications often have multiple entry points with shared dependencies. Vite automatically deduplicates shared chunks.
+
+
+Versioning in Vite
+------------------
+
+Unlike `FilesystemMapper`, Vite handles versioning by including a hash in the filename itself (`main-4a8f9c7.js`). This approach works better with JavaScript module imports.
+
+
+Fallback to Filesystem
+---------------------
+
+If a file isn't found in the Vite manifest, `ViteMapper` will attempt to find it directly on the filesystem, similar to how `FilesystemMapper` works. This is particularly useful for files in Vite's `publicDir` (default: `public/`), which are copied as-is to the output directory without being processed or included in the manifest.
+
+
+Code Splitting and Dynamic Imports
+----------------------------------
+
+When your application uses dynamic imports:
+
+```js
+// In your JavaScript
+if (condition) {
+	import('./features/special-feature.js').then(module => {
+		module.init();
+	});
+}
+```
+
+Nette Assets does **not** automatically preload dynamic imports - this is intentional as preloading all possible dynamic imports could hurt performance.
+
+If you want to preload specific dynamic imports, you can do so explicitly:
+
+```latte
+{* Manually preload critical dynamic imports *}
+{preload 'vite:features/special-feature.js'}
+```
+
+This gives you fine-grained control over which resources are preloaded based on your application's needs.
 
  <!---->
 

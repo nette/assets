@@ -886,6 +886,253 @@ This gives you fine-grained control over which resources are preloaded based on 
  <!---->
 
 
+Creating Custom Mappers
+=======================
+
+While the built-in `FilesystemMapper` and `ViteMapper` handle most use cases, you might need custom asset resolution for:
+- Cloud storage (S3, Google Cloud)
+- Database-stored files
+- Dynamic asset generation
+- Third-party CDN integration
+
+
+The Mapper Interface
+--------------------
+
+All mappers implement a simple interface:
+
+```php
+interface Mapper
+{
+	/**
+	 * @throws Nette\Assets\AssetNotFoundException
+	 */
+	public function getAsset(string $reference, array $options = []): Nette\Assets\Asset;
+}
+```
+
+The contract is straightforward:
+- Take a reference (like "logo.png" or "reports/annual-2024.pdf")
+- Return an Asset object
+- Throw `AssetNotFoundException` if the asset doesn't exist
+
+
+Creating Assets with Helper
+---------------------------
+
+The `Nette\Assets\Helpers::createAssetFromUrl()` method is your primary tool for creating Asset objects in custom mappers. This helper automatically chooses the appropriate asset class based on the file's extension:
+
+```php
+public static function createAssetFromUrl(
+	string $url,           // The public URL of the asset
+	?string $path = null,  // Optional local file path (for reading properties)
+	array $args = []       // Additional constructor arguments
+): Asset
+```
+
+The helper automatically creates the appropriate asset class:
+- **ScriptAsset** for JavaScript files (`application/javascript`)
+- **StyleAsset** for CSS files (`text/css`)
+- **ImageAsset** for image files (`image/*`)
+- **AudioAsset** for audio files (`audio/*`)
+- **VideoAsset** for video files (`video/*`)
+- **FontAsset** for font files (`font/woff`, `font/woff2`, `font/ttf`)
+- **GenericAsset** for everything else
+
+
+Database Mapper Example
+-----------------------
+
+For applications storing file metadata in a database:
+
+```php
+class DatabaseMapper implements Mapper
+{
+	public function __construct(
+		private Connection $db,
+		private string $baseUrl,
+		private Storage $storage,
+	) {}
+
+	public function getAsset(string $reference, array $options = []): Asset
+	{
+		// Find asset in database
+		$row = $this->db->fetchRow('SELECT * FROM assets WHERE id = ?', $reference);
+		if (!$row) {
+			throw new AssetNotFoundException("Asset '$reference' not found in database");
+		}
+
+		$url = $this->baseUrl . '/file/' . $row->storage_path;
+		$localPath = $this->storage->getLocalPath($row->storage_path);
+
+		return Helpers::createAssetFromUrl(
+			url: $url,
+			path: $localPath,
+			args: [
+				'mimeType' => $row->mime_type,
+				'width' => $row->width,
+				'height' => $row->height,
+			]
+		);
+	}
+}
+```
+
+Register in configuration:
+
+```neon
+assets:
+	mapping:
+		db: DatabaseMapper(...)
+```
+
+
+Cloud Storage Mapper
+--------------------
+
+For S3 or Google Cloud Storage:
+
+```php
+class S3Mapper implements Mapper
+{
+	public function __construct(
+		private S3Client $s3,
+		private string $bucket,
+		private string $region,
+		private bool $private = false
+	) {}
+
+	public function getAsset(string $reference, array $options = []): Asset
+	{
+		try {
+			// Check if object exists
+			$this->s3->headObject([
+				'Bucket' => $this->bucket,
+				'Key' => $reference,
+			]);
+
+			if ($this->private) {
+				// Generate presigned URL for private files
+				$url = $this->s3->createPresignedRequest(
+					$this->s3->getCommand('GetObject', [
+						'Bucket' => $this->bucket,
+						'Key' => $reference,
+					]),
+					'+10 minutes'
+				)->getUri();
+			} else {
+				// Public URL
+				$url = "https://s3.{$this->region}.amazonaws.com/{$this->bucket}/{$reference}";
+			}
+
+			return Helpers::createAssetFromUrl($url);
+
+		} catch (S3Exception $e) {
+			throw new AssetNotFoundException("Asset '$reference' not found in S3");
+		}
+	}
+}
+```
+
+
+Using Options
+-------------
+
+Options allow users to modify mapper behavior on a per-asset basis. This is useful when you need different transformations, sizes, or processing for the same asset:
+
+```php
+public function getAsset(string $reference, array $options = []): Asset
+{
+	$thumbnail = $options['thumbnail'] ?? null;
+
+	$url = $thumbnail
+		? $this->cdnUrl . '/thumb/' . $reference
+		: $this->cdnUrl . '/' . $reference;
+
+	return Helpers::createAssetFromUrl($url);
+}
+```
+
+Usage:
+
+```php
+// Get normal image
+$photo = $assets->getAsset('cdn:photo.jpg');
+
+// Get thumbnail version
+$thumbnail = $assets->getAsset('cdn:photo.jpg', ['thumbnail' => true]);
+
+// In Latte: {asset 'cdn:photo.jpg', thumbnail: true}
+```
+
+This pattern is useful for:
+- Image transformations (thumbnails, different sizes)
+- CDN parameters (quality, format conversion)
+- Access control (signed URLs, expiration times)
+
+
+Handle Multiple Sources
+-----------------------
+
+Sometimes you need to check multiple locations for an asset. A fallback mapper can try different sources in order:
+
+```php
+class FallbackMapper implements Mapper
+{
+	public function __construct(
+		private array $mappers
+	) {}
+
+	public function getAsset(string $reference, array $options = []): Asset
+	{
+		foreach ($this->mappers as $mapper) {
+			try {
+				return $mapper->getAsset($reference, $options);
+			} catch (AssetNotFoundException) {
+				// continue
+			}
+		}
+
+		throw new AssetNotFoundException("Asset '$reference' not found in any source");
+	}
+}
+```
+
+This is useful for:
+- **Progressive migration**: Check new storage first, fall back to old
+- **Multi-tier storage**: Fast cache → slower database → external API
+- **Redundancy**: Primary CDN → backup CDN → local files
+- **Environment-specific sources**: Local files in development, S3 in production
+
+Example configuration:
+
+```neon
+assets:
+	mapping:
+		fallback: FallbackMapper([
+		@cacheMapper,      # Try fast cache first
+		@databaseMapper,   # Then database
+		@filesystemMapper  # Finally, local files
+	])
+```
+
+These advanced features make custom mappers extremely flexible and capable of handling complex asset management scenarios while maintaining the simple, consistent API that Nette Assets provides.
+
+
+Best Practices for Custom Mappers
+---------------------------------
+
+1. **Always throw `Nette\Assets\AssetNotFoundException`** with a descriptive message when an asset can't be found
+2. **Use `Helpers::createAssetFromUrl()`** to create the correct asset type based on file extension
+3. **Support the `$options` parameter** for flexibility, even if you don't use it initially
+4. **Document reference formats** clearly (e.g., "Use 'folder/file.ext' or 'uuid'")
+5. **Consider caching** if asset resolution involves network requests or database queries
+6. **Handle errors gracefully** and provide meaningful error messages
+7. **Test edge cases** like missing files, network errors, and invalid references
+
+With custom mappers, Nette Assets can integrate with any storage system while maintaining a consistent API across your application.
+
+
 [Support Me](https://github.com/sponsors/dg)
 ============================================
 

@@ -169,15 +169,15 @@ Setting Base Paths
 ------------------
 
 By default, if you don't specify base paths:
-- `path` defaults to `%wwwDir%`
-- `url` defaults to your project's base URL (e.g., `/`)
+- `basePath` defaults to `%wwwDir%`
+- `baseUrl` defaults to your project's base URL (e.g., `/`)
 
 You can customize these to organize your static files under a common directory:
 
 ```neon
 assets:
-	path: %appDir%/static   # All mappers will be relative to this
-	url: /static            # URL prefix for all assets
+	basePath: %appDir%/static   # All mappers will be relative to this
+	baseUrl: /static            # URL prefix for all assets
 
 	mapping:
 		default: css      # Files in %appDir%/static/css, URLs like /static/css/...
@@ -212,7 +212,7 @@ assets:
 ```
 
 The `path` and `url` can be:
-- **Relative**: resolved from `%wwwDir%` (or `path`), ie. project base URL (or `url`)
+- **Relative**: resolved from `%wwwDir%` (or `basePath`), ie. project base URL (or `baseUrl`)
 - **Absolute**: used as-is (`/var/www/shared/assets`)
 
  <!---->

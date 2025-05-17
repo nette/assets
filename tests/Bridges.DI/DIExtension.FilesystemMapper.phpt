@@ -12,8 +12,8 @@ require __DIR__ . '/../bootstrap.php';
 test('Global path and URL settings with relative mapper string', function () {
 	$container = createContainer('
 	assets:
-		path: /data/static   # Explicit global path
-		url: /static-assets  # Explicit global URL prefix
+		basePath: /data/static   # Explicit global path
+		baseUrl: /static-assets  # Explicit global URL prefix
 		mapping:
 			default: theme1  # "theme1" is relative to global settings
 	');
@@ -31,8 +31,8 @@ test('Global path and URL settings with relative mapper string', function () {
 test('Global settings with absolute mapper structure', function () {
 	$container = createContainer('
 	assets:
-		path: /data/static
-		url: /static-assets
+		basePath: /data/static
+		baseUrl: /static-assets
 		mapping:
 			images:
 				path: /img
@@ -68,8 +68,8 @@ test('Global settings with absolute mapper structure', function () {
 test('No configuration', function () {
 	$container = createContainer('
 	assets:
-		path: /data/
-		url: /data/
+		basePath: /data/
+		baseUrl: /data/
 	');
 
 	$registy = $container->getByType(Registry::class);

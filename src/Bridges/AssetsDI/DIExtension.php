@@ -27,8 +27,8 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	public function getConfigSchema(): Nette\Schema\Schema
 	{
 		return Expect::structure([
-			'path' => Expect::string(),
-			'url' => Expect::string(),
+			'basePath' => Expect::string(),
+			'baseUrl' => Expect::string(),
 			'mapping' => Expect::arrayOf(
 				Expect::anyOf(
 					Expect::string(),
@@ -48,11 +48,11 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$this->baseUrl = $this->config->url
-			? Expr::from(new UrlImmutable(rtrim($this->config->url, '/') . '/'))
+		$this->baseUrl = $this->config->baseUrl
+			? Expr::from(new UrlImmutable(rtrim($this->config->baseUrl, '/') . '/'))
 			: Expr::byType('Nette\Http\IRequest')->call('getUrl');
 
-		$this->basePath = $this->config->path ?? $builder->parameters['wwwDir'] ?? '(basePath is not defined)';
+		$this->basePath = $this->config->basePath ?? $builder->parameters['wwwDir'] ?? '(basePath is not defined)';
 
 		$registry = $builder->addDefinition($this->prefix('registry'))
 			->setFactory(Registry::class);

@@ -12,7 +12,7 @@ namespace Nette\Assets;
  */
 class Registry
 {
-	public const DefaultScope = '';
+	public const DefaultScope = 'default';
 	private const MaxCacheSize = 100;
 
 	/** @var array<string, Mapper> */

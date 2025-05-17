@@ -87,21 +87,3 @@ test('Option validation', function () {
 		'Unsupported asset options: invalid',
 	);
 });
-
-
-test('resolveUrl()', function () {
-	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
-
-	Assert::same('http://example.com/assets/test.txt', $mapper->resolveUrl('test.txt'));
-	Assert::same('http://example.com/assets/subdir/', $mapper->resolveUrl('subdir/'));
-	Assert::same('http://example.com/assets/subdir/file.jpg', $mapper->resolveUrl('subdir/file.jpg'));
-});
-
-
-test('resolvePath()', function () {
-	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
-
-	Assert::same(__DIR__ . '/fixtures/test.txt', $mapper->resolvePath('test.txt'));
-	Assert::same(__DIR__ . '/fixtures/subdir/', $mapper->resolvePath('subdir/'));
-	Assert::same(__DIR__ . '/fixtures/subdir/file.jpg', $mapper->resolvePath('subdir/file.jpg'));
-});

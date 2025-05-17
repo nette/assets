@@ -31,36 +31,18 @@ class FilesystemMapper implements Mapper
 	public function getAsset(string $reference, array $options = []): Asset
 	{
 		Helpers::checkOptions($options, [self::OptionVersion]);
-		$path = $this->resolvePath($reference);
+		$path = $this->basePath . '/' . $reference;
 		$path .= $ext = $this->findExtension($path);
 
 		if (!is_file($path)) {
 			throw new AssetNotFoundException("Asset file '$reference' not found at path: '$path'");
 		}
 
-		$url = $this->resolveUrl($reference . $ext);
+		$url = $this->baseUrl . '/' . $reference . $ext;
 		if ($options[self::OptionVersion] ?? $this->versioning) {
 			$url = $this->applyVersion($url, $path);
 		}
 		return Helpers::createAssetFromUrl($url, $path);
-	}
-
-
-	/**
-	 * Constructs the full public URL by prepending the base URL to the reference.
-	 */
-	public function resolveUrl(string $reference): string
-	{
-		return $this->baseUrl . '/' . $reference;
-	}
-
-
-	/**
-	 * Constructs the full filesystem path by prepending the base path to the reference.
-	 */
-	public function resolvePath(string $reference): string
-	{
-		return $this->basePath . '/' . $reference;
 	}
 
 
@@ -92,5 +74,23 @@ class FilesystemMapper implements Mapper
 		}
 
 		return $defaultExt ?? '';
+	}
+
+
+	/**
+	 * Returns the base URL for this mapper.
+	 */
+	public function getBaseUrl(): string
+	{
+		return $this->baseUrl;
+	}
+
+
+	/**
+	 * Returns the base path for this mapper.
+	 */
+	public function getBasePath(): string
+	{
+		return $this->basePath;
 	}
 }

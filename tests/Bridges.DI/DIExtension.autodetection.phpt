@@ -43,12 +43,10 @@ $mapper = $registy->getMapper();
 Assert::type(FilesystemMapper::class, $mapper);
 
 // Assert the resolved base URL:
-// Expected: Autodetected base URL ('/bar/') + '/' + mapper relative path ('foo') + '/'
-// The trailing slash is added by resolveUrl('') when checking the base.
-Assert::same('http://example.com/bar/foo/', $mapper->resolveUrl(''));
+// Expected: Autodetected base URL ('/bar/') + '/' + mapper relative path ('foo')
+Assert::same('http://example.com/bar/foo', $mapper->getBaseUrl());
 
 // Assert the resolved base path:
-// Expected: Autodetected base path (%wwwDir% = '/www') + '/' + mapper relative path ('foo') + '/'
-// The trailing slash is added by resolvePath('') when checking the base.
+// Expected: Autodetected base path (%wwwDir% = '/www') + '/' + mapper relative path ('foo')
 $S = DIRECTORY_SEPARATOR;
-Assert::same("{$S}www{$S}foo/", $mapper->resolvePath(''));
+Assert::same("{$S}www{$S}foo", $mapper->getBasePath());

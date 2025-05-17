@@ -39,7 +39,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 					]),
 					Expect::type(Statement::class),
 				),
-			)->default(['' => 'assets']),
+			)->default(['default' => 'assets']),
 		]);
 	}
 
@@ -54,16 +54,10 @@ final class DIExtension extends Nette\DI\CompilerExtension
 
 		$this->basePath = $this->config->path ?? $builder->parameters['wwwDir'] ?? '(basePath is not defined)';
 
-		$mapping = $this->config->mapping;
-		if (isset($mapping['default'])) {
-			$mapping[Registry::DefaultScope] = $mapping['default'];
-			unset($mapping['default']);
-		}
-
 		$registry = $builder->addDefinition($this->prefix('registry'))
 			->setFactory(Registry::class);
 
-		foreach ($mapping as $scope => $item) {
+		foreach ($this->config->mapping as $scope => $item) {
 			if (is_string($item)) {
 				$mapper = str_contains($item, '\\')
 					? new Statement($item)

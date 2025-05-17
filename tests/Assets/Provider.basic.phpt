@@ -67,7 +67,7 @@ test('Getting unknown mapper throws', function () {
 test('Getting asset without mapper prefix uses default scope', function () {
 	$registry = new Registry;
 	$asset = new GenericAsset('test.jpg');
-	$registry->addMapper('', new MockMapper($asset));
+	$registry->addMapper('default', new MockMapper($asset));
 
 	Assert::same($asset, $registry->getAsset('test.jpg'));
 });

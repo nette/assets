@@ -18,11 +18,8 @@ $key = __FILE__;
 
 $class = $loader->load(function (Compiler $compiler): void {
 	$basePath = __DIR__ . '/../Assets/fixtures';
-	$compiler->addExtension('assets', new DIExtension);
+	$compiler->addExtension('assets', new DIExtension(debugMode: true));
 	$compiler->addConfig([
-		'parameters' => [
-			'debugMode' => true,
-		],
 		'assets' => [
 			'baseUrl' => 'https://example.com/foo',
 			'basePath' => $basePath,

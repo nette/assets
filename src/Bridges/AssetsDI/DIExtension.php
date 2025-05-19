@@ -21,8 +21,15 @@ final class DIExtension extends Nette\DI\CompilerExtension
 {
 	private const VitePort = 5173;
 
-	private ?string $basePath;
 	private int $needVariable;
+
+
+	public function __construct(
+		private string|Nette\Schema\DynamicParameter|null $baseUrl = null,
+		private ?string $basePath = null,
+		private bool $debugMode = false,
+	) {
+	}
 
 
 	public function getConfigSchema(): Nette\Schema\Schema
@@ -57,7 +64,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			->setFactory(Registry::class);
 
 		$this->needVariable = 0;
-		$this->basePath = $this->config->basePath ?? $builder->parameters['wwwDir'] ?? null;
+		$this->basePath = $this->config->basePath ?? $this->basePath ?? null;
 
 		foreach ($this->config->mapping as $scope => $item) {
 			if (is_string($item)) {
@@ -76,7 +83,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			}
 
 			if ($this->needVariable === 1) {
-				$baseUrl = $this->config->baseUrl ?? new Statement([new Statement('@Nette\Http\IRequest::getUrl'), 'getBaseUrl']);
+				$baseUrl = $this->config->baseUrl ?? $this->baseUrl ?? throw new \LogicException("Assets: 'baseUrl' is not defined");
 				$registry->addSetup('$baseUrl = new Nette\Http\UrlImmutable(?)', [new Statement("rtrim(?, '/') . '/'", [$baseUrl])]);
 			}
 
@@ -138,13 +145,12 @@ final class DIExtension extends Nette\DI\CompilerExtension
 
 	private function resolveDevServer(\stdClass $config): Statement|string|null
 	{
-		if (empty($this->getContainerBuilder()->parameters['debugMode']) || !$config->devServer) {
+		if (!$this->debugMode || !$config->devServer) {
 			return null;
 		}
-		$baseUrl = $this->config->baseUrl ?? new Statement([new Statement('@Nette\Http\IRequest::getUrl'), 'getBaseUrl']);
 		$devServer = is_string($config->devServer)
 			? $config->devServer
-			: new Statement('(new Nette\Http\UrlImmutable(?))->withPort(?)->getAbsoluteUrl()', [$baseUrl, self::VitePort]);
+			: new Statement('(new Nette\Http\UrlImmutable(?))->withPort(?)->getAbsoluteUrl()', [$this->config->baseUrl ?? $this->baseUrl, self::VitePort]);
 		return new Statement("rtrim(?, '/')", [$devServer]);
 	}
 }

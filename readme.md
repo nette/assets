@@ -347,7 +347,7 @@ Properties like image dimensions, audio duration, or MIME types are retrieved on
 $image = $assets->getAsset('photo.jpg');
 // No file operations yet
 
-echo $image->url;  // Just returns URL, no file reading
+echo $image->url;    // Just returns URL, no file reading
 
 echo $image->width;  // NOW it reads the file header to get dimensions
 echo $image->height; // Already loaded, no additional file reading
@@ -355,6 +355,10 @@ echo $image->height; // Already loaded, no additional file reading
 // For MP3 files, duration is estimated (most accurate for Constant Bitrate files)
 $audio = asset('audio:episode-01.mp3');
 echo $audio->duration; // in seconds
+
+// Even generic assets lazy-load their MIME type
+$file = $assets->getAsset('document.pdf');
+echo $file->mimeType; // Now it detects: 'application/pdf'
 ```
 
 

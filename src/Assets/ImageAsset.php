@@ -18,9 +18,15 @@ class ImageAsset implements Asset
 
 	public function __construct(
 		public readonly string $url,
+		public readonly ?string $mimeType = null,
 		public readonly ?string $file = null,
 		?int $width = null,
 		?int $height = null,
+		/** Alternative text for accessibility */
+		public readonly ?string $alternative = null,
+		public readonly bool $lazyLoad = false,
+		public readonly int $density = 1,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 		if ($width === null && $height === null) {
 			$this->lazyLoad(compact('width', 'height'), $this->getSize(...));
@@ -42,6 +48,8 @@ class ImageAsset implements Asset
 	 */
 	private function getSize(): void
 	{
-		[$this->width, $this->height] = $this->file ? getimagesize($this->file) : null;
+		[$this->width, $this->height] = $this->file && ([$w, $h] = getimagesize($this->file))
+			? [(int) round($w / $this->density), (int) round($h / $this->density)]
+			: [null, null];
 	}
 }

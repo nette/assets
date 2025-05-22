@@ -18,6 +18,7 @@ class AudioAsset implements Asset
 
 	public function __construct(
 		public readonly string $url,
+		public readonly ?string $mimeType = null,
 		public readonly ?string $file = null,
 		?float $duration = null,
 	) {

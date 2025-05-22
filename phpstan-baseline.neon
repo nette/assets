@@ -7,6 +7,12 @@ parameters:
 			path: src/Assets/AudioAsset.php
 
 		-
+			message: '#^Class Nette\\Assets\\GenericAsset has an uninitialized readonly property \$mimeType\. Assign it in the constructor\.$#'
+			identifier: property.uninitializedReadonly
+			count: 1
+			path: src/Assets/GenericAsset.php
+
+		-
 			message: '#^Readonly property Nette\\Assets\\ImageAsset\:\:\$height is already assigned\.$#'
 			identifier: assign.readOnlyProperty
 			count: 1

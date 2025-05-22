@@ -12,7 +12,12 @@ class ScriptAsset implements Asset
 {
 	public function __construct(
 		public readonly string $url,
+		public readonly ?string $mimeType = null,
 		public readonly ?string $file = null,
+		public readonly ?string $type = null,
+		/** SRI integrity hash */
+		public readonly ?string $integrity = null,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 	}
 

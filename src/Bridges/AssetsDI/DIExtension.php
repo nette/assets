@@ -25,8 +25,8 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	public function getConfigSchema(): Nette\Schema\Schema
 	{
 		return Expect::structure([
-			'path' => Expect::string()->dynamic(),
-			'url' => Expect::string()->dynamic(),
+			'basePath' => Expect::string()->dynamic(),
+			'baseUrl' => Expect::string()->dynamic(),
 			'mapping' => Expect::arrayOf(
 				Expect::anyOf(
 					Expect::string(),
@@ -49,7 +49,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			->setFactory(Registry::class);
 
 		$this->needVariable = 0;
-		$this->basePath = $this->config->path ?? $builder->parameters['wwwDir'] ?? null;
+		$this->basePath = $this->config->basePath ?? $builder->parameters['wwwDir'] ?? null;
 
 		foreach ($this->config->mapping as $scope => $item) {
 			if (is_string($item)) {
@@ -64,7 +64,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			}
 
 			if ($this->needVariable === 1) {
-				$baseUrl = $this->config->url ?? new Statement([new Statement('@Nette\Http\IRequest::getUrl'), 'getBaseUrl']);
+				$baseUrl = $this->config->baseUrl ?? new Statement([new Statement('@Nette\Http\IRequest::getUrl'), 'getBaseUrl']);
 				$registry->addSetup('$baseUrl = new Nette\Http\UrlImmutable(?)', [new Statement("rtrim(?, '/') . '/'", [$baseUrl])]);
 			}
 

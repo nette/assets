@@ -188,8 +188,8 @@ Setting Base Paths
 ------------------
 
 By default, if you don't specify base paths:
-- `path` defaults to `%wwwDir%`
-- `url` defaults to your project's base URL (e.g., `/`)
+- `basePath` defaults to `%wwwDir%` (your public directory)
+- `baseUrl` defaults to your project's base URL (e.g., `https://example.com/`)
 
 You can customize these to organize your static files under a common directory:
 
@@ -236,7 +236,7 @@ assets:
 ```
 
 The `path` and `url` can be:
-- **Relative**: resolved from `%wwwDir%` (or `path`) and project base URL (or `url`)
+- **Relative**: resolved from `%wwwDir%` (or `basePath`) and project base URL (or `baseUrl`)
 - **Absolute**: used as-is (`/var/www/shared/assets`, `https://cdn.example.com`)
 
 

@@ -69,7 +69,7 @@ public function renderDefault(): void
 Then in your template:
 
 ```latte
-<img src={$logo} width={$logo->getWidth()} height={$logo->getHeight()} alt="Logo">
+<img src={$logo} width={$logo->width} height={$logo->height} alt="Logo">
 ```
 
  <!---->
@@ -88,9 +88,9 @@ An asset is any static file in your application - images, stylesheets, scripts, 
 
 ```php
 $image = $assets->getAsset('photo.jpg');
-echo $image->getUrl();    // '/assets/photo.jpg?v=1699123456'
-echo $image->getWidth();  // 800
-echo $image->getHeight(); // 600
+echo $image->url;    // '/assets/photo.jpg?v=1699123456'
+echo $image->width;  // 800
+echo $image->height; // 600
 ```
 
 
@@ -290,7 +290,7 @@ try {
 // This returns null if file doesn't exist
 $banner = $assets->tryGetAsset('images/banner.jpg');
 if ($banner) {
-	echo $banner->getUrl();
+	echo $banner->url;
 }
 ```
 
@@ -320,9 +320,9 @@ The library automatically detects file types and provides relevant properties:
 ```php
 // Images
 $image = $assets->getAsset('photo.jpg');
-echo $image->getWidth();   // 1920
-echo $image->getHeight();  // 1080
-echo $image->getUrl();     // '/assets/photo.jpg?v=1699123456'
+echo $image->width;   // 1920
+echo $image->height;  // 1080
+echo $image->url;     // '/assets/photo.jpg?v=1699123456'
 
 // All assets can be cast to string (returns URL)
 $url = (string) $assets->getAsset('document.pdf');
@@ -338,14 +338,14 @@ Properties like image dimensions, audio duration, or MIME types are retrieved on
 $image = $assets->getAsset('photo.jpg');
 // No file operations yet
 
-echo $image->getUrl();  // Just returns URL, no file reading
+echo $image->url;  // Just returns URL, no file reading
 
-echo $image->getWidth();  // NOW it reads the file header to get dimensions
-echo $image->getHeight(); // Already loaded, no additional file reading
+echo $image->width;  // NOW it reads the file header to get dimensions
+echo $image->height; // Already loaded, no additional file reading
 
 // For MP3 files, duration is estimated (most accurate for Constant Bitrate files)
 $audio = asset('audio:episode-01.mp3');
-echo $audio->getDuration(); // in seconds
+echo $audio->duration; // in seconds
 ```
 
 
@@ -364,7 +364,7 @@ Nette Assets shines in [Latte templates](https://latte.nette.org) with intuitive
 
 ```latte
 {var $logo = asset('images/logo.png')}
-<img src={$logo} width={$logo->getWidth()} height={$logo->getHeight()}>
+<img src={$logo} width={$logo->width} height={$logo->height}>
 ```
 
 

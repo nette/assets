@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Nette\Assets\EntryAsset;
 use Nette\Assets\Registry;
 use Nette\Assets\ViteMapper;
-use Nette\Bridges\Assets\DIExtension;
+use Nette\Bridges\AssetsDI\DIExtension;
 use Nette\DI\Compiler;
 use Nette\DI\Container;
 use Nette\DI\ContainerLoader;

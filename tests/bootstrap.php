@@ -41,7 +41,7 @@ function createContainer(string $config): Nette\DI\Container
 {
 	$compiler = new Nette\DI\Compiler;
 	$compiler->loadConfig(Tester\FileMock::create($config, 'neon'));
-	$compiler->addExtension('assets', new Nette\Bridges\Assets\DIExtension);
+	$compiler->addExtension('assets', new Nette\Bridges\AssetsDI\DIExtension);
 	$builder = $compiler->getContainerBuilder();
 
 	static $counter;

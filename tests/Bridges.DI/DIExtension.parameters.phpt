@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\Registry;
-use Nette\Bridges\Assets\DIExtension;
+use Nette\Bridges\AssetsDI\DIExtension;
 use Nette\DI;
 use Nette\Http;
 use Tester\Assert;

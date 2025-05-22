@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Nette\Bridges\Assets;
+namespace Nette\Bridges\AssetsDI;
 
 use Nette;
 use Nette\Assets\FilesystemMapper;

@@ -31,13 +31,7 @@ $class = $loader->load(function (Compiler $compiler): void {
 					'manifest' => 'manifest.json',
 					'devServer' => 'http://localhost:5173',
 				],
-				'vite-detect' => [
-					'type' => 'vite',
-					'url' => '/dist',
-					'path' => $basePath,
-					'manifest' => 'manifest.json',
-					'devServer' => true,
-				],
+
 			],
 		],
 	]);
@@ -60,24 +54,6 @@ test('ViteMapper dev configuration', function () use ($container): void {
 
 	assertAssets([
 		new Nette\Assets\ScriptAsset('http://localhost:5173/@vite/client', type: 'module'),
-	], $asset->imports);
-	assertAssets([
-	], $asset->preloads);
-});
-
-
-test('ViteMapper devServer detection', function () use ($container): void {
-	$registry = $container->getByType(Registry::class);
-	Assert::type(Registry::class, $registry);
-
-	$viteMapper = $registry->getMapper('vite-detect');
-	Assert::type(ViteMapper::class, $viteMapper);
-
-	$asset = $registry->getAsset('vite-detect:src/main.js');
-	Assert::type(EntryAsset::class, $asset);
-
-	assertAssets([
-		new Nette\Assets\ScriptAsset('https://example.com:5173/foo/@vite/client', type: 'module'),
 	], $asset->imports);
 	assertAssets([
 	], $asset->preloads);

@@ -48,7 +48,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 						'extension' => Expect::anyOf(Expect::string(), Expect::arrayOf('string')),
 						'versioning' => Expect::bool(),
 						'manifest' => Expect::string()->dynamic(),
-						'devServer' => Expect::anyOf(Expect::string(), Expect::bool())->default(false)->dynamic(),
+						'devServer' => Expect::anyOf(Expect::string(), Expect::bool())->default(true),
 					]),
 					Expect::type(Statement::class),
 				),
@@ -145,12 +145,10 @@ final class DIExtension extends Nette\DI\CompilerExtension
 
 	private function resolveDevServer(\stdClass $config): Statement|string|null
 	{
-		if (!$this->debugMode || !$config->devServer) {
-			return null;
-		}
-		$devServer = is_string($config->devServer)
-			? $config->devServer
-			: new Statement('(new Nette\Http\UrlImmutable(?))->withPort(?)->getAbsoluteUrl()', [$this->config->baseUrl ?? $this->baseUrl, self::VitePort]);
-		return new Statement("rtrim(?, '/')", [$devServer]);
+		return match (true) {
+			!$this->debugMode || !$config->devServer => null,
+			$config->devServer === true => new Statement('Nette\Assets\Helpers::detectDevServer(? . "/.vite/nette.json")', [$this->resolvePath($config)]),
+			default => rtrim($config->devServer, '/'),
+		};
 	}
 }

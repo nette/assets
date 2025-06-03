@@ -106,4 +106,36 @@ final class Helpers
 
 		return $fileSize * 8 / $bitrate / 1000;
 	}
+
+
+	public static function detectDevServer(string $infoFile): ?string
+	{
+		if (!is_file($infoFile)) {
+			return null;
+		}
+
+		$info = json_decode(file_get_contents($infoFile), associative: true);
+		return isset($info['devServer'])
+			&& ($url = parse_url($info['devServer']))
+			&& self::isPortOpen($url['host'], $url['port'])
+			? $info['devServer']
+			: null;
+	}
+
+
+	public static function isPortOpen(string $host, int $port): bool
+	{
+		$fp = @fsockopen($host, $port, timeout: 0);
+		if (!$fp) {
+			return false;
+		}
+
+		stream_set_blocking($fp, false);
+		$read = [];
+		$write = [$fp];
+		$except = [$fp];
+		$ready = stream_select($read, $write, $except, 0, 0);
+		fclose($fp);
+		return $ready > 0;
+	}
 }

@@ -39,6 +39,16 @@ class ViteMapper implements Mapper
 	{
 		Helpers::checkOptions($options);
 
+		if ($this->devServer) {
+			return preg_match('~\.(js|mjs|ts)$~i', $reference)
+				? new EntryAsset(
+					url: $this->devServer . '/' . $reference,
+					mimeType: Helpers::guessMimeTypeFromExtension($reference),
+					imports: [new ScriptAsset($this->devServer . '/@vite/client', type: 'module')],
+				)
+				: Helpers::createAssetFromUrl($this->devServer . '/' . $reference);
+		}
+
 		$this->chunks ??= $this->readChunks();
 		$chunk = $this->chunks[$reference] ?? null;
 
@@ -50,16 +60,6 @@ class ViteMapper implements Mapper
 
 			$dependencies = $this->collectDependencies($reference);
 			unset($dependencies[$chunk['file']]);
-
-			if ($this->devServer) {
-				return $dependencies
-					? new EntryAsset(
-						url: $this->devServer . '/' . $chunk['src'],
-						mimeType: Helpers::guessMimeTypeFromExtension($chunk['src']),
-						imports: [new ScriptAsset($this->devServer . '/@vite/client', type: 'module')],
-					)
-					: Helpers::createAssetFromUrl($this->devServer . '/' . $chunk['src']);
-			}
 
 			return $dependencies
 				? new EntryAsset(
@@ -77,9 +77,6 @@ class ViteMapper implements Mapper
 				);
 
 		} elseif ($this->publicMapper) {
-			if ($this->devServer) {
-				return Helpers::createAssetFromUrl($this->devServer . '/' . $reference);
-			}
 			return $this->publicMapper->getAsset($reference);
 
 		} else {
@@ -124,10 +121,10 @@ class ViteMapper implements Mapper
 		try {
 			$res = Json::decode(FileSystem::read($path), forceArrays: true);
 		} catch (\Throwable $e) {
-			throw new \RuntimeException('Failed to parse Vite manifest: ' . $e->getMessage(), 0, $e);
+			throw new \RuntimeException("Failed to read Vite manifest from '$path'. Did you run 'npm run build'?", 0, $e);
 		}
 		if (!is_array($res)) {
-			throw new \RuntimeException('Invalid Vite manifest format in ' . $path);
+			throw new \RuntimeException("Invalid Vite manifest format in '$path'");
 		}
 		return $res;
 	}

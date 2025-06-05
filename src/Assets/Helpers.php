@@ -24,21 +24,26 @@ final class Helpers
 	];
 
 
+	/**
+	 * Creates an Asset instance. The asset type is detected by 'mimeType' if provided in $args,
+	 * otherwise is guessed from the file extension of $path or $url.
+	 * @param  mixed[]  $args  parameters passed to the asset constructor
+	 */
 	public static function createAssetFromUrl(string $url, ?string $path = null, array $args = []): Asset
 	{
 		$args['url'] = $url;
 		$args['file'] = $path;
-		$mime = (string) $args['mimeType'] ??= self::guessMimeTypeFromExtension($url);
-		$class = match (true) {
-			$mime === 'application/javascript' => ScriptAsset::class,
-			$mime === 'text/css' => StyleAsset::class,
-			str_starts_with($mime, 'image/') => ImageAsset::class,
-			str_starts_with($mime, 'audio/') => AudioAsset::class,
-			str_starts_with($mime, 'video/') => VideoAsset::class,
-			$mime === 'font/woff' || $mime === 'font/woff2' || $mime === 'font/ttf' => FontAsset::class,
-			default => GenericAsset::class,
+		$mime = (string) $args['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$type = explode('/', (string) $mime, 2)[0];
+		return match (true) {
+			$mime === 'application/javascript' => new ScriptAsset(...$args),
+			$mime === 'text/css' => new StyleAsset(...$args),
+			$type === 'image' => new ImageAsset(...$args),
+			$type === 'audio' => new AudioAsset(...$args),
+			$type === 'video' => new VideoAsset(...$args),
+			$type === 'font' => new FontAsset(...$args),
+			default => new GenericAsset(...$args),
 		};
-		return new $class(...$args);
 	}
 
 

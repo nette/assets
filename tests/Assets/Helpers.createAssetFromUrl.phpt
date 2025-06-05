@@ -35,6 +35,18 @@ test('basic types', function () {
 });
 
 
+test('Detection preferences', function () {
+	$asset = Helpers::createAssetFromUrl('/fonts/test.mp3'); // URL
+	Assert::type(Nette\Assets\AudioAsset::class, $asset);
+
+	$asset = Helpers::createAssetFromUrl('/fonts/test.mp3', 'test.js'); // file
+	Assert::type(Nette\Assets\ScriptAsset::class, $asset);
+
+	$asset = Helpers::createAssetFromUrl('/fonts/test.mp3', 'test.js', ['mimeType' => 'image/gif']); // mimeType
+	Assert::type(Nette\Assets\ImageAsset::class, $asset);
+});
+
+
 test('Basic asset properties', function () {
 	$asset = Helpers::createAssetFromUrl('http://example.com/image.gif', __DIR__ . '/fixtures/image.gif');
 

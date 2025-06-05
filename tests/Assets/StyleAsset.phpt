@@ -10,7 +10,7 @@ require __DIR__ . '/../bootstrap.php';
 
 
 test('getImportElement()', function () {
-	$asset = new StyleAsset('/css/style.css', 'text/css', null, 'screen and (min-width: 600px)', 'sha256-abc123');
+	$asset = new StyleAsset('/css/style.css', media: 'screen and (min-width: 600px)', integrity: 'sha256-abc123');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'stylesheet',
@@ -23,7 +23,7 @@ test('getImportElement()', function () {
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new StyleAsset('/css/style.css', 'text/css');
+	$asset = new StyleAsset('/css/style.css');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',

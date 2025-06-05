@@ -43,7 +43,6 @@ class ViteMapper implements Mapper
 			return preg_match('~\.(js|mjs|ts)$~i', $reference)
 				? new EntryAsset(
 					url: $this->devServer . '/' . $reference,
-					mimeType: Helpers::guessMimeTypeFromExtension($reference),
 					imports: [new ScriptAsset($this->devServer . '/@vite/client', type: 'module')],
 				)
 				: Helpers::createAssetFromUrl($this->devServer . '/' . $reference);
@@ -64,7 +63,6 @@ class ViteMapper implements Mapper
 			return $dependencies
 				? new EntryAsset(
 					url: $this->baseUrl . '/' . $chunk['file'],
-					mimeType: Helpers::guessMimeTypeFromExtension($chunk['file']),
 					file: $this->basePath . '/' . $chunk['file'],
 					imports: array_values(array_filter($dependencies, fn($asset) => $asset instanceof StyleAsset)),
 					preloads: array_values(array_filter($dependencies, fn($asset) => $asset instanceof ScriptAsset)),

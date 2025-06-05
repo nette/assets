@@ -10,7 +10,7 @@ require __DIR__ . '/../bootstrap.php';
 
 
 test('getHtmlElement()', function () {
-	$asset = new EntryAsset('/js/script.js', 'application/javascript', integrity: 'sha256-abc123');
+	$asset = new EntryAsset('/js/script.js', integrity: 'sha256-abc123');
 
 	Assert::equal(Html::el('script', [
 		'src' => '/js/script.js',
@@ -22,7 +22,7 @@ test('getHtmlElement()', function () {
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new EntryAsset('/js/module.js', 'application/javascript', type: 'module');
+	$asset = new EntryAsset('/js/module.js', type: 'module');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'modulepreload',

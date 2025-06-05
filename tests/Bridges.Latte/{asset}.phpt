@@ -67,18 +67,15 @@ test('{asset} with options', function () {
 test('{asset} renders all dependencies of EntryAsset', function () {
 	$asset = new EntryAsset(
 		url: 'https://example.com/assets/main-1a2b3c4d.js',
-		mimeType: 'application/javascript',
 		preloads: [
 			new ScriptAsset(
 				url: 'https://example.com/assets/shared-5e6f7g8h.js',
-				mimeType: 'application/javascript',
 				integrity: 'sha384-hash123',
 			),
 		],
 		imports: [
 			new StyleAsset(
 				url: 'https://example.com/assets/main-a1b2c3d4.css',
-				mimeType: 'text/css',
 				media: 'screen',
 			),
 		],

@@ -33,16 +33,17 @@ final class Helpers
 	{
 		$args['url'] = $url;
 		$args['file'] = $path;
-		$mime = (string) $args['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$argsm = $args;
+		$mime = (string) $argsm['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
 		$type = explode('/', (string) $mime, 2)[0];
 		return match (true) {
 			$mime === 'application/javascript' => new ScriptAsset(...$args),
 			$mime === 'text/css' => new StyleAsset(...$args),
-			$type === 'image' => new ImageAsset(...$args),
-			$type === 'audio' => new AudioAsset(...$args),
-			$type === 'video' => new VideoAsset(...$args),
-			$type === 'font' => new FontAsset(...$args),
-			default => new GenericAsset(...$args),
+			$type === 'image' => new ImageAsset(...$argsm),
+			$type === 'audio' => new AudioAsset(...$argsm),
+			$type === 'video' => new VideoAsset(...$argsm),
+			$type === 'font' => new FontAsset(...$argsm),
+			default => new GenericAsset(...$argsm),
 		};
 	}
 

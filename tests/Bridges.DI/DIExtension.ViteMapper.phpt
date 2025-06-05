@@ -52,10 +52,10 @@ test('ViteMapper production configuration', function () use ($container): void {
 	Assert::type(EntryAsset::class, $asset);
 	Assert::same('https://example.com/dist/assets/main-1a2b3c4d.js', $asset->url);
 	assertAssets([
-		new Nette\Assets\StyleAsset('https://example.com/dist/assets/main-a1b2c3d4.css', mimeType: 'text/css', file: __DIR__ . "{$S}..{$S}Assets{$S}fixtures/assets/main-a1b2c3d4.css", crossorigin: true),
+		new Nette\Assets\StyleAsset('https://example.com/dist/assets/main-a1b2c3d4.css', file: __DIR__ . "{$S}..{$S}Assets{$S}fixtures/assets/main-a1b2c3d4.css", crossorigin: true),
 	], $asset->imports);
 	assertAssets([
-		new Nette\Assets\ScriptAsset('https://example.com/dist/assets/shared-5e6f7g8h.js', mimeType: 'application/javascript', file: __DIR__ . "{$S}..{$S}Assets{$S}fixtures/assets/shared-5e6f7g8h.js", type: 'module', crossorigin: true),
+		new Nette\Assets\ScriptAsset('https://example.com/dist/assets/shared-5e6f7g8h.js', file: __DIR__ . "{$S}..{$S}Assets{$S}fixtures/assets/shared-5e6f7g8h.js", type: 'module', crossorigin: true),
 	], $asset->preloads);
 
 	// fallback to FilesystemMapper

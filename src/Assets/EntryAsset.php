@@ -12,7 +12,6 @@ class EntryAsset extends ScriptAsset
 {
 	public function __construct(
 		public readonly string $url,
-		public readonly ?string $mimeType = null,
 		/** @var Asset[] */
 		public array $imports = [],
 		/** @var Asset[] */

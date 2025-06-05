@@ -52,5 +52,6 @@ test('Basic asset properties', function () {
 
 	Assert::same('http://example.com/image.gif', $asset->url);
 	Assert::same(__DIR__ . '/fixtures/image.gif', $asset->file);
+	Assert::same('image/png', $asset->mimeType); // it's actually a PNG
 	Assert::same('http://example.com/image.gif', (string) $asset);
 });

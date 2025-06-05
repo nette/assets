@@ -44,7 +44,7 @@ test('Fallback to filesystem when asset not found in manifest', function (): voi
 	$asset = $mapper->getAsset('image.gif');
 
 	Assert::match('https://example.com/image.gif?v=%a%', $asset->url);
-	Assert::same('image/gif', $asset->mimeType);
+	Assert::same('image/png', $asset->mimeType);
 	Assert::same(__DIR__ . '/fixtures/image.gif', $asset->file);
 });
 

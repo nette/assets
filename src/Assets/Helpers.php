@@ -39,7 +39,7 @@ final class Helpers
 		return match (true) {
 			$mime === 'application/javascript' => new ScriptAsset(...$args),
 			$mime === 'text/css' => new StyleAsset(...$args),
-			$type === 'image' => new ImageAsset(...$argsm),
+			$type === 'image' => new ImageAsset(...$args),
 			$type === 'audio' => new AudioAsset(...$argsm),
 			$type === 'video' => new VideoAsset(...$argsm),
 			$type === 'font' => new FontAsset(...$argsm),

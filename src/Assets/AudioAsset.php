@@ -16,14 +16,16 @@ class AudioAsset implements Asset, HtmlRenderable
 
 	/** Duration in seconds */
 	public readonly ?float $duration;
+	public readonly ?string $mimeType;
 
 
 	public function __construct(
 		public readonly string $url,
-		public readonly ?string $mimeType = null,
 		public readonly ?string $file = null,
+		?string $mimeType = null,
 		?float $duration = null,
 	) {
+		$this->mimeType = $mimeType ?? Helpers::guessMimeTypeFromExtension($file ?? $url);
 		$this->lazyLoad(compact('duration'), fn() => $this->duration = $this->file
 			? Helpers::guessMP3Duration($this->file)
 			: null);

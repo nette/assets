@@ -33,7 +33,7 @@ test('Invalid MP3 file throws exception', function () {
 
 
 test('getImportElement()', function () {
-	$asset = new AudioAsset('/audio/sound.mp3', 'audio/mpeg', duration: 120.5);
+	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg', duration: 120.5);
 
 	Assert::equal(Html::el('audio', [
 		'src' => '/audio/sound.mp3',
@@ -43,7 +43,7 @@ test('getImportElement()', function () {
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new AudioAsset('/audio/sound.mp3', 'audio/mpeg');
+	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',

@@ -12,13 +12,17 @@ use Nette\Utils\Html;
  */
 class FontAsset implements Asset, HtmlRenderable
 {
+	public readonly ?string $mimeType;
+
+
 	public function __construct(
 		public readonly string $url,
-		public readonly ?string $mimeType = null,
 		public readonly ?string $file = null,
+		?string $mimeType = null,
 		/** SRI integrity hash */
 		public readonly ?string $integrity = null,
 	) {
+		$this->mimeType = $mimeType ?? Helpers::guessMimeTypeFromExtension($file ?? $url);
 	}
 
 

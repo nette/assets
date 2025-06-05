@@ -26,7 +26,7 @@ test('FontAsset->getImportElement()', function () {
 	]), $asset->getImportElement());
 
 	// Test without integrity
-	$asset = new FontAsset('/fonts/roboto.woff2', 'font/woff2');
+	$asset = new FontAsset('/fonts/roboto.woff2', mimeType: 'font/woff2');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',
@@ -39,7 +39,7 @@ test('FontAsset->getImportElement()', function () {
 
 
 test('FontAsset->getHtmlPreloadElement()', function () {
-	$asset = new FontAsset('/fonts/roboto.woff2', 'font/woff2');
+	$asset = new FontAsset('/fonts/roboto.woff2', mimeType: 'font/woff2');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',

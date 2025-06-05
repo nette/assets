@@ -6,14 +6,13 @@
 [![License](https://img.shields.io/badge/license-New%20BSD-blue.svg)](https://github.com/nette/assets/blob/master/license.md)
 
 
-### Whether you're building a simple website or complex application, Nette Assets makes working with static files a breeze.
+### Smart and simple way to work with static files in PHP applications
 
-✅ automatic file versioning for cache busting<br>
-✅ smart file type detection<br>
-✅ lazy loading of file properties (dimensions, duration)<br>
+✅ automatic versioning for cache busting<br>
+✅ seamless [Vite](https://vite.dev) integration with HMR support<br>
+✅ lazy loading of file properties<br>
 ✅ clean API for PHP and [Latte](https://latte.nette.org) templates<br>
-✅ support for multiple file sources<br>
-✅ modern bundler integration (Vite)<br>
+✅ multiple file sources support<br>
 
 
 Working with static files (images, CSS, JavaScript) in web applications often involves repetitive tasks: generating correct URLs, handling cache invalidation, managing file versions, and dealing with different environments. Nette Assets simplifies all of this.

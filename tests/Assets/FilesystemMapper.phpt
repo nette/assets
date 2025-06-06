@@ -9,23 +9,23 @@ use Tester\Assert;
 require __DIR__ . '/../bootstrap.php';
 
 
-touch(__DIR__ . '/fixtures/test.txt', 2_700_000_000);
+touch(getTempDir() . '/test.txt', 2_700_000_000);
 
 test('Basic mapper functionality', function () {
-	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
+	$mapper = new FilesystemMapper('http://example.com/assets', getTempDir());
 	$asset = $mapper->getAsset('test.txt');
 
 	Assert::same('http://example.com/assets/test.txt?v=2700000000', $asset->url);
-	Assert::same(__DIR__ . '/fixtures/test.txt', $asset->file);
+	Assert::same(getTempDir() . '/test.txt', $asset->file);
 });
 
 
 test('Non-existent file version handling', function () {
-	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
+	$mapper = new FilesystemMapper('http://example.com/assets', getTempDir());
 	Assert::exception(
 		fn() => $mapper->getAsset('missing.txt'),
 		AssetNotFoundException::class,
-		"Asset file 'missing.txt' not found at path: '" . __DIR__ . "/fixtures/missing.txt'",
+		"Asset file 'missing.txt' not found at path: '" . getTempDir() . "/missing.txt'",
 	);
 });
 

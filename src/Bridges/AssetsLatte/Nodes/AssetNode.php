@@ -24,7 +24,7 @@ class AssetNode extends StatementNode
 {
 	public ExpressionNode $name;
 	public ArrayNode $attributes;
-	public bool $try;
+	public bool $optional;
 	public bool $preload;
 
 
@@ -38,7 +38,7 @@ class AssetNode extends StatementNode
 		$node->attributes = $tag->parser->stream->tryConsume(',')
 			? $tag->parser->parseArguments()
 			: new ArrayNode;
-		$node->try = str_ends_with($tag->name, '?');
+		$node->optional = str_ends_with($tag->name, '?');
 		$node->preload = str_starts_with($tag->name, 'preload');
 		return $node;
 	}
@@ -56,7 +56,7 @@ class AssetNode extends StatementNode
 				XX,
 			$this->name,
 			$this->attributes,
-			$this->try,
+			$this->optional,
 			$this->position,
 			$inAttr ? '' : ('$this->global->assets->' . ($this->preload ? 'renderAssetPreload' : 'renderAsset')),
 		);

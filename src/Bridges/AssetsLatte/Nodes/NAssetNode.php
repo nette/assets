@@ -30,7 +30,7 @@ final class NAssetNode extends StatementNode
 	public ExpressionNode $name;
 	public ArrayNode $attributes;
 	public AreaNode $content;
-	public bool $try;
+	public bool $optional;
 
 
 	public static function create(Tag $tag): \Generator
@@ -42,7 +42,7 @@ final class NAssetNode extends StatementNode
 		$node->attributes = $tag->parser->stream->tryConsume(',')
 			? $tag->parser->parseArguments()
 			: new ArrayNode;
-		$node->try = str_ends_with($tag->name, '?');
+		$node->optional = str_ends_with($tag->name, '?');
 
 		[$node->content] = yield;
 
@@ -62,7 +62,7 @@ final class NAssetNode extends StatementNode
 				XX,
 			$this->name,
 			$this->attributes,
-			$this->try,
+			$this->optional,
 			$this->position,
 			$this->content,
 		);

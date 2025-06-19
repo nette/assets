@@ -6,6 +6,7 @@ namespace Nette\Assets;
 
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
+use function array_filter, array_values, is_array, preg_match, str_starts_with;
 
 
 /**

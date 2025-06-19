@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nette\Assets;
 
+use function array_key_exists, array_shift, count, hash, is_scalar, is_string, serialize;
+
 
 /**
  * Manages a collection of named asset Mappers and provides a central point

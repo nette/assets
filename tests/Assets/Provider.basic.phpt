@@ -98,7 +98,7 @@ test('tryGetAsset returns asset when exists', function () {
 
 test('tryGetAsset returns null when asset does not exist', function () {
 	$registry = new Registry;
-	$registry->addMapper('missing', new ThrowingMockMapper());
+	$registry->addMapper('missing', new ThrowingMockMapper);
 
 	Assert::null($registry->tryGetAsset('missing:test.jpg'));
 });

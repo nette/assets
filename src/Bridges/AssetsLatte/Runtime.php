@@ -14,6 +14,7 @@ use Nette\Assets\Asset;
 use Nette\Assets\EntryAsset;
 use Nette\Assets\HtmlRenderable;
 use Nette\Assets\Registry;
+use Nette\Utils\Html;
 
 
 /**
@@ -24,6 +25,7 @@ class Runtime
 {
 	public function __construct(
 		private readonly Registry $registry,
+		private string|false|null $nonce = null,
 	) {
 	}
 
@@ -45,14 +47,14 @@ class Runtime
 			throw new Nette\InvalidArgumentException('This asset type cannot be rendered as HTML.');
 		}
 
-		$res = (string) $asset->getImportElement();
+		$res = (string) $this->applyNonce($asset->getImportElement());
 
 		if ($asset instanceof EntryAsset) {
 			foreach ($asset->preloads as $dep) {
-				$res .= $dep->getPreloadElement();
+				$res .= $this->applyNonce($dep->getPreloadElement());
 			}
 			foreach ($asset->imports as $dep) {
-				$res .= $dep->getImportElement();
+				$res .= $this->applyNonce($dep->getImportElement());
 			}
 		}
 
@@ -66,7 +68,7 @@ class Runtime
 			throw new Nette\InvalidArgumentException('This asset type cannot be preloaded.');
 		}
 
-		return (string) $asset->getPreloadElement();
+		return (string) $this->applyNonce($asset->getPreloadElement());
 	}
 
 
@@ -81,12 +83,13 @@ class Runtime
 			if ($tagName === 'link') {
 				$el = $asset->getPreloadElement();
 			} elseif ($tagName === 'a') {
-				$el = Nette\Utils\Html::el('a', ['href' => $el->src]);
+				$el = Html::el('a', ['href' => $el->src]);
 			} else {
 				throw new Nette\InvalidArgumentException("Tag <$tagName> is not allowed for this asset. Use <{$el->getName()}> instead.");
 			}
 		}
 
+		$this->applyNonce($el);
 		$this->completeDimensions($el, $usedAttributes);
 
 		$el->attrs = array_diff_key($el->attrs, $usedAttributes);
@@ -94,7 +97,7 @@ class Runtime
 	}
 
 
-	private function completeDimensions(Nette\Utils\Html $el, array $usedAttributes): void
+	private function completeDimensions(Html $el, array $usedAttributes): void
 	{
 		$width = $usedAttributes['width'] ?? null;
 		$height = $usedAttributes['height'] ?? null;
@@ -112,5 +115,25 @@ class Runtime
 		if (isset($width) || isset($height)) {
 			unset($el->attrs['width'], $el->attrs['height']);
 		}
+	}
+
+
+	private function applyNonce(Html $el): Html
+	{
+		if (isset(['script' => 1, 'link' => 1, 'style' => 1][$el->getName()])) {
+			$el->setAttribute('nonce', $this->nonce ??= $this->findNonce());
+		}
+		return $el;
+	}
+
+
+	private function findNonce(): string|false
+	{
+		foreach (headers_list() as $header) {
+			if (preg_match('/^Content-Security-Policy(?:-Report-Only)?:.*\'nonce-([^\']+)\'/i', $header, $m)) {
+				return $m[1];
+			}
+		}
+		return false;
 	}
 }

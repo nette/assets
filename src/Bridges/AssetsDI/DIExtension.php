@@ -11,6 +11,7 @@ use Nette\Assets\ViteMapper;
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;
+use function is_string;
 
 
 /**

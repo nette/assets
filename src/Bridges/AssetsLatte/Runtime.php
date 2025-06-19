@@ -15,6 +15,7 @@ use Nette\Assets\EntryAsset;
 use Nette\Assets\HtmlRenderable;
 use Nette\Assets\Registry;
 use Nette\Utils\Html;
+use function array_diff_key, headers_list, is_string, preg_match, round;
 
 
 /**

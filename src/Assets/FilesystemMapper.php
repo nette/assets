@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Nette\Assets;
 
+use function filemtime, is_file, is_int, str_contains;
+
 
 /**
  * Maps asset references to files within a specified local directory.

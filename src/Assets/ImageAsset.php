@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Nette\Assets;
 
 use Nette\Utils\Html;
+use function array_filter, compact, getimagesize, round;
 
 
 /**

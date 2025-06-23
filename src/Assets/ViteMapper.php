@@ -88,12 +88,14 @@ class ViteMapper implements Mapper
 	private function createDevelopmentAsset(string $reference): Asset
 	{
 		$url = $this->devServer . '/' . $reference;
-		return preg_match('~\.(js|mjs|ts)$~i', $reference)
-			? new EntryAsset(
+		return match (1) {
+			preg_match('~\.(jsx?|mjs|tsx?)$~i', $reference) => new EntryAsset(
 				url: $url,
 				imports: [new ScriptAsset($this->devServer . '/@vite/client', type: 'module')],
-			)
-			: Helpers::createAssetFromUrl($url);
+			),
+			preg_match('~\.(sass|scss)$~i', $reference) => new StyleAsset($url),
+			default => Helpers::createAssetFromUrl($url),
+		};
 	}
 
 

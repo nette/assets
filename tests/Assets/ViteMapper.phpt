@@ -67,6 +67,11 @@ test('Development mode', function (): void {
 	assertAssets([
 		new ScriptAsset('http://localhost:5173/@vite/client', type: 'module'),
 	], $asset->imports);
+
+	// sass support
+	$asset = $mapper->getAsset('src/main.sass');
+	Assert::type(StyleAsset::class, $asset);
+	Assert::same('http://localhost:5173/src/main.sass', $asset->url);
 });
 
 

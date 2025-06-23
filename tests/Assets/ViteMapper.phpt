@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Nette\Assets\EntryAsset;
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\ScriptAsset;
 use Nette\Assets\StyleAsset;
@@ -15,7 +16,7 @@ test('Production mode - JS entry point with imports and CSS', function (): void 
 	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest.json');
 	$asset = $mapper->getAsset('src/main.js');
 
-	Assert::type(ScriptAsset::class, $asset);
+	Assert::type(EntryAsset::class, $asset);
 	Assert::same('https://example.com/assets/main-1a2b3c4d.js', $asset->url);
 
 	// Check imports and preloads
@@ -32,6 +33,7 @@ test('Production mode - CSS entry point', function (): void {
 	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest.json');
 	$asset = $mapper->getAsset('src/styles.css');
 
+	Assert::type(StyleAsset::class, $asset);
 	Assert::same('https://example.com/assets/styles-9i0j1k2l.css', $asset->url);
 });
 
@@ -53,12 +55,11 @@ test('Development mode', function (): void {
 	$mapper = new ViteMapper(
 		'https://example.com',
 		__DIR__ . '/fixtures',
-		__DIR__ . '/fixtures/manifest.json',
-		'http://localhost:5173',
+		devServer: 'http://localhost:5173',
 	);
-	$asset = $mapper->getAsset('src/main.js');
 
-	Assert::type(ScriptAsset::class, $asset);
+	$asset = $mapper->getAsset('src/main.js');
+	Assert::type(EntryAsset::class, $asset);
 	Assert::same('http://localhost:5173/src/main.js', $asset->url);
 
 	// In dev mode, check imports

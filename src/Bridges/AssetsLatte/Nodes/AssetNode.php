@@ -17,7 +17,7 @@ use Latte\Compiler\Tag;
 
 
 /**
- * {asset ...} & {asset? ...}
+ * {asset ...}
  * {preload ...}
  */
 class AssetNode extends StatementNode
@@ -34,11 +34,11 @@ class AssetNode extends StatementNode
 		$tag->expectArguments();
 
 		$node = new static;
+		$node->optional = str_starts_with($tag->parser->text, '?') && $tag->parser->stream->tryConsume('?');
 		$node->name = $tag->parser->parseExpression();
 		$node->attributes = $tag->parser->stream->tryConsume(',')
 			? $tag->parser->parseArguments()
 			: new ArrayNode;
-		$node->optional = str_ends_with($tag->name, '?');
 		$node->preload = str_starts_with($tag->name, 'preload');
 		return $node;
 	}

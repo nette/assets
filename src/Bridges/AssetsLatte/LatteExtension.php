@@ -13,7 +13,7 @@ use Nette\Assets\Registry;
  * Latte extension that provides asset-related functions and tags:
  * - asset(): returns asset URL or throws AssetNotFoundException if asset not found
  * - tryAsset(): returns asset URL or null if asset not found
- * - {asset ...} & {asset? ...} renders HTML code
+ * - {asset ...} renders HTML code
  * - {preload ...} renders HTML code for preloading
  * - n:asset renders HTML attributes
  */
@@ -32,7 +32,6 @@ final class LatteExtension extends Extension
 	{
 		return [
 			'asset' => Nodes\AssetNode::create(...),
-			'asset?' => Nodes\AssetNode::create(...),
 			'preload' => Nodes\AssetNode::create(...),
 			'n:asset' => Nodes\NAssetNode::create(...),
 			'n:asset?' => Nodes\NAssetNode::create(...),

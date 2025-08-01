@@ -72,7 +72,11 @@ class Registry
 				array_shift($this->cache); // remove the oldest entry
 			}
 
-			return $this->cache[$cacheKey] = $asset;
+			if ($cacheKey !== null) {
+				$this->cache[$cacheKey] = $asset;
+			}
+			return $asset;
+
 		} catch (AssetNotFoundException $e) {
 			throw $mapper ? $e->qualifyReference($mapperDef, $reference) : $e;
 		}

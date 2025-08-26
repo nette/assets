@@ -32,6 +32,7 @@
 		"phpstan/phpstan-nette": "^2.0@stable"
 	},
 	"conflict": {
+		"nette/bootstrap": "<3.2.5",
 		"nette/http": "<3.3.2"
 	},
 	"autoload": {

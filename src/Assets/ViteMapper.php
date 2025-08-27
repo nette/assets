@@ -62,6 +62,8 @@ class ViteMapper implements Mapper
 	{
 		$chunk = $this->chunks[$reference];
 		$entry = isset($chunk['isEntry']) || isset($chunk['isDynamicEntry']);
+		$entryCss = $entry && preg_match('~\.(css|sass|scss)$~i', $chunk['src']);
+		
 		if (str_starts_with($reference, '_') && !$entry) {
 			throw new AssetNotFoundException("Cannot directly access internal chunk '$reference'");
 		}
@@ -69,7 +71,7 @@ class ViteMapper implements Mapper
 		$dependencies = $this->collectDependencies($reference);
 		unset($dependencies[$chunk['file']]);
 
-		return $dependencies
+		return $dependencies || ($entry && !$entryCss)
 			? new EntryAsset(
 				url: $this->baseUrl . '/' . $chunk['file'],
 				file: $this->basePath . '/' . $chunk['file'],

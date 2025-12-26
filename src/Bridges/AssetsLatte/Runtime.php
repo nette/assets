@@ -98,6 +98,9 @@ class Runtime
 	}
 
 
+	/**
+	 * @param  array<string, mixed>  $usedAttributes
+	 */
 	private function completeDimensions(Html $el, array $usedAttributes): void
 	{
 		$width = $usedAttributes['width'] ?? null;

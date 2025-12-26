@@ -28,7 +28,7 @@ final class Helpers
 	/**
 	 * Creates an Asset instance. The asset type is detected by 'mimeType' if provided in $args,
 	 * otherwise is guessed from the file extension of $path or $url.
-	 * @param  mixed[]  $args  parameters passed to the asset constructor
+	 * @param  array<string, mixed>  $args parameters passed to the asset constructor
 	 */
 	public static function createAssetFromUrl(string $url, ?string $path = null, array $args = []): Asset
 	{

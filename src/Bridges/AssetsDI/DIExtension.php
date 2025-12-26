@@ -18,8 +18,6 @@ use function is_string;
  */
 final class DIExtension extends Nette\DI\CompilerExtension
 {
-	private const VitePort = 5173;
-
 	private int $needVariable;
 
 
@@ -56,7 +54,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	}
 
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
 		$registry = $builder->addDefinition($this->prefix('registry'))
@@ -115,7 +113,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	}
 
 
-	public function beforeCompile()
+	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
 		if ($name = $builder->getByType(Nette\Bridges\ApplicationLatte\LatteFactory::class)) {

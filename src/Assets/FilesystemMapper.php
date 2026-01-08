@@ -17,6 +17,7 @@ class FilesystemMapper implements Mapper
 	public function __construct(
 		protected readonly string $baseUrl,
 		protected readonly string $basePath,
+		/** @var list<string> file extensions to try (without dot) */
 		protected readonly array $extensions = [],
 		protected readonly bool $versioning = true,
 	) {

@@ -29,6 +29,11 @@ class Runtime
 	}
 
 
+	/**
+	 * @param  string|array{?string, string}|Asset|null  $asset
+	 * @param  array<string, mixed>  $options
+	 * @return ($try is false ? Asset : ?Asset)
+	 */
 	public function resolve(string|array|Asset|null $asset, array $options, bool $try): ?Asset
 	{
 		return match (true) {
@@ -71,6 +76,9 @@ class Runtime
 	}
 
 
+	/**
+	 * @param  array<string, string|true>  $usedAttributes
+	 */
 	public function renderAttributes(Asset $asset, string $tagName, array $usedAttributes): string
 	{
 		if (!$asset instanceof HtmlRenderable) {
@@ -97,7 +105,7 @@ class Runtime
 
 
 	/**
-	 * @param  array<string, mixed>  $usedAttributes
+	 * @param  array<string, string|true>  $usedAttributes
 	 */
 	private function completeDimensions(Html $el, array $usedAttributes): void
 	{

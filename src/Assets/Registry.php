@@ -48,6 +48,8 @@ class Registry
 	/**
 	 * Retrieves an Asset instance using a qualified reference. Accepts either 'mapper:reference' or ['mapper', 'reference'].
 	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 * @param  string|array{?string, string}  $qualifiedRef
+	 * @param  array<string, mixed>  $options
 	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
 	public function getAsset(string|array $qualifiedRef, array $options = []): Asset
@@ -85,6 +87,8 @@ class Registry
 	 * Attempts to retrieve an Asset instance using a qualified reference, but returns null if not found.
 	 * Accepts either 'mapper:reference' or ['mapper', 'reference'].
 	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 * @param  string|array{string|null, string}  $qualifiedRef
+	 * @param  array<string, mixed>  $options
 	 */
 	public function tryGetAsset(string|array $qualifiedRef, array $options = []): ?Asset
 	{
@@ -96,6 +100,9 @@ class Registry
 	}
 
 
+	/**
+	 * @param array<string, mixed>  $options
+	 */
 	private function generateCacheKey(string $mapper, string $reference, array $options): ?string
 	{
 		foreach ($options as $item) {

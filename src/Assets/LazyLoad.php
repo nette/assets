@@ -9,13 +9,14 @@ namespace Nette\Assets;
  */
 trait LazyLoad
 {
-	/** @var \Closure[] */
+	/** @var array<string, \Closure(): void> */
 	private array $lazyLoaders = [];
 
 
 	/**
 	 * Sets up lazy loading for specified properties.
-	 * @param mixed[] $props
+	 * @param array<string, mixed>  $props  property name => initial value
+	 * @param \Closure(): void  $loader
 	 */
 	private function lazyLoad(array $props, \Closure $loader): void
 	{

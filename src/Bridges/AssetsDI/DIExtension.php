@@ -124,7 +124,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	}
 
 
-	private function resolvePath(\stdClass $config): string|Statement
+	private function resolvePath(\stdClass $config): Statement
 	{
 		$path = isset($this->basePath, $config->path)
 			? new Statement('Nette\Utils\FileSystem::resolvePath(?, ?)', [$this->basePath, $config->path])

@@ -15,8 +15,9 @@ use Latte\Compiler\Tag;
 
 
 /**
- * {asset ...}
- * {preload ...}
+ * {asset reference [, attributes]}
+ * {preload reference [, attributes]}
+ * Renders HTML element for asset with automatic versioning.
  */
 class AssetNode extends StatementNode
 {

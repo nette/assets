@@ -10,9 +10,9 @@ class EntryAsset extends ScriptAsset
 {
 	public function __construct(
 		public readonly string $url,
-		/** @var Asset[] */
+		/** @var list<HtmlRenderable> */
 		public array $imports = [],
-		/** @var Asset[] */
+		/** @var list<HtmlRenderable> */
 		public array $preloads = [],
 		public readonly ?string $type = 'module',
 		public readonly ?string $file = null,

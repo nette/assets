@@ -22,7 +22,9 @@ use Latte\Compiler\Tag;
 
 
 /**
- * n:asset and n:tryasset in <link>, <script>, <img>, <video>, <audio>, <a>
+ * <img n:asset="reference">
+ * <script n:asset="reference">
+ * Fills in asset attributes (src, dimensions, etc.) on HTML elements.
  */
 final class NAssetNode extends StatementNode
 {
@@ -32,6 +34,7 @@ final class NAssetNode extends StatementNode
 	public bool $optional;
 
 
+	/** @return \Generator<int, ?list<string>, array{AreaNode, ?Tag}, static> */
 	public static function create(Tag $tag): \Generator
 	{
 		$tag->expectArguments();
@@ -81,7 +84,10 @@ final class NAssetNode extends StatementNode
 	}
 
 
-	/** @internal */
+	/**
+	 * @internal
+	 * @return array<string, string|true>
+	 */
 	public static function findUsedAttributes(ElementNode $el): array
 	{
 		$res = [];

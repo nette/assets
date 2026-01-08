@@ -83,7 +83,10 @@ final class NAssetNode extends StatementNode
 	}
 
 
-	/** @internal */
+	/**
+	 * @internal
+	 * @return array<string, string|true>
+	 */
 	public static function findUsedAttributes(ElementNode $el): array
 	{
 		$res = [];

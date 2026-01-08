@@ -72,6 +72,9 @@ final class Helpers
 
 	/**
 	 * Validates an array of options against allowed optional and required keys.
+	 * @param  array<string, mixed>  $array
+	 * @param  list<string> $optional
+	 * @param  list<string>  $required
 	 * @throws \InvalidArgumentException if there are unsupported or missing options
 	 */
 	public static function checkOptions(array $array, array $optional = [], array $required = []): void

@@ -15,7 +15,10 @@ use function array_filter, array_values, is_array, preg_match, str_starts_with;
  */
 class ViteMapper implements Mapper
 {
+	/** @var array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>}> */
 	private array $chunks;
+
+	/** @var array<string, array<string, Asset>|null> cached dependencies keyed by chunkId */
 	private array $dependencies = [];
 
 
@@ -34,6 +37,7 @@ class ViteMapper implements Mapper
 
 	/**
 	 * Retrieves an Asset for a given Vite entry point.
+	 * @param  array<empty, empty>  $options not used, must be empty
 	 * @throws AssetNotFoundException when the asset cannot be found in the manifest
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
@@ -101,6 +105,7 @@ class ViteMapper implements Mapper
 
 	/**
 	 * Recursively collects all imports (including nested) from a chunk.
+	 * @return array<string, Asset>
 	 */
 	private function collectDependencies(string $chunkId): array
 	{

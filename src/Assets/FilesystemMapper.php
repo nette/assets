@@ -19,6 +19,7 @@ class FilesystemMapper implements Mapper
 	public function __construct(
 		protected readonly string $baseUrl,
 		protected readonly string $basePath,
+		/** @var list<string> file extensions to try (without dot) */
 		protected readonly array $extensions = [],
 		protected readonly bool $versioning = true,
 	) {
@@ -29,6 +30,7 @@ class FilesystemMapper implements Mapper
 	 * Resolves a relative reference to an asset within the configured base path.
 	 * Attempts to find a matching extension if configured and applies versioning if enabled.
 	 * Available options: 'version' => bool: Whether to apply versioning (defaults to true)
+	 * @param  array{version?: bool}  $options
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
 	{

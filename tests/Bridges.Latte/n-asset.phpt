@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 use Nette\Assets\ImageAsset;
 use Nette\Assets\Registry;

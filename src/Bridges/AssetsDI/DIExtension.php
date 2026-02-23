@@ -61,6 +61,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			->setFactory(Registry::class);
 
 		$this->needVariable = 0;
+		assert($this->config instanceof \stdClass);
 		$this->basePath = $this->config->basePath ?? $this->basePath ?? null;
 
 		foreach ($this->config->mapping as $scope => $item) {
@@ -117,8 +118,9 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 		if ($name = $builder->getByType(Nette\Bridges\ApplicationLatte\LatteFactory::class)) {
-			$builder->getDefinition($name)
-				->getResultDefinition()
+			$def = $builder->getDefinition($name);
+			assert($def instanceof Nette\DI\Definitions\FactoryDefinition);
+			$def->getResultDefinition()
 				->addSetup('addExtension', [new Statement(LatteExtension::class)]);
 		}
 	}

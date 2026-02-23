@@ -105,7 +105,11 @@ final class Helpers
 		}
 
 		$frameHeader = substr($header, $frameOffset, 4);
-		$headerBits = unpack('N', $frameHeader)[1];
+		$headerBits = unpack('N', $frameHeader);
+		if ($headerBits === false) {
+			throw new \RuntimeException('Failed to unpack MP3 frame header.');
+		}
+		$headerBits = $headerBits[1];
 		$bitrateIndex = ($headerBits >> 12) & 0xF;
 		$bitrate = [null, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320][$bitrateIndex] ?? null;
 		if ($bitrate === null) {

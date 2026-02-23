@@ -74,6 +74,7 @@ final class NAssetNode extends StatementNode
 	private function init(Tag $tag): void
 	{
 		$el = $tag->htmlElement;
+		assert($el !== null);
 		$tag->replaceNAttribute(new AuxiliaryNode(fn(PrintContext $context) => $context->format(
 			<<<'XX'
 				echo $this->global->assets->renderAttributes($ʟ_tmp, %dump, %dump);

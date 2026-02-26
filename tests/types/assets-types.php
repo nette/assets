@@ -143,6 +143,7 @@ function testFontAssetProperties(FontAsset $asset): void
 	assertType('string|null', $asset->file);
 	assertType('string|null', $asset->mimeType);
 	assertType('string|null', $asset->integrity);
+	assertType('bool|string|null', $asset->crossorigin);
 }
 
 

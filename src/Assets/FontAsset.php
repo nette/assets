@@ -19,6 +19,7 @@ class FontAsset implements Asset, HtmlRenderable
 		?string $mimeType = null,
 		/** SRI integrity hash */
 		public readonly ?string $integrity = null,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 		$this->mimeType = $mimeType ?? Helpers::guessMimeTypeFromExtension($file ?? $url);
 	}
@@ -37,7 +38,7 @@ class FontAsset implements Asset, HtmlRenderable
 			'href' => $this->url,
 			'as' => 'font',
 			'type' => $this->mimeType,
-			'crossorigin' => true,
+			'crossorigin' => $this->crossorigin ?? true,
 			'integrity' => $this->integrity,
 		], fn($value) => $value !== null));
 	}

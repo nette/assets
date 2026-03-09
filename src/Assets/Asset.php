@@ -4,7 +4,7 @@ namespace Nette\Assets;
 
 
 /**
- * Base asset interface with minimal API.
+ * Represents a web asset (image, script, stylesheet, font, etc.).
  * @property-read string $url The public URL
  * @property-read ?string $file The local file path if available
  */
@@ -14,7 +14,7 @@ interface Asset
 	//public ?string $file { get; }
 
 	/**
-	 * Allows direct echoing of the object to get the URL.
+	 * Returns the asset URL.
 	 */
 	public function __toString(): string;
 }

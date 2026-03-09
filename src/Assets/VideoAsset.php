@@ -6,7 +6,7 @@ use Nette\Utils\Html;
 
 
 /**
- * Video asset.
+ * Video file.
  */
 class VideoAsset implements Asset, HtmlRenderable
 {

@@ -6,17 +6,17 @@ use Nette\Utils\Html;
 
 
 /**
- * Interface for assets that can be rendered as HTML elements.
+ * Asset renderable as an HTML element.
  */
 interface HtmlRenderable extends Asset
 {
 	/**
-	 * Returns HTML tag name and attributes for rendering the asset.
+	 * Returns the HTML element used to import the asset (img, script, link rel="stylesheet", etc.).
 	 */
 	public function getImportElement(): Html;
 
 	/**
-	 * Returns HTML tag name and attributes for preloading the asset.
+	 * Returns the HTML element used to preload the asset (link rel="preload" or rel="modulepreload").
 	 */
 	public function getPreloadElement(): Html;
 }

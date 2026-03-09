@@ -13,8 +13,7 @@ use function is_string;
 
 
 /**
- * Dependency injection extension that integrates asset management into Nette application.
- * Provides configuration of asset mappers and their mapping to URL paths.
+ * Nette DI extension that registers asset mappers and the asset Registry as container services.
  */
 final class DIExtension extends Nette\DI\CompilerExtension
 {

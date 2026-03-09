@@ -25,9 +25,9 @@ class FilesystemMapper implements Mapper
 
 
 	/**
-	 * Resolves a relative reference to an asset within the configured base path.
-	 * Attempts to find a matching extension if configured and applies versioning if enabled.
-	 * Available options: 'version' => bool: Whether to apply versioning (defaults to true)
+	 * Returns the asset for the given relative reference.
+	 * Tries configured extensions in order and appends a version query parameter if enabled.
+	 * Supported option: 'version' => bool (overrides the mapper-level versioning setting)
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
 	{
@@ -47,6 +47,9 @@ class FilesystemMapper implements Mapper
 	}
 
 
+	/**
+	 * Appends a ?v={filemtime} version parameter to the URL.
+	 */
 	protected function applyVersion(string $url, string $path): string
 	{
 		if (is_int($version = filemtime($path))) {
@@ -57,7 +60,7 @@ class FilesystemMapper implements Mapper
 
 
 	/**
-	 * Searches for an existing file by appending configured extensions to the base path.
+	 * Returns the first matching file extension (with dot) from the configured list, or '' if none match.
 	 */
 	private function findExtension(string $basePath): string
 	{
@@ -78,18 +81,12 @@ class FilesystemMapper implements Mapper
 	}
 
 
-	/**
-	 * Returns the base URL for this mapper.
-	 */
 	public function getBaseUrl(): string
 	{
 		return $this->baseUrl;
 	}
 
 
-	/**
-	 * Returns the base path for this mapper.
-	 */
 	public function getBasePath(): string
 	{
 		return $this->basePath;

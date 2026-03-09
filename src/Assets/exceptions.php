@@ -8,7 +8,10 @@ namespace Nette\Assets;
  */
 class AssetNotFoundException extends \Exception
 {
-	/** @internal */
+	/**
+	 * Prepends the mapper prefix to the reference in the exception message.
+	 * @internal
+	 */
 	public function qualifyReference(string $mapper, string $reference): self
 	{
 		if ($mapper !== '') {

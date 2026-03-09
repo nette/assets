@@ -86,6 +86,7 @@ final class NAssetNode extends StatementNode
 
 
 	/**
+	 * Collects attributes explicitly set on the HTML element, mapping name to value or true.
 	 * @internal
 	 * @return array<string, string|true>
 	 */

@@ -6,7 +6,7 @@ use Nette\Utils\Html;
 
 
 /**
- * Font asset.
+ * Web font file.
  */
 class FontAsset implements Asset, HtmlRenderable
 {

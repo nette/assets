@@ -4,14 +4,13 @@ namespace Nette\Assets;
 
 
 /**
- * Defines the contract for resolving asset references to Asset objects.
- * Implementations handle specific storage backends (filesystem, CDN, etc.).
+ * Resolves asset references to Asset objects for a specific storage backend.
  */
 interface Mapper
 {
 	/**
-	 * Retrieves an Asset instance for a given mapper-specific reference string.
-	 * @param  array<string, mixed>  $options mapper-specific options
+	 * Returns an Asset for the given reference.
+	 * @param  array<string, mixed>  $options  mapper-specific options
 	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
 	public function getAsset(string $reference, array $options = []): Asset;

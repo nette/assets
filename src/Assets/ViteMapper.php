@@ -16,7 +16,7 @@ class ViteMapper implements Mapper
 	/** @var array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>}> */
 	private array $chunks;
 
-	/** @var array<string, ?array<string, Asset>> cached dependencies keyed by chunkId */
+	/** @var array<string, ?array<string, Asset>> dependencies cache keyed by chunk ID; null = not yet computed */
 	private array $dependencies = [];
 
 
@@ -34,8 +34,8 @@ class ViteMapper implements Mapper
 
 
 	/**
-	 * Retrieves an Asset for a given Vite entry point.
-	 * @throws AssetNotFoundException when the asset cannot be found in the manifest
+	 * Returns an Asset for the given Vite entry point or public directory file.
+	 * @throws AssetNotFoundException when the asset is not found in the manifest or public directory
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
 	{
@@ -149,18 +149,12 @@ class ViteMapper implements Mapper
 	}
 
 
-	/**
-	 * Returns the base URL for this mapper.
-	 */
 	public function getBaseUrl(): string
 	{
 		return $this->baseUrl;
 	}
 
 
-	/**
-	 * Returns the base path for this mapper.
-	 */
 	public function getBasePath(): string
 	{
 		return $this->basePath;

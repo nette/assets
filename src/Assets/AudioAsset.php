@@ -6,7 +6,7 @@ use Nette\Utils\Html;
 
 
 /**
- * Audio asset.
+ * Audio file with lazy-loaded duration.
  */
 class AudioAsset implements Asset, HtmlRenderable
 {

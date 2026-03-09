@@ -7,7 +7,7 @@ use function array_diff, array_keys, count, explode, file_get_contents, filesize
 
 
 /**
- * Static helper class providing utility functions for working with assets.
+ * Asset utility functions.
  */
 final class Helpers
 {
@@ -24,9 +24,10 @@ final class Helpers
 
 
 	/**
-	 * Creates an Asset instance. The asset type is detected by 'mimeType' if provided in $args,
-	 * otherwise is guessed from the file extension of $path or $url.
-	 * @param  array<string, mixed>  $args parameters passed to the asset constructor
+	 * Creates an Asset of the appropriate type for the given URL.
+	 * The type is determined from the 'mimeType' key in $args if provided,
+	 * otherwise guessed from the file extension of $path or $url.
+	 * @param  array<string, mixed>  $args  additional constructor arguments for the asset
 	 */
 	public static function createAssetFromUrl(string $url, ?string $path = null, array $args = []): Asset
 	{
@@ -47,6 +48,9 @@ final class Helpers
 	}
 
 
+	/**
+	 * Guesses the MIME type from the file extension in the given URL or path, or null if unknown.
+	 */
 	public static function guessMimeTypeFromExtension(string $url): ?string
 	{
 		return preg_match('~\.([a-z0-9]{1,5})([?#]|$)~i', $url, $m)
@@ -120,6 +124,9 @@ final class Helpers
 	}
 
 
+	/**
+	 * Reads the Vite dev server URL from the given info file, or returns null if unavailable.
+	 */
 	public static function detectDevServer(string $infoFile): ?string
 	{
 		return ($info = @file_get_contents($infoFile)) // @ file may not exists

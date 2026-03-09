@@ -6,7 +6,7 @@ use Nette\Utils\Html;
 
 
 /**
- * Style asset.
+ * CSS stylesheet file.
  */
 class StyleAsset implements Asset, HtmlRenderable
 {

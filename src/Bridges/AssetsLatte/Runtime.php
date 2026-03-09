@@ -30,6 +30,7 @@ class Runtime
 
 
 	/**
+	 * Resolves an asset reference, passing it through as-is if already an Asset.
 	 * @param  string|array{?string, string}|Asset|null  $asset
 	 * @param  array<string, mixed>  $options
 	 * @return ($try is false ? Asset : ?Asset)
@@ -45,6 +46,9 @@ class Runtime
 	}
 
 
+	/**
+	 * Renders the asset as an HTML import element, including all EntryAsset dependencies.
+	 */
 	public function renderAsset(Asset $asset): string
 	{
 		if (!$asset instanceof HtmlRenderable) {
@@ -66,6 +70,9 @@ class Runtime
 	}
 
 
+	/**
+	 * Renders the asset as an HTML preload hint element.
+	 */
 	public function renderAssetPreload(Asset $asset): string
 	{
 		if (!$asset instanceof HtmlRenderable) {
@@ -77,6 +84,8 @@ class Runtime
 
 
 	/**
+	 * Renders HTML attributes from the asset's import element, omitting attributes already set on the tag.
+	 * Adapts to <link> and <a> elements when the asset's native element doesn't match.
 	 * @param  array<string, string|true>  $usedAttributes
 	 */
 	public function renderAttributes(Asset $asset, string $tagName, array $usedAttributes): string
@@ -105,6 +114,8 @@ class Runtime
 
 
 	/**
+	 * Adjusts width/height attributes to preserve aspect ratio when only one dimension is explicitly set.
+	 * Removes both dimensions if either is specified without a concrete value.
 	 * @param  array<string, string|true>  $usedAttributes
 	 */
 	private function completeDimensions(Html $el, array $usedAttributes): void
@@ -128,6 +139,9 @@ class Runtime
 	}
 
 
+	/**
+	 * Sets the nonce attribute on script, link, and style elements for CSP compliance.
+	 */
 	private function applyNonce(Html $el): Html
 	{
 		if (isset(['script' => 1, 'link' => 1, 'style' => 1][$el->getName()])) {
@@ -137,6 +151,9 @@ class Runtime
 	}
 
 
+	/**
+	 * Extracts the nonce value from the Content-Security-Policy response header, or returns false if absent.
+	 */
 	private function findNonce(): string|false
 	{
 		foreach (headers_list() as $header) {

@@ -6,7 +6,7 @@ use Nette\Utils\Html;
 
 
 /**
- * Script asset.
+ * JavaScript file.
  */
 class ScriptAsset implements Asset, HtmlRenderable
 {

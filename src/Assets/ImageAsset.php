@@ -7,7 +7,7 @@ use function array_filter, compact, getimagesize, round;
 
 
 /**
- * Image asset.
+ * Image file with lazy-loaded dimensions and MIME type.
  */
 class ImageAsset implements Asset, HtmlRenderable
 {

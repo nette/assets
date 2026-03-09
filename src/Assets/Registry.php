@@ -6,9 +6,8 @@ use function array_key_exists, array_shift, count, hash, is_scalar, is_string, s
 
 
 /**
- * Manages a collection of named asset Mappers and provides a central point
- * for retrieving Assets using qualified references (mapper:reference).
- * Includes a simple cache for resolved assets.
+ * Central registry of named asset mappers with LRU cache.
+ * Resolves qualified references in the form 'mapper:reference' or ['mapper', 'reference'].
  */
 class Registry
 {
@@ -23,8 +22,8 @@ class Registry
 
 
 	/**
-	 * Registers a new asset mapper under a specific identifier.
-	 * @throws \InvalidArgumentException If the identifier is already in use.
+	 * Registers an asset mapper under the given identifier.
+	 * @throws \InvalidArgumentException if the identifier is already in use
 	 */
 	public function addMapper(string $id, Mapper $mapper): void
 	{
@@ -36,8 +35,8 @@ class Registry
 
 
 	/**
-	 * Retrieves a registered asset mapper by its identifier.
-	 * @throws \InvalidArgumentException If the requested mapper identifier is unknown.
+	 * Returns the mapper registered under the given identifier.
+	 * @throws \InvalidArgumentException if the identifier is unknown
 	 */
 	public function getMapper(string $id = self::DefaultScope): Mapper
 	{
@@ -46,10 +45,9 @@ class Registry
 
 
 	/**
-	 * Retrieves an Asset instance using a qualified reference. Accepts either 'mapper:reference' or ['mapper', 'reference'].
-	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 * Returns an Asset for the given qualified reference ('mapper:reference' or ['mapper', 'reference']).
 	 * @param  string|array{?string, string}  $qualifiedRef
-	 * @param  array<string, mixed>  $options
+	 * @param  array<string, mixed>  $options  passed to the mapper
 	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
 	public function getAsset(string|array $qualifiedRef, array $options = []): Asset
@@ -84,11 +82,9 @@ class Registry
 
 
 	/**
-	 * Attempts to retrieve an Asset instance using a qualified reference, but returns null if not found.
-	 * Accepts either 'mapper:reference' or ['mapper', 'reference'].
-	 * Options passed directly to the underlying Mapper::getAsset() method.
+	 * Returns an Asset for the given qualified reference, or null if not found.
 	 * @param  string|array{string|null, string}  $qualifiedRef
-	 * @param  array<string, mixed>  $options
+	 * @param  array<string, mixed>  $options  passed to the mapper
 	 */
 	public function tryGetAsset(string|array $qualifiedRef, array $options = []): ?Asset
 	{
@@ -101,7 +97,8 @@ class Registry
 
 
 	/**
-	 * @param array<string, mixed>  $options
+	 * Returns null when options contain non-scalar values (caching is disabled for such options).
+	 * @param  array<string, mixed>  $options
 	 */
 	private function generateCacheKey(string $mapper, string $reference, array $options): ?string
 	{

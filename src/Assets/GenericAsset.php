@@ -4,7 +4,7 @@ namespace Nette\Assets;
 
 
 /**
- * Generic asset for any general file type.
+ * Asset for file types without a dedicated asset class.
  */
 class GenericAsset implements Asset
 {

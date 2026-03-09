@@ -4,7 +4,7 @@ namespace Nette\Assets;
 
 
 /**
- * Entry point asset implementation that can represent both script and style entry points.
+ * Vite entry point asset that carries its CSS imports and JS preloads as dependencies.
  */
 class EntryAsset extends ScriptAsset
 {

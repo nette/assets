@@ -2,7 +2,7 @@
 
 namespace Nette\Assets;
 
-use function array_key_exists, count, is_scalar, is_string;
+use function array_key_exists, count, is_array, is_scalar, is_string;
 
 
 /**
@@ -53,6 +53,9 @@ class Registry
 	 */
 	public function getAsset(string|array $qualifiedRef, array $options = []): Asset
 	{
+		if (is_array($qualifiedRef) && (!array_is_list($qualifiedRef) || count($qualifiedRef) !== 2)) {
+			throw new \InvalidArgumentException('Qualified reference array must be a list of exactly 2 elements [mapper, reference].');
+		}
 		[$mapper, $reference] = is_string($qualifiedRef)
 			? Helpers::parseReference($qualifiedRef)
 			: $qualifiedRef;

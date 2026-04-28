@@ -13,6 +13,24 @@ parameters:
 			identifier: property.readOnlyAssignNotInConstructor
 			path: src/Assets/
 
+		# Registry::getAsset(): runtime validation of untyped array input despite array{?string, string} phpDoc contract
+		-
+			identifier: function.alreadyNarrowedType
+			path: src/Assets/Registry.php
+			count: 1
+		-
+			identifier: booleanAnd.alwaysFalse
+			path: src/Assets/Registry.php
+			count: 1
+		-
+			identifier: booleanOr.alwaysFalse
+			path: src/Assets/Registry.php
+			count: 1
+		-
+			identifier: notIdentical.alwaysFalse
+			path: src/Assets/Registry.php
+			count: 1
+
 		# intentional guard for $needVariable counter before baseUrl setup
 		-
 			identifier: identical.alwaysFalse

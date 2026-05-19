@@ -9,6 +9,7 @@ namespace Nette\Bridges\AssetsLatte;
 
 use Nette;
 use Nette\Assets\Asset;
+use Nette\Assets\AssetNotFoundException;
 use Nette\Assets\EntryAsset;
 use Nette\Assets\HtmlRenderable;
 use Nette\Assets\Registry;
@@ -34,6 +35,7 @@ class Runtime
 	 * @param  string|array{?string, string}|Asset|null  $asset
 	 * @param  array<string, mixed>  $options
 	 * @return ($try is false ? Asset : ?Asset)
+	 * @throws AssetNotFoundException when the asset cannot be found and $try is false
 	 */
 	public function resolve(string|array|Asset|null $asset, array $options, bool $try): ?Asset
 	{

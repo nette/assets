@@ -8,7 +8,7 @@
 namespace Nette\Bridges\AssetsLatte;
 
 use Nette;
-use Nette\Assets\{Asset, EntryAsset, HtmlRenderable, Registry};
+use Nette\Assets\{Asset, AssetNotFoundException, EntryAsset, HtmlRenderable, Registry};
 use Nette\Utils\Html;
 use function is_string;
 
@@ -31,6 +31,7 @@ class Runtime
 	 * @param  string|array{?string, string}|Asset|null  $asset
 	 * @param  array<string, mixed>  $options
 	 * @return ($try is false ? Asset : ?Asset)
+	 * @throws AssetNotFoundException when the asset cannot be found and $try is false
 	 */
 	public function resolve(string|array|Asset|null $asset, array $options, bool $try): ?Asset
 	{

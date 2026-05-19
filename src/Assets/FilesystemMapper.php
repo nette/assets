@@ -28,6 +28,7 @@ class FilesystemMapper implements Mapper
 	 * Returns the asset for the given relative reference.
 	 * Tries configured extensions in order and appends a version query parameter if enabled.
 	 * Supported option: 'version' => bool (overrides the mapper-level versioning setting)
+	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
 	public function getAsset(string $reference, array $options = []): Asset
 	{

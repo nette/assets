@@ -14,6 +14,13 @@ use function is_string;
 
 /**
  * Nette DI extension that registers asset mappers and the asset Registry as container services.
+ *
+ * @property object{
+ *     basePath: string|null,
+ *     baseUrl: string|null,
+ *     versioning: bool|null,
+ *     mapping: array<string, string|\stdClass|Nette\DI\Definitions\Statement>,
+ * } $config
  */
 final class DIExtension extends Nette\DI\CompilerExtension
 {
@@ -60,7 +67,6 @@ final class DIExtension extends Nette\DI\CompilerExtension
 			->setFactory(Registry::class);
 
 		$this->needVariable = 0;
-		assert($this->config instanceof \stdClass);
 		$this->basePath = $this->config->basePath ?? $this->basePath ?? null;
 
 		foreach ($this->config->mapping as $scope => $item) {

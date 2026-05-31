@@ -34,7 +34,8 @@ final class Helpers
 		$args['url'] = $url;
 		$args['file'] = $path;
 		$argsMime = $args;
-		$mimeType = (string) $argsMime['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$argsMime['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$mimeType = (string) $argsMime['mimeType'];
 		$primary = explode('/', $mimeType, 2)[0];
 		return match (true) {
 			$mimeType === 'application/javascript' => new ScriptAsset(...$args),
@@ -132,7 +133,8 @@ final class Helpers
 		return ($info = @file_get_contents($infoFile)) // @ file may not exists
 			&& ($info = json_decode($info, associative: true))
 			&& isset($info['devServer'])
-			&& ($url = parse_url($info['devServer']))
+			&& is_string($info['devServer'])
+			&& parse_url($info['devServer'])
 			? $info['devServer']
 			: null;
 	}

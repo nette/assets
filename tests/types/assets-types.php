@@ -172,12 +172,12 @@ function testEntryAssetProperties(EntryAsset $asset): void
 function testFilesystemMapperGetAsset(FilesystemMapper $mapper): void
 {
 	$result = $mapper->getAsset('logo.png');
-	assertType('Nette\Assets\Asset', $result);
+	assertType('Nette\Assets\ImageAsset', $result);
 }
 
 
 function testViteMapperGetAsset(ViteMapper $mapper): void
 {
 	$result = $mapper->getAsset('app.js');
-	assertType('Nette\Assets\Asset', $result);
+	assertType('Nette\Assets\ScriptAsset', $result);
 }

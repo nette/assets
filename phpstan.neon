@@ -37,10 +37,15 @@ parameters:
 			count: 1
 			path: src/Bridges/AssetsDI/DIExtension.php
 
-		# variadic ...$options creates array<mixed> but Runtime::resolve() expects array<string, mixed>; in practice keys are always strings (named args from Latte)
+		# Extension::getFilters()/getFunctions() — callable has no fixed signature, varies per filter/function
+		-
+			identifier: missingType.callable
+			path: src/Bridges/AssetsLatte/
+
+		# Latte function closures accept broad types (array, variadic) narrowed at runtime by Registry
 		-
 			identifier: argument.type
-			count: 2
+			count: 4
 			path: src/Bridges/AssetsLatte/LatteExtension.php
 
 		# AssetNode::create() uses new static() for extensibility by PreloadNode

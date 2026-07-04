@@ -28,6 +28,21 @@ test('{preload} renders HTML', function () {
 });
 
 
+test('{preload} inside <style> outputs just URL', function () {
+	$asset = new ImageAsset('https://example.com/image.jpg');
+
+	$mockRegistry = Mockery::mock(Registry::class);
+	$mockRegistry->expects()->getAsset('foo', [])->andReturn($asset);
+
+	$latte = new Latte\Engine;
+	$latte->addExtension(new LatteExtension($mockRegistry));
+	$latte->setLoader(new Latte\Loaders\StringLoader);
+
+	$result = $latte->renderToString("<style>.hero { background: url('{preload foo}'); }</style>");
+	Assert::same("<style>.hero { background: url('https\\:\\/\\/example\\.com\\/image\\.jpg'); }</style>", $result);
+});
+
+
 test('{preload} with options', function () {
 	$mockRegistry = Mockery::mock(Registry::class);
 	$mockRegistry->expects()

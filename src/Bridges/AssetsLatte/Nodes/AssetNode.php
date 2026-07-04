@@ -11,6 +11,7 @@ use Latte\Compiler\Nodes\Php\Expression\ArrayNode;
 use Latte\Compiler\Nodes\Php\ExpressionNode;
 use Latte\Compiler\Nodes\StatementNode;
 use Latte\Compiler\{PrintContext, Tag};
+use Latte\ContentType;
 
 
 /**
@@ -45,18 +46,19 @@ class AssetNode extends StatementNode
 	public function print(PrintContext $context): string
 	{
 		$escaper = $context->getEscaper();
-		$inAttr = $escaper->getState() === $escaper::HtmlAttribute;
 		return $context->format(
 			<<<'XX'
 				if ($ʟ_tmp = $this->global->assets->resolve(%node, %node, %dump)) %line {
-					echo %raw($ʟ_tmp);
+					echo %raw;
 				}
 				XX,
 			$this->name,
 			$this->attributes,
 			$this->optional,
 			$this->position,
-			$inAttr ? '' : ('$this->global->assets->' . ($this->preload ? 'renderAssetPreload' : 'renderAsset')),
+			$escaper->getContentType() === ContentType::Html && $escaper->getState() === $escaper::HtmlText
+				? '$this->global->assets->' . ($this->preload ? 'renderAssetPreload' : 'renderAsset') . '($ʟ_tmp)'
+				: $escaper->escape('(string) $ʟ_tmp'),
 		);
 	}
 

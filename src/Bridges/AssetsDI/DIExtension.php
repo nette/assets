@@ -68,7 +68,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 		$this->basePath = $this->config->basePath ?? $this->basePath ?? null;
 
 		foreach ($this->config->mapping as $scope => $item) {
-			if (is_string($item)) {
+			if (is_string($item) && !str_starts_with($item, '@')) {
 				$mapper = str_contains($item, '\\')
 					? new Statement($item)
 					: $this->createFileMapper((object) ['path' => $item]);

@@ -26,3 +26,19 @@ test('custom mapper as string', function () {
 	$mapper = $registy->getMapper();
 	Assert::type(CustomMapper::class, $mapper);
 });
+
+
+test('custom mapper as service reference', function () {
+	$container = createContainer('
+	services:
+		mymapper: CustomMapper
+	assets:
+		mapping:
+			default: @mymapper
+	');
+
+	$registy = $container->getByType(Registry::class);
+	$mapper = $registy->getMapper();
+	Assert::type(CustomMapper::class, $mapper);
+	Assert::same($container->getService('mymapper'), $mapper);
+});

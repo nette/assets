@@ -30,6 +30,12 @@ test('Invalid MP3 file throws exception', function () {
 });
 
 
+test('Duration of a non-MP3 file is null, not an exception', function () {
+	$asset = new AudioAsset('/audio/sound.wav', file: __DIR__ . '/fixtures/audio.mp3', mimeType: 'audio/wav');
+	Assert::null($asset->duration);
+});
+
+
 test('getImportElement()', function () {
 	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg', duration: 120.5);
 

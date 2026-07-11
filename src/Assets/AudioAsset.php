@@ -25,7 +25,9 @@ class AudioAsset implements Asset, HtmlRenderable
 	) {
 		$this->mimeType = $mimeType ?? Helpers::guessMimeTypeFromExtension($file ?? $url);
 		$this->lazyLoad(compact('duration'), function () {
-			$this->duration = $this->file ? Helpers::guessMP3Duration($this->file) : null;
+			$this->duration = $this->file && $this->mimeType === 'audio/mpeg'
+				? Helpers::guessMP3Duration($this->file)
+				: null;
 		});
 	}
 

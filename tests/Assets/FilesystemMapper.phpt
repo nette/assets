@@ -75,6 +75,32 @@ test('Optional extension autodetection', function () {
 });
 
 
+test('Path traversal outside the base path is rejected', function () {
+	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
+
+	Assert::exception(
+		fn() => $mapper->getAsset('../../../composer.json', ['version' => false]),
+		AssetNotFoundException::class,
+		"Asset file '../../../composer.json' is outside the base path.",
+	);
+
+	Assert::exception(
+		fn() => $mapper->getAsset('subdir/../../FilesystemMapper.phpt', ['version' => false]),
+		AssetNotFoundException::class,
+		"Asset file 'subdir/../../FilesystemMapper.phpt' is outside the base path.",
+	);
+
+	Assert::exception(
+		fn() => $mapper->getAsset('/../FilesystemMapper.phpt', ['version' => false]),
+		AssetNotFoundException::class,
+		"Asset file '/../FilesystemMapper.phpt' is outside the base path.",
+	);
+
+	$asset = $mapper->getAsset('subdir/../image.gif', ['version' => false]);
+	Assert::same('http://example.com/assets/subdir/../image.gif', $asset->url);
+});
+
+
 test('Option validation', function () {
 	$mapper = new FilesystemMapper('http://example.com/assets', __DIR__ . '/fixtures');
 

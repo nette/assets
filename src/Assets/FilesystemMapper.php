@@ -2,6 +2,7 @@
 
 namespace Nette\Assets;
 
+use Nette\Utils\FileSystem;
 use function is_int;
 
 
@@ -33,6 +34,12 @@ class FilesystemMapper implements Mapper
 	public function getAsset(string $reference, array $options = []): Asset
 	{
 		Helpers::checkOptions($options, [self::OptionVersion]);
+		if (str_contains($reference, '..')
+			&& preg_match('~^\.\.([/\\\]|$)~', FileSystem::normalizePath(ltrim($reference, '/\\')))
+		) {
+			throw new AssetNotFoundException("Asset file '$reference' is outside the base path.");
+		}
+
 		$path = $this->basePath . '/' . $reference;
 		$path .= $ext = $this->findExtension($path);
 

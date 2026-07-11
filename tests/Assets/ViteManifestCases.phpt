@@ -205,3 +205,21 @@ test('Entry with circular dependencies', function (): void {
 		),
 	], $asset->preloads);
 });
+
+
+test('Manifest missing an imported chunk', function (): void {
+	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest11.json');
+
+	for ($i = 0; $i < 2; $i++) {
+		Assert::exception(
+			fn() => $mapper->getAsset('main.js'),
+			RuntimeException::class,
+			"Vite manifest is missing chunk '_missing-B7PI925R.js' imported by 'main.js'.",
+		);
+		Assert::exception(
+			fn() => $mapper->getAsset('nested.js'),
+			RuntimeException::class,
+			"Vite manifest is missing chunk '_missing-B7PI925R.js' imported by '_shared-D5K6uZPx.js'.",
+		);
+	}
+});

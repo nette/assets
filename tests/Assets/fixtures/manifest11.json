@@ -1,0 +1,24 @@
+{
+	"main.js": {
+		"file": "assets/main-B2H3sXNv.js",
+		"src": "main.js",
+		"isEntry": true,
+		"imports": [
+			"_missing-B7PI925R.js"
+		]
+	},
+	"nested.js": {
+		"file": "assets/nested-C3J4tYOw.js",
+		"src": "nested.js",
+		"isEntry": true,
+		"imports": [
+			"_shared-D5K6uZPx.js"
+		]
+	},
+	"_shared-D5K6uZPx.js": {
+		"file": "assets/shared-D5K6uZPx.js",
+		"imports": [
+			"_missing-B7PI925R.js"
+		]
+	}
+}

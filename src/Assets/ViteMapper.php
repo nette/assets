@@ -109,21 +109,27 @@ class ViteMapper implements Mapper
 		if ($deps === null) {
 			$deps = [];
 			$chunk = $this->chunks[$chunkId] ?? [];
-			foreach ($chunk['css'] ?? [] as $file) {
-				$deps[$file] = Helpers::createAssetFromUrl(
-					$this->baseUrl . '/' . $file,
-					$this->basePath . '/' . $file,
-					['crossorigin' => true],
-				);
-			}
-			foreach ($chunk['imports'] ?? [] as $id) {
-				$file = $this->chunks[$id]['file'];
-				$deps[$file] = Helpers::createAssetFromUrl(
-					$this->baseUrl . '/' . $file,
-					$this->basePath . '/' . $file,
-					['type' => 'module', 'crossorigin' => true],
-				);
-				$deps += $this->collectDependencies($id);
+			try {
+				foreach ($chunk['css'] ?? [] as $file) {
+					$deps[$file] = Helpers::createAssetFromUrl(
+						$this->baseUrl . '/' . $file,
+						$this->basePath . '/' . $file,
+						['crossorigin' => true],
+					);
+				}
+				foreach ($chunk['imports'] ?? [] as $id) {
+					$file = $this->chunks[$id]['file']
+						?? throw new \RuntimeException("Vite manifest is missing chunk '$id' imported by '$chunkId'.");
+					$deps[$file] = Helpers::createAssetFromUrl(
+						$this->baseUrl . '/' . $file,
+						$this->basePath . '/' . $file,
+						['type' => 'module', 'crossorigin' => true],
+					);
+					$deps += $this->collectDependencies($id);
+				}
+			} catch (\Throwable $e) {
+				$deps = null; // an unfinished result must not be cached
+				throw $e;
 			}
 		}
 		return $deps;

@@ -25,6 +25,8 @@ final class Helpers
 		'woff' => 'font/woff', 'woff2' => 'font/woff2', 'ttf' => 'font/ttf',
 	];
 
+	private const ScriptMimeTypes = ['application/javascript', 'text/javascript', 'application/ecmascript', 'text/ecmascript'];
+
 
 	/**
 	 * Creates an Asset of the appropriate type for the given URL.
@@ -36,18 +38,19 @@ final class Helpers
 	{
 		$args['url'] = $url;
 		$args['file'] = $path;
-		$argsMime = $args;
-		$argsMime['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
-		$mimeType = (string) $argsMime['mimeType'];
-		$primary = explode('/', $mimeType, 2)[0];
+		$explicitMime = $args['mimeType'] ?? null;
+		unset($args['mimeType']);
+		$mimeType = $explicitMime ?? self::guessMimeTypeFromExtension($path ?? $url);
+		$primary = explode('/', (string) $mimeType, 2)[0];
+
 		return match (true) {
-			$mimeType === 'application/javascript' => new ScriptAsset(...$args),
+			in_array($mimeType, self::ScriptMimeTypes, true) => new ScriptAsset(...$args),
 			$mimeType === 'text/css' => new StyleAsset(...$args),
-			$primary === 'image' => new ImageAsset(...$args),
-			$primary === 'audio' => new AudioAsset(...$argsMime),
-			$primary === 'video' => new VideoAsset(...$argsMime),
-			$primary === 'font' => new FontAsset(...$argsMime),
-			default => new GenericAsset(...$argsMime),
+			$primary === 'image' => new ImageAsset(...$args, mimeType: $explicitMime),
+			$primary === 'audio' => new AudioAsset(...$args, mimeType: $mimeType),
+			$primary === 'video' => new VideoAsset(...$args, mimeType: $mimeType),
+			$primary === 'font' => new FontAsset(...$args, mimeType: $mimeType),
+			default => new GenericAsset(...$args, mimeType: $mimeType),
 		};
 	}
 

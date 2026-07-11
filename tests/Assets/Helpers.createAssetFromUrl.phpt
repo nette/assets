@@ -45,6 +45,21 @@ test('Detection preferences', function () {
 });
 
 
+test('explicit mimeType for JS/CSS does not leak into the constructor', function () {
+	$asset = Helpers::createAssetFromUrl('/x/app.foo', null, ['mimeType' => 'application/javascript']);
+	Assert::type(Nette\Assets\ScriptAsset::class, $asset);
+
+	$asset = Helpers::createAssetFromUrl('/x/app.foo', null, ['mimeType' => 'text/css']);
+	Assert::type(Nette\Assets\StyleAsset::class, $asset);
+});
+
+
+test('text/javascript is recognized as a script', function () {
+	$asset = Helpers::createAssetFromUrl('/x/app', null, ['mimeType' => 'text/javascript']);
+	Assert::type(Nette\Assets\ScriptAsset::class, $asset);
+});
+
+
 test('Basic asset properties', function () {
 	$asset = Helpers::createAssetFromUrl('http://example.com/image.gif', __DIR__ . '/fixtures/image.gif');
 

@@ -10,7 +10,6 @@ namespace Nette\Bridges\AssetsLatte;
 use Nette;
 use Nette\Assets\{Asset, AssetNotFoundException, EntryAsset, HtmlRenderable, Registry};
 use Nette\Utils\Html;
-use function is_string;
 
 
 /**
@@ -123,10 +122,10 @@ class Runtime
 		if (isset($width) xor isset($height)) {
 			if (empty($el->attrs['width']) || empty($el->attrs['height'])) {
 				// unknown ratio
-			} elseif (is_string($width)) {
+			} elseif (is_numeric($width)) {
 				$el->attrs['height'] = (string) round($width / $el->attrs['width'] * $el->attrs['height']);
 				return;
-			} elseif (is_string($height)) {
+			} elseif (is_numeric($height)) {
 				$el->attrs['width'] = (string) round($height / $el->attrs['height'] * $el->attrs['width']);
 				return;
 			}

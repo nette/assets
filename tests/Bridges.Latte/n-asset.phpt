@@ -102,6 +102,28 @@ test('overwriting width / height', function () {
 });
 
 
+test('non-numeric width / height', function () {
+	$asset = new ImageAsset(
+		url: 'https://example.com/image.jpg',
+		width: 800,
+		height: 600,
+	);
+
+	$mockRegistry = Mockery::mock(Registry::class);
+	$mockRegistry->expects()->getAsset('foo', [])->andReturn($asset);
+
+	$latte = new Latte\Engine;
+	$latte->addExtension(new LatteExtension($mockRegistry));
+	$latte->setLoader(new Latte\Loaders\StringLoader);
+
+	$result = $latte->renderToString('<img n:asset=foo width=auto>');
+	Assert::same('<img src="https://example.com/image.jpg" width=auto>', $result);
+
+	$result = $latte->renderToString('<img n:asset=foo height="50%">');
+	Assert::same('<img src="https://example.com/image.jpg" height="50%">', $result);
+});
+
+
 test('not matching tag name', function () {
 	$asset = new ImageAsset(
 		url: 'https://example.com/image.jpg',

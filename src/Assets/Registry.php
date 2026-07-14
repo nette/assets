@@ -70,11 +70,10 @@ class Registry
 		try {
 			$asset = $this->getMapper($mapperDef)->getAsset($reference, $options);
 
-			if (count($this->cache) >= self::MaxCacheSize) {
-				array_shift($this->cache); // remove the oldest entry
-			}
-
 			if ($cacheKey !== null) {
+				if (count($this->cache) >= self::MaxCacheSize) {
+					array_shift($this->cache); // remove the oldest entry
+				}
 				$this->cache[$cacheKey] = $asset;
 			}
 			return $asset;

@@ -53,3 +53,17 @@ test('Cache has limited size', function () {
 	Assert::notSame(reset($assets), $first); // First asset should be removed from cache
 	Assert::same(end($assets), $last); // Last asset should still be in cache
 });
+
+test('Uncacheable call does not evict cached entries', function () {
+	$registry = new Registry;
+	$registry->addMapper('test', new MockMapper);
+	$assets = [];
+
+	for ($i = 0; $i < 100; $i++) { // fill cache to its limit
+		$assets[$i] = $registry->getAsset("test:asset$i.jpg");
+	}
+
+	$registry->getAsset('test:asset.jpg', ['filter' => ['non', 'scalar']]);
+
+	Assert::same($assets[0], $registry->getAsset('test:asset0.jpg'));
+});

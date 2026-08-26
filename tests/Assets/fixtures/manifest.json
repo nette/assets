@@ -18,5 +18,10 @@
 		"file": "assets/styles-9i0j1k2l.css",
 		"src": "src/styles.css",
 		"isEntry": true
+	},
+	"src/video.mp4": {
+		"file": "assets/video-3m4n5o6p.mp4",
+		"src": "src/video.mp4",
+		"isEntry": true
 	}
 }

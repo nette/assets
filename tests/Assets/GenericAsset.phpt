@@ -15,3 +15,8 @@ test('MIME type is null without file', function () {
 	$asset = new GenericAsset('');
 	Assert::null($asset->mimeType);
 });
+
+test('crossorigin is stored', function () {
+	$asset = new GenericAsset('', crossorigin: true);
+	Assert::true($asset->crossorigin);
+});

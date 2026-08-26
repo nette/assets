@@ -113,6 +113,7 @@ function testAudioAssetProperties(AudioAsset $asset): void
 	assertType('string|null', $asset->file);
 	assertType('float|null', $asset->duration);
 	assertType('string|null', $asset->mimeType);
+	assertType('bool|string|null', $asset->crossorigin);
 }
 
 
@@ -126,6 +127,7 @@ function testVideoAssetProperties(VideoAsset $asset): void
 	assertType('float|null', $asset->duration);
 	assertType('string|null', $asset->poster);
 	assertType('bool', $asset->autoPlay);
+	assertType('bool|string|null', $asset->crossorigin);
 }
 
 
@@ -146,6 +148,7 @@ function testGenericAssetProperties(GenericAsset $asset): void
 	assertType('string|null', $asset->mimeType);
 	assertType('string|null', $asset->media);
 	assertType('string|null', $asset->integrity);
+	assertType('bool|string|null', $asset->crossorigin);
 }
 
 

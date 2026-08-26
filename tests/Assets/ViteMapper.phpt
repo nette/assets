@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\{EntryAsset, FilesystemMapper, ScriptAsset, StyleAsset, ViteMapper};
+use Nette\Assets\{EntryAsset, FilesystemMapper, ScriptAsset, StyleAsset, VideoAsset, ViteMapper};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
@@ -38,6 +38,16 @@ test('Production mode - CSS entry point', function (): void {
 
 	Assert::type(StyleAsset::class, $asset);
 	Assert::same('https://example.com/assets/styles-9i0j1k2l.css', $asset->url);
+});
+
+
+test('Production mode - video entry point without dependencies', function (): void {
+	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest.json');
+	$asset = $mapper->getAsset('src/video.mp4');
+
+	Assert::type(VideoAsset::class, $asset);
+	Assert::same('https://example.com/assets/video-3m4n5o6p.mp4', $asset->url);
+	Assert::true($asset->crossorigin);
 });
 
 

@@ -37,22 +37,24 @@ test('Duration of a non-MP3 file is null, not an exception', function () {
 
 
 test('getImportElement()', function () {
-	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg', duration: 120.5);
+	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg', duration: 120.5, crossorigin: true);
 
 	Assert::equal(Html::el('audio', [
 		'src' => '/audio/sound.mp3',
 		'type' => 'audio/mpeg',
+		'crossorigin' => true,
 	]), $asset->getImportElement());
 });
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg');
+	$asset = new AudioAsset('/audio/sound.mp3', mimeType: 'audio/mpeg', crossorigin: true);
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',
 		'href' => '/audio/sound.mp3',
 		'as' => 'audio',
 		'type' => 'audio/mpeg',
+		'crossorigin' => true,
 	]), $asset->getPreloadElement());
 });

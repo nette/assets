@@ -21,6 +21,7 @@ class VideoAsset implements Asset, HtmlRenderable
 		/** Poster image URL */
 		public readonly ?string $poster = null,
 		public readonly bool $autoPlay = false,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 	}
 
@@ -40,6 +41,7 @@ class VideoAsset implements Asset, HtmlRenderable
 			'type' => $this->mimeType,
 			'poster' => $this->poster,
 			'autoplay' => $this->autoPlay ? true : null,
+			'crossorigin' => $this->crossorigin,
 		], fn($value) => $value !== null));
 	}
 
@@ -51,6 +53,7 @@ class VideoAsset implements Asset, HtmlRenderable
 			'href' => $this->url,
 			'as' => 'video',
 			'type' => $this->mimeType,
+			'crossorigin' => $this->crossorigin,
 		], fn($value) => $value !== null));
 	}
 }

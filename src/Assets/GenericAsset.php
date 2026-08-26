@@ -19,6 +19,7 @@ class GenericAsset implements Asset
 		public readonly ?string $file = null,
 		public readonly ?string $media = null,
 		public readonly ?string $integrity = null,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 		$this->lazyLoad(compact('mimeType'), function () {
 			$this->mimeType = $this->file ? (mime_content_type($this->file) ?: null) : null;

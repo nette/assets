@@ -4,6 +4,7 @@ use Nette\Assets\EntryAsset;
 use Nette\Assets\FilesystemMapper;
 use Nette\Assets\ScriptAsset;
 use Nette\Assets\StyleAsset;
+use Nette\Assets\VideoAsset;
 use Nette\Assets\ViteMapper;
 use Tester\Assert;
 
@@ -33,6 +34,16 @@ test('Production mode - CSS entry point', function (): void {
 
 	Assert::type(StyleAsset::class, $asset);
 	Assert::same('https://example.com/assets/styles-9i0j1k2l.css', $asset->url);
+});
+
+
+test('Production mode - video entry point without dependencies', function (): void {
+	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest.json');
+	$asset = $mapper->getAsset('src/video.mp4');
+
+	Assert::type(VideoAsset::class, $asset);
+	Assert::same('https://example.com/assets/video-3m4n5o6p.mp4', $asset->url);
+	Assert::true($asset->crossorigin);
 });
 
 

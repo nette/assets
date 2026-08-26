@@ -22,6 +22,7 @@ class AudioAsset implements Asset, HtmlRenderable
 		public readonly ?string $file = null,
 		?string $mimeType = null,
 		?float $duration = null,
+		public readonly string|bool|null $crossorigin = null,
 	) {
 		$this->mimeType = $mimeType ?? Helpers::guessMimeTypeFromExtension($file ?? $url);
 		$this->lazyLoad(compact('duration'), function () {
@@ -38,10 +39,11 @@ class AudioAsset implements Asset, HtmlRenderable
 
 	public function getImportElement(): Html
 	{
-		return Html::el('audio', [
+		return Html::el('audio', array_filter([
 			'src' => $this->url,
 			'type' => $this->mimeType,
-		]);
+			'crossorigin' => $this->crossorigin,
+		], fn($value) => $value !== null));
 	}
 
 
@@ -52,6 +54,7 @@ class AudioAsset implements Asset, HtmlRenderable
 			'href' => $this->url,
 			'as' => 'audio',
 			'type' => $this->mimeType,
+			'crossorigin' => $this->crossorigin,
 		], fn($value) => $value !== null));
 	}
 }

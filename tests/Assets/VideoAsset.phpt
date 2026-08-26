@@ -17,6 +17,7 @@ test('getImportElement()', function () {
 		duration: 120.5,
 		poster: '/img/poster.jpg',
 		autoPlay: true,
+		crossorigin: true,
 	);
 
 	Assert::equal(Html::el('video', [
@@ -26,17 +27,19 @@ test('getImportElement()', function () {
 		'type' => 'video/mp4',
 		'poster' => '/img/poster.jpg',
 		'autoplay' => true,
+		'crossorigin' => true,
 	]), $asset->getImportElement());
 });
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new VideoAsset('/video/movie.mp4', mimeType: 'video/mp4');
+	$asset = new VideoAsset('/video/movie.mp4', mimeType: 'video/mp4', crossorigin: true);
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'preload',
 		'href' => '/video/movie.mp4',
 		'as' => 'video',
 		'type' => 'video/mp4',
+		'crossorigin' => true,
 	]), $asset->getPreloadElement());
 });

@@ -32,6 +32,7 @@ final class NAssetNode extends StatementNode
 	public ArrayNode $attributes;
 	public AreaNode $content;
 	public bool $optional;
+	private string $tmpVar;
 
 
 	/** @return \Generator<int, ?list<string>, array{AreaNode, ?Tag}, static> */
@@ -56,12 +57,15 @@ final class NAssetNode extends StatementNode
 
 	public function print(PrintContext $context): string
 	{
+		$this->tmpVar = '$ʟ_asset_' . $context->generateId();
+
 		return $context->format(
 			<<<'XX'
-				if ($ʟ_tmp = $this->global->assets->resolve(%node, %node, %dump)) %line {
+				if (%raw = $this->global->assets->resolve(%node, %node, %dump)) %line {
 					%node
 				}
 				XX,
+			$this->tmpVar,
 			$this->name,
 			$this->attributes,
 			$this->optional,
@@ -77,8 +81,9 @@ final class NAssetNode extends StatementNode
 		assert($el !== null);
 		$tag->replaceNAttribute(new AuxiliaryNode(fn(PrintContext $context) => $context->format(
 			<<<'XX'
-				echo $this->global->assets->renderAttributes($ʟ_tmp, %dump, %dump);
+				echo $this->global->assets->renderAttributes(%raw, %dump, %dump);
 				XX,
+			$this->tmpVar,
 			strtolower($el->name),
 			self::findUsedAttributes($el),
 		)));

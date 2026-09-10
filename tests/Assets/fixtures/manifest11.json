@@ -1,0 +1,14 @@
+{
+	"assets/main.js": {
+		"file": "main-4889e940.js",
+		"src": "assets/main.js",
+		"isEntry": true,
+		"css": [
+			"main-b82dbe22.css"
+		],
+		"assets": [
+			"image.gif",
+			"appunti-3f7e2a1b.woff2"
+		]
+	}
+}

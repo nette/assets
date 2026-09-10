@@ -2,6 +2,7 @@
 
 use Nette\Assets\AssetNotFoundException;
 use Nette\Assets\EntryAsset;
+use Nette\Assets\FontAsset;
 use Nette\Assets\ImageAsset;
 use Nette\Assets\ScriptAsset;
 use Nette\Assets\StyleAsset;
@@ -161,5 +162,28 @@ test('Entry with circular dependencies', function (): void {
 	], $asset->imports);
 	assertAssets([
 		new ScriptAsset('https://example.com/ace-BJo1PSDc.js', file: __DIR__ . '/fixtures/ace-BJo1PSDc.js', type: 'module', crossorigin: true),
+	], $asset->preloads);
+});
+
+test('Entry with asset preloads', function (): void {
+	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest11.json');
+	$asset = $mapper->getAsset('assets/main.js');
+
+	Assert::type(EntryAsset::class, $asset);
+	Assert::same('https://example.com/main-4889e940.js', $asset->url);
+
+	// CSS stays in imports
+	Assert::count(1, $asset->imports);
+	Assert::type(StyleAsset::class, $asset->imports[0]);
+	Assert::same('https://example.com/main-b82dbe22.css', $asset->imports[0]->url);
+
+	// Font + image become preloads, in order
+	Assert::count(2, $asset->preloads);
+	$types = array_map(fn($a) => $a::class, $asset->preloads);
+	Assert::same([ImageAsset::class, FontAsset::class], $types);
+
+	assertAssets([
+		new ImageAsset('https://example.com/image.gif', file: __DIR__ . '/fixtures/image.gif', mimeType: 'image/png', crossorigin: true),
+		new FontAsset('https://example.com/appunti-3f7e2a1b.woff2', file: __DIR__ . '/fixtures/appunti-3f7e2a1b.woff2', mimeType: 'font/woff2', crossorigin: true),
 	], $asset->preloads);
 });

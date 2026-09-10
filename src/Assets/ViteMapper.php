@@ -13,7 +13,7 @@ use function array_filter, array_values, is_array, preg_match, str_starts_with;
  */
 class ViteMapper implements Mapper
 {
-	/** @var array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>}> */
+	/** @var array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>, assets?: list<string>}> */
 	private array $chunks;
 
 	/** @var array<string, ?array<string, Asset>> dependencies cache keyed by chunk ID; null = not yet computed */
@@ -75,7 +75,7 @@ class ViteMapper implements Mapper
 				url: $this->baseUrl . '/' . $chunk['file'],
 				file: $this->basePath . '/' . $chunk['file'],
 				imports: array_values(array_filter($dependencies, fn($asset) => $asset instanceof StyleAsset)),
-				preloads: array_values(array_filter($dependencies, fn($asset) => $asset instanceof ScriptAsset)),
+				preloads: array_values(array_filter($dependencies, fn($asset) => $asset instanceof ScriptAsset || $asset instanceof FontAsset || $asset instanceof ImageAsset)),
 				crossorigin: true,
 			)
 			: Helpers::createAssetFromUrl(
@@ -117,6 +117,13 @@ class ViteMapper implements Mapper
 					['crossorigin' => true],
 				);
 			}
+			foreach ($chunk['assets'] ?? [] as $file) {
+				$deps[$file] = Helpers::createAssetFromUrl(
+					$this->baseUrl . '/' . $file,
+					$this->basePath . '/' . $file,
+					['crossorigin' => true],
+				);
+			}
 			foreach ($chunk['imports'] ?? [] as $id) {
 				$file = $this->chunks[$id]['file'];
 				$deps[$file] = Helpers::createAssetFromUrl(
@@ -132,7 +139,7 @@ class ViteMapper implements Mapper
 
 
 	/**
-	 * @return array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>}>
+	 * @return array<string, array{file: string, isEntry?: bool, isDynamicEntry?: bool, css?: list<string>, imports?: list<string>, assets?: list<string>}>
 	 */
 	private function readChunks(): array
 	{

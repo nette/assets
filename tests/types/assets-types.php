@@ -4,18 +4,7 @@
  * PHPStan type tests.
  */
 
-use Nette\Assets\AudioAsset;
-use Nette\Assets\EntryAsset;
-use Nette\Assets\FilesystemMapper;
-use Nette\Assets\FontAsset;
-use Nette\Assets\GenericAsset;
-use Nette\Assets\Helpers;
-use Nette\Assets\ImageAsset;
-use Nette\Assets\Registry;
-use Nette\Assets\ScriptAsset;
-use Nette\Assets\StyleAsset;
-use Nette\Assets\VideoAsset;
-use Nette\Assets\ViteMapper;
+use Nette\Assets\{AudioAsset, EntryAsset, FilesystemMapper, FontAsset, GenericAsset, Helpers, ImageAsset, Registry, ScriptAsset, StyleAsset, VideoAsset, ViteMapper};
 use Nette\Bridges\AssetsLatte\Runtime;
 use function PHPStan\Testing\assertType;
 

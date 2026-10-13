@@ -8,10 +8,7 @@
 namespace Nette\Bridges\AssetsLatte;
 
 use Nette;
-use Nette\Assets\Asset;
-use Nette\Assets\EntryAsset;
-use Nette\Assets\HtmlRenderable;
-use Nette\Assets\Registry;
+use Nette\Assets\{Asset, EntryAsset, HtmlRenderable, Registry};
 use Nette\Utils\Html;
 use function is_string;
 

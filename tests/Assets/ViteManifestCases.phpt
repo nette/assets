@@ -1,11 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\AssetNotFoundException;
-use Nette\Assets\EntryAsset;
-use Nette\Assets\ImageAsset;
-use Nette\Assets\ScriptAsset;
-use Nette\Assets\StyleAsset;
-use Nette\Assets\ViteMapper;
+use Nette\Assets\{AssetNotFoundException, EntryAsset, ImageAsset, ScriptAsset, StyleAsset, ViteMapper};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

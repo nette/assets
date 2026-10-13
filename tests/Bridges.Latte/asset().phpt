@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\GenericAsset;
-use Nette\Assets\Registry;
+use Nette\Assets\{GenericAsset, Registry};
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Tester\Assert;
 

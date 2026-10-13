@@ -1,8 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\ImageAsset;
-use Nette\Assets\Registry;
-use Nette\Assets\StyleAsset;
+use Nette\Assets\{ImageAsset, Registry, StyleAsset};
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Tester\Assert;
 

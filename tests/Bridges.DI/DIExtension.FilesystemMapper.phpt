@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\FilesystemMapper;
-use Nette\Assets\Registry;
+use Nette\Assets\{FilesystemMapper, Registry};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

@@ -1,10 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\EntryAsset;
-use Nette\Assets\ImageAsset;
-use Nette\Assets\Registry;
-use Nette\Assets\ScriptAsset;
-use Nette\Assets\StyleAsset;
+use Nette\Assets\{EntryAsset, ImageAsset, Registry, ScriptAsset, StyleAsset};
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Tester\Assert;
 

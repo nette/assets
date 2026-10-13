@@ -1,10 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\EntryAsset;
-use Nette\Assets\FilesystemMapper;
-use Nette\Assets\ScriptAsset;
-use Nette\Assets\StyleAsset;
-use Nette\Assets\ViteMapper;
+use Nette\Assets\{EntryAsset, FilesystemMapper, ScriptAsset, StyleAsset, ViteMapper};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

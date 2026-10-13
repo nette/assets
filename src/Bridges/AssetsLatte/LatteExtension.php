@@ -3,8 +3,7 @@
 namespace Nette\Bridges\AssetsLatte;
 
 use Latte\Extension;
-use Nette\Assets\Asset;
-use Nette\Assets\Registry;
+use Nette\Assets\{Asset, Registry};
 
 
 /**

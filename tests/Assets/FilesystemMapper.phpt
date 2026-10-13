@@ -1,7 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\AssetNotFoundException;
-use Nette\Assets\FilesystemMapper;
+use Nette\Assets\{AssetNotFoundException, FilesystemMapper};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

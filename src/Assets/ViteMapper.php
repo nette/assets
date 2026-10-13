@@ -2,8 +2,7 @@
 
 namespace Nette\Assets;
 
-use Nette\Utils\FileSystem;
-use Nette\Utils\Json;
+use Nette\Utils\{FileSystem, Json};
 use function is_array;
 
 

@@ -1,9 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\Asset;
-use Nette\Assets\GenericAsset;
-use Nette\Assets\Mapper;
-use Nette\Assets\Registry;
+use Nette\Assets\{Asset, GenericAsset, Mapper, Registry};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

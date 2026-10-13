@@ -3,9 +3,7 @@
 namespace Nette\Bridges\AssetsDI;
 
 use Nette;
-use Nette\Assets\FilesystemMapper;
-use Nette\Assets\Registry;
-use Nette\Assets\ViteMapper;
+use Nette\Assets\{FilesystemMapper, Registry, ViteMapper};
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Nette\DI\Definitions\Statement;
 use Nette\Schema\Expect;

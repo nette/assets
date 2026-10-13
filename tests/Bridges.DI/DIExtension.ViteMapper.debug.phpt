@@ -1,12 +1,8 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\EntryAsset;
-use Nette\Assets\Registry;
-use Nette\Assets\ViteMapper;
+use Nette\Assets\{EntryAsset, Registry, ViteMapper};
 use Nette\Bridges\AssetsDI\DIExtension;
-use Nette\DI\Compiler;
-use Nette\DI\Container;
-use Nette\DI\ContainerLoader;
+use Nette\DI\{Compiler, Container, ContainerLoader};
 use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';

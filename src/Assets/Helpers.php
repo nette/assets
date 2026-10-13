@@ -97,8 +97,8 @@ final class Helpers
 	public static function guessMP3Duration(string $path): float
 	{
 		if (
-			($header = @file_get_contents($path, length: 10000)) === false // @ - file may not exist
-			|| ($fileSize = @filesize($path)) === false
+			($header = @file_get_contents($path, length: 10000)) === false // @ is escalated to exception
+			|| ($fileSize = @filesize($path)) === false // @ is escalated to exception
 		) {
 			throw new \RuntimeException(sprintf("Failed to open file '%s'. %s", $path, Nette\Utils\Helpers::getLastError()));
 		}

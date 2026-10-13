@@ -92,8 +92,8 @@ test('Default manifest path', function (): void {
 	$basePath = __DIR__ . '/fixtures';
 
 	// Create a backup of the manifest in the default location
-	@mkdir(dirname($basePath . '/.vite/manifest.json'), 0o777, true);
-	@copy($basePath . '/manifest.json', $basePath . '/.vite/manifest.json');
+	@mkdir(dirname($basePath . '/.vite/manifest.json'), 0o777, true); // @ directory may already exist
+	copy($basePath . '/manifest.json', $basePath . '/.vite/manifest.json');
 
 	try {
 		$mapper = new ViteMapper('https://example.com', $basePath); // No manifest path provided
@@ -103,7 +103,7 @@ test('Default manifest path', function (): void {
 		Assert::same('https://example.com/assets/main-1a2b3c4d.js', $asset->url);
 	} finally {
 		// Clean up
-		@unlink($basePath . '/.vite/manifest.json');
-		@rmdir($basePath . '/.vite');
+		@unlink($basePath . '/.vite/manifest.json'); // @ cleanup failure is not a test failure
+		@rmdir($basePath . '/.vite'); // @ cleanup failure is not a test failure
 	}
 });

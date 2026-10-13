@@ -2,7 +2,7 @@
 
 namespace Nette\Assets;
 
-use function array_key_exists, array_shift, count, hash, is_scalar, is_string, serialize;
+use function array_key_exists, count, is_scalar, is_string;
 
 
 /**

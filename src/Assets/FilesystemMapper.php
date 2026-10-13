@@ -2,7 +2,7 @@
 
 namespace Nette\Assets;
 
-use function filemtime, is_file, is_int, str_contains;
+use function is_int;
 
 
 /**

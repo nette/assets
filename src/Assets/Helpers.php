@@ -3,7 +3,7 @@
 namespace Nette\Assets;
 
 use Nette;
-use function array_diff, array_keys, count, explode, file_get_contents, filesize, implode, json_decode, parse_url, preg_match, sprintf, strpos, strtolower, substr, unpack;
+use function count, sprintf;
 
 
 /**

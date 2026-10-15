@@ -40,7 +40,11 @@ final class LatteExtension extends Extension
 	{
 		return [
 			'asset' => fn(string|array|Asset $reference, ...$options): Asset => $this->runtime->resolve($reference, $options, try: false),
-			'tryAsset' => fn(string|array|Asset|null $reference, ...$options): ?Asset => $this->runtime->resolve($reference, $options, try: true),
+			'tryAsset' => fn(string|array|Asset|null $reference, ...$options): ?Asset => $this->runtime->resolve(
+				$reference,
+				$options,
+				try: true,
+			),
 		];
 	}
 

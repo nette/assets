@@ -55,7 +55,7 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 		$registry = $builder->addDefinition($this->prefix('registry'))
-			->setFactory(Registry::class);
+			->setCreator(Registry::class);
 
 		$this->needVariable = 0;
 		assert($this->config instanceof \stdClass);
@@ -104,7 +104,9 @@ final class DIExtension extends Nette\DI\CompilerExtension
 		return new Statement(ViteMapper::class, [
 			'baseUrl' => $this->resolveUrl($config),
 			'basePath' => new Statement('$path = ?', [$this->resolvePath($config)]),
-			'manifestPath' => $config->manifest ? new Statement('Nette\Utils\FileSystem::resolvePath($path, ?)', [$config->manifest]) : null,
+			'manifestPath' => $config->manifest
+				? new Statement('Nette\Utils\FileSystem::resolvePath($path, ?)', [$config->manifest])
+				: null,
 			'devServer' => $this->resolveDevServer($config),
 			'publicMapper' => $this->createFileMapper($config),
 		]);
@@ -143,7 +145,10 @@ final class DIExtension extends Nette\DI\CompilerExtension
 	{
 		return match (true) {
 			!$this->debugMode || !$config->devServer => null,
-			$config->devServer === true => new Statement('Nette\Assets\Helpers::detectDevServer(? . "/.vite/nette.json")', [$this->resolvePath($config)]),
+			$config->devServer === true => new Statement(
+				'Nette\Assets\Helpers::detectDevServer(? . "/.vite/nette.json")',
+				[$this->resolvePath($config)],
+			),
 			default => rtrim($config->devServer, '/'),
 		};
 	}

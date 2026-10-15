@@ -10,11 +10,11 @@ namespace Nette\Assets;
  */
 interface Asset
 {
-	//public string $url { get; }
-	//public ?string $file { get; }
+	// public string $url { get; }
+	// public ?string $file { get; }
 
 	/**
 	 * Returns the asset URL.
 	 */
-	public function __toString(): string;
+	function __toString(): string;
 }

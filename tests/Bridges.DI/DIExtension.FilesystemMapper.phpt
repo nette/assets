@@ -18,10 +18,10 @@ test('Global path and URL settings with relative mapper string', function () {
 	$registy = $container->getByType(Registry::class);
 	$mapper = $registy->getMapper();
 
-	$S = DIRECTORY_SEPARATOR;
+	$sep = DIRECTORY_SEPARATOR;
 	Assert::type(FilesystemMapper::class, $mapper);
 	Assert::same('/static-assets/theme1', $mapper->getBaseUrl());
-	Assert::same("{$S}data{$S}static{$S}theme1", $mapper->getBasePath());
+	Assert::same("{$sep}data{$sep}static{$sep}theme1", $mapper->getBasePath());
 });
 
 
@@ -43,17 +43,17 @@ test('Global settings with absolute mapper structure', function () {
 	');
 
 	$registy = $container->getByType(Registry::class);
-	$S = DIRECTORY_SEPARATOR;
+	$sep = DIRECTORY_SEPARATOR;
 
 	$mapper = $registy->getMapper('images');
 	Assert::type(FilesystemMapper::class, $mapper);
 	Assert::same('/img-cdn', $mapper->getBaseUrl());
-	Assert::same("{$S}img", $mapper->getBasePath());
+	Assert::same("{$sep}img", $mapper->getBasePath());
 
 	$mapper = $registy->getMapper('cdn');
 	Assert::type(FilesystemMapper::class, $mapper);
 	Assert::same('https://cdn.example.com/styles', $mapper->getBaseUrl());
-	Assert::same("{$S}data{$S}static{$S}compiled{$S}css", $mapper->getBasePath());
+	Assert::same("{$sep}data{$sep}static{$sep}compiled{$sep}css", $mapper->getBasePath());
 
 	$mapper = $registy->getMapper('empty');
 	Assert::type(FilesystemMapper::class, $mapper);
@@ -70,10 +70,10 @@ test('No configuration', function () {
 	');
 
 	$registy = $container->getByType(Registry::class);
-	$S = DIRECTORY_SEPARATOR;
+	$sep = DIRECTORY_SEPARATOR;
 
 	$mapper = $registy->getMapper(Registry::DefaultScope);
 	Assert::type(FilesystemMapper::class, $mapper);
 	Assert::same('/data/assets', $mapper->getBaseUrl());
-	Assert::same("{$S}data{$S}assets", $mapper->getBasePath());
+	Assert::same("{$sep}data{$sep}assets", $mapper->getBasePath());
 });

@@ -11,7 +11,6 @@ test('getImportElement()', function () {
 	$asset = new VideoAsset(
 		'/video/movie.mp4',
 		mimeType: 'video/mp4',
-		file: null,
 		width: 1920,
 		height: 1080,
 		duration: 120.5,

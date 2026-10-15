@@ -20,7 +20,7 @@ test('getHtmlElement()', function () {
 
 
 test('getHtmlPreloadElement()', function () {
-	$asset = new EntryAsset('/js/module.js', type: 'module');
+	$asset = new EntryAsset('/js/module.js');
 
 	Assert::equal(Html::el('link', [
 		'rel' => 'modulepreload',

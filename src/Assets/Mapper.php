@@ -13,5 +13,5 @@ interface Mapper
 	 * @param  array<string, mixed>  $options  mapper-specific options
 	 * @throws AssetNotFoundException when the asset cannot be found
 	 */
-	public function getAsset(string $reference, array $options = []): Asset;
+	function getAsset(string $reference, array $options = []): Asset;
 }

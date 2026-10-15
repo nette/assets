@@ -4,7 +4,10 @@
  * PHPStan type tests.
  */
 
-use Nette\Assets\{AudioAsset, EntryAsset, FilesystemMapper, FontAsset, GenericAsset, Helpers, ImageAsset, Registry, ScriptAsset, StyleAsset, VideoAsset, ViteMapper};
+use Nette\Assets\{
+	AudioAsset, EntryAsset, FilesystemMapper, FontAsset, GenericAsset, Helpers,
+	ImageAsset, Registry, ScriptAsset, StyleAsset, VideoAsset, ViteMapper,
+};
 use Nette\Bridges\AssetsLatte\Runtime;
 use function PHPStan\Testing\assertType;
 
@@ -57,7 +60,7 @@ function testRegistryGetAssetWithArray(Registry $registry, array $options): void
 /** @param array<string, mixed> $options */
 function testResolveWithTryFalse(Runtime $runtime, string $asset, array $options): void
 {
-	$result = $runtime->resolve($asset, $options, false);
+	$result = $runtime->resolve($asset, $options, try: false);
 	assertType('Nette\Assets\Asset', $result);
 }
 
@@ -65,7 +68,7 @@ function testResolveWithTryFalse(Runtime $runtime, string $asset, array $options
 /** @param array<string, mixed> $options */
 function testResolveWithTryTrue(Runtime $runtime, string $asset, array $options): void
 {
-	$result = $runtime->resolve($asset, $options, true);
+	$result = $runtime->resolve($asset, $options, try: true);
 	assertType('Nette\Assets\Asset|null', $result);
 }
 

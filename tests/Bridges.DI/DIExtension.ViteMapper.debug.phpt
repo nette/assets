@@ -7,7 +7,7 @@ use Tester\Assert;
 
 require __DIR__ . '/../bootstrap.php';
 
-$loader = new ContainerLoader(getTempDir(), true);
+$loader = new ContainerLoader(getTempDir(), autoRebuild: true);
 $key = __FILE__;
 
 $class = $loader->load(function (Compiler $compiler): void {

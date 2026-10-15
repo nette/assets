@@ -3,7 +3,7 @@
 namespace Nette\Assets;
 
 use Nette;
-use function count, sprintf;
+use function count, is_string, sprintf;
 
 
 /**
@@ -14,11 +14,14 @@ final class Helpers
 	use Nette\StaticClass;
 
 	private const ExtensionToMime = [
-		'avif' => 'image/avif', 'gif' => 'image/gif', 'ico' => 'image/vnd.microsoft.icon', 'jpeg' => 'image/jpeg', 'jpg' => 'image/jpeg', 'png' => 'image/png', 'svg' => 'image/svg+xml', 'webp' => 'image/webp',
+		'avif' => 'image/avif', 'gif' => 'image/gif', 'ico' => 'image/vnd.microsoft.icon', 'jpeg' => 'image/jpeg',
+		'jpg' => 'image/jpeg', 'png' => 'image/png', 'svg' => 'image/svg+xml', 'webp' => 'image/webp',
 		'js' => 'application/javascript', 'mjs' => 'application/javascript',
 		'css' => 'text/css',
-		'aac' => 'audio/aac', 'flac' => 'audio/flac', 'm4a' => 'audio/mp4', 'mp3' => 'audio/mpeg', 'ogg' => 'audio/ogg', 'wav' => 'audio/wav',
-		'avi' => 'video/x-msvideo', 'mkv' => 'video/x-matroska', 'mov' => 'video/quicktime', 'mp4' => 'video/mp4', 'ogv' => 'video/ogg', 'webm' => 'video/webm',
+		'aac' => 'audio/aac', 'flac' => 'audio/flac', 'm4a' => 'audio/mp4',
+		'mp3' => 'audio/mpeg', 'ogg' => 'audio/ogg', 'wav' => 'audio/wav',
+		'avi' => 'video/x-msvideo', 'mkv' => 'video/x-matroska', 'mov' => 'video/quicktime',
+		'mp4' => 'video/mp4', 'ogv' => 'video/ogg', 'webm' => 'video/webm',
 		'woff' => 'font/woff', 'woff2' => 'font/woff2', 'ttf' => 'font/ttf',
 	];
 
@@ -34,7 +37,8 @@ final class Helpers
 		$args['url'] = $url;
 		$args['file'] = $path;
 		$argsMime = $args;
-		$mimeType = (string) $argsMime['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$argsMime['mimeType'] ??= self::guessMimeTypeFromExtension($path ?? $url);
+		$mimeType = (string) $argsMime['mimeType'];
 		$primary = explode('/', $mimeType, 2)[0];
 		return match (true) {
 			$mimeType === 'application/javascript' => new ScriptAsset(...$args),
@@ -115,10 +119,9 @@ final class Helpers
 		}
 		$headerBits = $headerBits[1];
 		$bitrateIndex = ($headerBits >> 12) & 0xF;
-		$bitrate = [null, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320][$bitrateIndex] ?? null;
-		if ($bitrate === null) {
-			throw new \RuntimeException('Invalid or unsupported bitrate index.');
-		}
+		$bitrate = [
+			null, 32, 40, 48, 56, 64, 80, 96, 112, 128, 160, 192, 224, 256, 320,
+		][$bitrateIndex] ?? throw new \RuntimeException('Invalid or unsupported bitrate index.');
 
 		return $fileSize * 8 / $bitrate / 1000;
 	}
@@ -132,7 +135,8 @@ final class Helpers
 		return ($info = @file_get_contents($infoFile)) // @ file may not exists
 			&& ($info = json_decode($info, associative: true))
 			&& isset($info['devServer'])
-			&& ($url = parse_url($info['devServer']))
+			&& is_string($info['devServer'])
+			&& parse_url($info['devServer'])
 			? $info['devServer']
 			: null;
 	}

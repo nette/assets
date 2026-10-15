@@ -36,5 +36,5 @@ Assert::same('http://example.com/bar/foo', $mapper->getBaseUrl());
 
 // Assert the resolved base path:
 // Expected: base path ('/www') + '/' + mapper relative path ('foo')
-$S = DIRECTORY_SEPARATOR;
-Assert::same("{$S}www{$S}foo", $mapper->getBasePath());
+$sep = DIRECTORY_SEPARATOR;
+Assert::same("{$sep}www{$sep}foo", $mapper->getBasePath());

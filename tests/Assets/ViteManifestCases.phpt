@@ -76,7 +76,12 @@ test('Complex entry with imports and nested CSS', function (): void {
 	], $asset->imports);
 
 	assertAssets([
-		new ScriptAsset('https://example.com/foo-90X4-T0t.js', file: __DIR__ . '/fixtures/foo-90X4-T0t.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/foo-90X4-T0t.js',
+			file: __DIR__ . '/fixtures/foo-90X4-T0t.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 });
 
@@ -94,7 +99,12 @@ test('Entry with direct imports', function (): void {
 	], $asset->imports);
 
 	assertAssets([
-		new ScriptAsset('https://example.com/foo-KXjOppzC.js', file: __DIR__ . '/fixtures/foo-KXjOppzC.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/foo-KXjOppzC.js',
+			file: __DIR__ . '/fixtures/foo-KXjOppzC.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 });
 
@@ -109,15 +119,42 @@ test('Deeply nested recursive imports in chunks', function (): void {
 	// Verify dependency types and urls directly using our helper
 	assertAssets([
 		new StyleAsset('https://example.com/main-styles-hhh888.css', file: __DIR__ . '/fixtures/main-styles-hhh888.css', crossorigin: true),
-		new StyleAsset('https://example.com/level1-styles-fff666.css', file: __DIR__ . '/fixtures/level1-styles-fff666.css', crossorigin: true),
-		new StyleAsset('https://example.com/level2-styles-ddd444.css', file: __DIR__ . '/fixtures/level2-styles-ddd444.css', crossorigin: true),
-		new StyleAsset('https://example.com/level3-styles-bbb222.css', file: __DIR__ . '/fixtures/level3-styles-bbb222.css', crossorigin: true),
+		new StyleAsset(
+			'https://example.com/level1-styles-fff666.css',
+			file: __DIR__ . '/fixtures/level1-styles-fff666.css',
+			crossorigin: true,
+		),
+		new StyleAsset(
+			'https://example.com/level2-styles-ddd444.css',
+			file: __DIR__ . '/fixtures/level2-styles-ddd444.css',
+			crossorigin: true,
+		),
+		new StyleAsset(
+			'https://example.com/level3-styles-bbb222.css',
+			file: __DIR__ . '/fixtures/level3-styles-bbb222.css',
+			crossorigin: true,
+		),
 	], $asset->imports);
 
 	assertAssets([
-		new ScriptAsset('https://example.com/level1-chunk-eee555.js', file: __DIR__ . '/fixtures/level1-chunk-eee555.js', type: 'module', crossorigin: true),
-		new ScriptAsset('https://example.com/level2-chunk-ccc333.js', file: __DIR__ . '/fixtures/level2-chunk-ccc333.js', type: 'module', crossorigin: true),
-		new ScriptAsset('https://example.com/level3-chunk-aaa111.js', file: __DIR__ . '/fixtures/level3-chunk-aaa111.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/level1-chunk-eee555.js',
+			file: __DIR__ . '/fixtures/level1-chunk-eee555.js',
+			type: 'module',
+			crossorigin: true,
+		),
+		new ScriptAsset(
+			'https://example.com/level2-chunk-ccc333.js',
+			file: __DIR__ . '/fixtures/level2-chunk-ccc333.js',
+			type: 'module',
+			crossorigin: true,
+		),
+		new ScriptAsset(
+			'https://example.com/level3-chunk-aaa111.js',
+			file: __DIR__ . '/fixtures/level3-chunk-aaa111.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 });
 
@@ -132,7 +169,12 @@ test('Entry with dynamic imports', function (): void {
 	// Check all imports - should not include dynamic imports
 	Assert::count(0, $asset->imports);
 	assertAssets([
-		new ScriptAsset('https://example.com/assets/shared-B7PI925R.js', file: __DIR__ . '/fixtures/assets/shared-B7PI925R.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/assets/shared-B7PI925R.js',
+			file: __DIR__ . '/fixtures/assets/shared-B7PI925R.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 
 	// Access dynamic entry directly
@@ -155,6 +197,11 @@ test('Entry with circular dependencies', function (): void {
 		new StyleAsset('https://example.com/_nette.css', file: __DIR__ . '/fixtures/_nette.css', crossorigin: true),
 	], $asset->imports);
 	assertAssets([
-		new ScriptAsset('https://example.com/ace-BJo1PSDc.js', file: __DIR__ . '/fixtures/ace-BJo1PSDc.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/ace-BJo1PSDc.js',
+			file: __DIR__ . '/fixtures/ace-BJo1PSDc.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 });

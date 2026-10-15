@@ -15,10 +15,19 @@ test('Production mode - JS entry point with imports and CSS', function (): void 
 
 	// Check imports and preloads
 	assertAssets([
-		new StyleAsset('https://example.com/assets/main-a1b2c3d4.css', file: __DIR__ . '/fixtures/assets/main-a1b2c3d4.css', crossorigin: true),
+		new StyleAsset(
+			'https://example.com/assets/main-a1b2c3d4.css',
+			file: __DIR__ . '/fixtures/assets/main-a1b2c3d4.css',
+			crossorigin: true,
+		),
 	], $asset->imports);
 	assertAssets([
-		new ScriptAsset('https://example.com/assets/shared-5e6f7g8h.js', file: __DIR__ . '/fixtures/assets/shared-5e6f7g8h.js', type: 'module', crossorigin: true),
+		new ScriptAsset(
+			'https://example.com/assets/shared-5e6f7g8h.js',
+			file: __DIR__ . '/fixtures/assets/shared-5e6f7g8h.js',
+			type: 'module',
+			crossorigin: true,
+		),
 	], $asset->preloads);
 });
 
@@ -34,7 +43,12 @@ test('Production mode - CSS entry point', function (): void {
 
 test('Fallback to filesystem when asset not found in manifest', function (): void {
 	$filesystemMapper = new FilesystemMapper('https://example.com', __DIR__ . '/fixtures');
-	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest.json', publicMapper: $filesystemMapper);
+	$mapper = new ViteMapper(
+		'https://example.com',
+		__DIR__ . '/fixtures',
+		__DIR__ . '/fixtures/manifest.json',
+		publicMapper: $filesystemMapper,
+	);
 
 	// image.gif exists on filesystem but not in the manifest
 	$asset = $mapper->getAsset('image.gif');
@@ -88,7 +102,7 @@ test('Default manifest path', function (): void {
 	$basePath = __DIR__ . '/fixtures';
 
 	// Create a backup of the manifest in the default location
-	@mkdir(dirname($basePath . '/.vite/manifest.json'), 0o777, true); // @ directory may already exist
+	@mkdir(dirname($basePath . '/.vite/manifest.json'), recursive: true); // @ directory may already exist
 	copy($basePath . '/manifest.json', $basePath . '/.vite/manifest.json');
 
 	try {

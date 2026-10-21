@@ -1,17 +1,13 @@
 {
 	"name": "nette/assets",
-	"description": "🎨 Nette Assets: elegant asset management for PHP with versioning, caching and mappers for various storage backends.",
-	"keywords": ["nette", "assets", "asset management", "versioning", "resources", "static files"],
-	"homepage": "https://nette.org",
+	"description": "🎨 Nette Assets: static files in PHP and Latte without hand-written paths, with automatic versioning for cache busting and Vite integration including HMR.",
+	"keywords": ["nette", "assets", "asset management", "vite", "cache busting", "static files", "latte"],
+	"homepage": "https://doc.nette.org/assets",
 	"license": ["BSD-3-Clause", "GPL-2.0-only", "GPL-3.0-only"],
 	"authors": [
 		{
 			"name": "David Grudl",
 			"homepage": "https://davidgrudl.com"
-		},
-		{
-			"name": "Nette Community",
-			"homepage": "https://nette.org/contributors"
 		}
 	],
 	"require": {

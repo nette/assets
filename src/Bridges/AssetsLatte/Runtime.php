@@ -20,7 +20,7 @@ class Runtime
 {
 	public function __construct(
 		private readonly Registry $registry,
-		private string|false|null $nonce = null,
+		private readonly string|false|null $nonce = null,
 	) {
 	}
 
@@ -144,7 +144,7 @@ class Runtime
 	private function applyNonce(Html $el): Html
 	{
 		if (isset(['script' => 1, 'link' => 1, 'style' => 1][$el->getName()])) {
-			$el->setAttribute('nonce', $this->nonce ??= $this->findNonce());
+			$el->setAttribute('nonce', $this->nonce ?? $this->findNonce());
 		}
 		return $el;
 	}

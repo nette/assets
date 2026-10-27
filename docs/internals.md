@@ -66,24 +66,18 @@ links) and `preloads` (rendered as `modulepreload`). **Dynamic imports are
 deliberately not followed** — they are a separate manifest concern and preloading
 them would fetch code that may never run.
 
-## Nonce / CSP: cached on the instance, which breaks under a worker
+## Nonce / CSP: read from the response headers on every render
 
 `Runtime::applyNonce` adds a `nonce` attribute to `<script>`/`<link>`/`<style>`
-elements, resolving it with **`$this->nonce ??= $this->findNonce()`** and
-`findNonce()` scanning **`headers_list()`** for a `'nonce-…'` in the CSP header.
+elements. Unless a nonce was passed to `Runtime::__construct` (which
+`LatteExtension` never does), `findNonce()` scans **`headers_list()`** for a
+`'nonce-…'` in the CSP header **on every element**.
 
-Both halves are process-global, and that is the non-local trap:
-
-- **`$this->nonce` caches on the `Runtime` instance for its whole lifetime**, not
-  per request. Under a long-lived worker (RoadRunner / Swoole / FrankenPHP) the
-  **first request's nonce (or the `false` "no nonce" result) sticks to every
-  later request**, so CSP silently stops matching.
-- **`findNonce()` reads `headers_list()`**, global state that is unreliable in a
-  worker anyway.
-
-Treat this as a known worker-mode hazard when editing nonce handling. Note that
-`Runtime::__construct` already accepts a pre-resolved nonce, but `LatteExtension`
-never passes one — the lazy `findNonce()` path is the only one exercised.
+**It must not be cached on the instance.** `LatteExtension` holds one `Runtime` for
+its whole lifetime, so under a long-lived worker (FrankenPHP and the like) a cached
+value would be the first request's nonce, or `false`, for every later request. A
+server that does not send its headers through PHP (RoadRunner, Swoole) has nothing
+in `headers_list()`, so there the nonce is never found.
 
 ## `n:asset` attribute adaptation
 

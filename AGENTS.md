@@ -10,7 +10,7 @@ Consult it before non-trivial changes; it is the source of truth from which the
 public manual is distilled.
 
 The real traps - the Registry cache, the `HtmlRenderable` boundary, the Vite
-dev/prod switch, and the CSP-nonce worker hazard - are in `docs/internals.md`.
+dev/prod switch, and the CSP nonce in worker mode - are in `docs/internals.md`.
 Read it before touching those areas.
 
 `docs/upgrading.md` records, per released version, every change visible to
@@ -59,9 +59,9 @@ composer phpstan
 - **Only `HtmlRenderable` assets render as HTML.** `GenericAsset` is the one
   built-in type that doesn't implement it, so rendering it throws; it can only
   resolve to a URL. New asset types must decide this deliberately.
-- **The CSP nonce caches on the `Runtime` instance**, which leaks across requests
-  under a long-lived worker (RoadRunner/Swoole/FrankenPHP). Treat nonce handling as
-  a known worker-mode hazard.
+- **The CSP nonce must not be cached on the `Runtime` instance**: it lives as long
+  as the Latte extension, so under a long-lived worker it would leak across
+  requests. It is read from the response headers on every render.
 - **Vite production resolves only manifest entries and `assets/public/` files** -
   arbitrary files under `assets/` are unresolvable. The dev/prod decision is made
   upstream in the DI bridge, not in `ViteMapper`.

@@ -1,5 +1,14 @@
 # Upgrading nette/assets
 
+## 1.0.8
+
+- **Changed** `Nette\Assets\FilesystemMapper::getAsset()` now throws `Nette\Assets\AssetNotFoundException` for a reference whose `..` segments lead outside the base path, including one reaching a sibling directory such as `../images/x.png`; previously such a file was resolved; give files outside the base path a mapping of their own (e0a85081)
+- **Changed** `Nette\Assets\Helpers::createAssetFromUrl()` now returns `Nette\Assets\ScriptAsset` for the MIME types `text/javascript`, `application/ecmascript` and `text/ecmascript`; previously only `application/javascript` did and the others produced `Nette\Assets\GenericAsset` (e09ee0a5)
+- **Changed** `Nette\Assets\ViteMapper::getAsset()` now returns `Nette\Assets\EntryAsset`, rendered as a `type="module"` script, for a production `.js` or `.mjs` entry without dependencies; previously it returned `Nette\Assets\ScriptAsset` rendered as a classic script (3be40bad)
+- **Changed** `{asset}` now prints only the escaped URL everywhere except the text of an HTML template, i.e. in attributes, inside `<style>` and `<script>` and in css/js/text/xml templates; previously it printed the whole HTML element there, and inside an attribute the URL unescaped; inside `<script>` the escaper adds the quotes, so write `{asset foo}` without surrounding quotes (b968b9cc)
+- **Changed** `{preload}` now prints only the escaped URL everywhere except the text of an HTML template, i.e. in attributes, inside `<style>` and `<script>` and in css/js/text/xml templates; previously it printed the whole preload element there, and inside an attribute the URL unescaped; inside `<script>` the escaper adds the quotes, so write `{preload foo}` without surrounding quotes (b968b9cc)
+- **Changed** `n:asset` now throws `Nette\InvalidArgumentException` for an entry point with imports or preloads; previously it rendered the entry alone and silently dropped its dependencies; use `{asset}` for such an entry (21a925e7)
+
 ## 1.0.4
 
 - **Changed** `Nette\Assets\ViteMapper::getAsset()` now returns `Nette\Assets\EntryAsset` for `.jsx` and `.tsx` references and `Nette\Assets\StyleAsset` for `.sass` and `.scss` references when the dev server is active; previously only `.js`, `.mjs` and `.ts` became an `Nette\Assets\EntryAsset` and everything else fell back to a class guessed from the MIME type (5ca891a1)

@@ -37,12 +37,20 @@ test('SCSS entry returns StyleAsset with correct path', function (): void {
 });
 
 
-test('JS entry without dependencies returns FileAsset and can be found by name', function (): void {
+test('JS entry without dependencies returns EntryAsset of type module', function (): void {
 	$mapper = new ViteMapper('https://example.com', __DIR__ . '/fixtures', __DIR__ . '/fixtures/manifest4.json');
 
 	$assetByPath = $mapper->getAsset('assets/admin.js');
-	Assert::type(ScriptAsset::class, $assetByPath);
+	Assert::type(EntryAsset::class, $assetByPath);
 	Assert::same('https://example.com/admin-BrZXlwf9.js', $assetByPath->url);
+	Assert::same('module', $assetByPath->type);
+	Assert::same([], $assetByPath->imports);
+	Assert::same([], $assetByPath->preloads);
+
+	$asset = $mapper->getAsset('assets/front.js');
+	Assert::type(EntryAsset::class, $asset);
+	Assert::same('https://example.com/front-C4kE7m2Q.mjs', $asset->url);
+	Assert::same('module', $asset->type);
 });
 
 
@@ -179,8 +187,9 @@ test('Entry with dynamic imports', function (): void {
 
 	// Access dynamic entry directly
 	$dynamicAsset = $mapper->getAsset('baz.js');
-	Assert::type(ScriptAsset::class, $dynamicAsset);
+	Assert::type(EntryAsset::class, $dynamicAsset);
 	Assert::same('https://example.com/assets/baz-B2H3sXNv.js', $dynamicAsset->url);
+	Assert::same('module', $dynamicAsset->type);
 });
 
 

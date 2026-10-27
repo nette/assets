@@ -69,7 +69,7 @@ class ViteMapper implements Mapper
 		$dependencies = $this->collectDependencies($reference);
 		unset($dependencies[$chunk['file']]);
 
-		return $dependencies
+		return $dependencies || preg_match('~\.m?js$~', $chunk['file'])
 			? new EntryAsset(
 				url: $this->baseUrl . '/' . $chunk['file'],
 				file: $this->basePath . '/' . $chunk['file'],

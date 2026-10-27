@@ -4,5 +4,11 @@
 		"name": "admin",
 		"src": "assets/admin.js",
 		"isEntry": true
+	},
+	"assets/front.js": {
+		"file": "front-C4kE7m2Q.mjs",
+		"name": "front",
+		"src": "assets/front.js",
+		"isEntry": true
 	}
 }

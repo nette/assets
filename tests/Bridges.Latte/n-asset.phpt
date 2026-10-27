@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-use Nette\Assets\{ImageAsset, Registry, StyleAsset};
+use Nette\Assets\{EntryAsset, ImageAsset, Registry, StyleAsset};
 use Nette\Bridges\AssetsLatte\LatteExtension;
 use Tester\Assert;
 
@@ -162,6 +162,27 @@ test('not matching tag name', function () {
 		Nette\InvalidArgumentException::class,
 		'Tag <div> is not allowed for this asset. Use <img> instead.',
 	);
+});
+
+
+test('entry point with dependencies', function () {
+	$asset = new EntryAsset('/main.js', imports: [new StyleAsset('/main.css')]);
+
+	$mockRegistry = Mockery::mock(Registry::class);
+	$mockRegistry->expects()->getAsset('foo', [])->twice()->andReturn($asset);
+
+	$latte = new Latte\Engine;
+	$latte->addExtension(new LatteExtension($mockRegistry));
+	$latte->setLoader(new Latte\Loaders\StringLoader);
+
+	Assert::exception(
+		fn() => $latte->renderToString('<script n:asset=foo></script>'),
+		Nette\InvalidArgumentException::class,
+		'Entry point with dependencies cannot be rendered by n:asset, use {asset} instead.',
+	);
+
+	$result = $latte->renderToString('<link n:asset=foo>');
+	Assert::same('<link rel="modulepreload" href="/main.js">', $result);
 });
 
 

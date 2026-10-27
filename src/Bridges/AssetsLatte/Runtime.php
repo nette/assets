@@ -100,6 +100,8 @@ class Runtime
 			} else {
 				throw new Nette\InvalidArgumentException("Tag <$tagName> is not allowed for this asset. Use <{$el->getName()}> instead.");
 			}
+		} elseif ($asset instanceof EntryAsset && ($asset->imports || $asset->preloads)) {
+			throw new Nette\InvalidArgumentException('Entry point with dependencies cannot be rendered by n:asset, use {asset} instead.');
 		}
 
 		$this->applyNonce($el);

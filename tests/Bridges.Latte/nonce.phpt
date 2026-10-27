@@ -38,7 +38,7 @@ test('EntryAsset: nonce is added', function () {
 		$runtime->renderAsset($asset),
 	);
 	Assert::contains('nonce="abc123"', $runtime->renderAssetPreload($asset));
-	Assert::contains('nonce="abc123"', $runtime->renderAttributes($asset, 'script', []));
+	Assert::contains('nonce="abc123"', $runtime->renderAttributes($asset, 'link', []));
 });
 
 

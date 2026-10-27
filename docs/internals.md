@@ -90,7 +90,9 @@ never passes one — the lazy `findNonce()` path is the only one exercised.
 `renderAttributes` emits just the attributes for an existing host tag and adapts
 the asset's native element to it: an asset whose element is `<img>`/`<script>` is
 re-expressed as `<link>` (via `getPreloadElement`) or `<a>` (an `href`) when the
-host tag differs, and rejects other mismatches. `completeDimensions` then keeps the
+host tag differs, and rejects other mismatches. An `EntryAsset` with imports or
+preloads is rejected on its own `<script>` tag, because attributes cannot carry its
+dependencies; such an entry is rendered by `{asset}`. `completeDimensions` then keeps the
 aspect ratio: given one of `width`/`height`, it computes the other from the asset's
 known ratio, and if the ratio is unknown it **drops both** rather than emit a
 distorted size.

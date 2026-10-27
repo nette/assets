@@ -124,6 +124,25 @@ test('non-numeric width / height', function () {
 });
 
 
+test('n:class before n:asset', function () {
+	$asset = new ImageAsset(
+		url: 'https://example.com/image.jpg',
+		width: 800,
+		height: 600,
+	);
+
+	$mockRegistry = Mockery::mock(Registry::class);
+	$mockRegistry->expects()->getAsset('foo', [])->andReturn($asset);
+
+	$latte = new Latte\Engine;
+	$latte->addExtension(new LatteExtension($mockRegistry));
+	$latte->setLoader(new Latte\Loaders\StringLoader);
+
+	$result = $latte->renderToString('<img n:class="foo, bar" n:asset=foo>');
+	Assert::same('<img class="foo bar" src="https://example.com/image.jpg" width="800" height="600">', $result);
+});
+
+
 test('not matching tag name', function () {
 	$asset = new ImageAsset(
 		url: 'https://example.com/image.jpg',

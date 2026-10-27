@@ -51,7 +51,7 @@ final class NAssetNode extends StatementNode
 	{
 		return $context->format(
 			<<<'XX'
-				if ($ʟ_tmp = $this->global->assets->resolve(%node, %node, %dump)) %line {
+				if ($ʟ_asset = $this->global->assets->resolve(%node, %node, %dump)) %line {
 					%node
 				}
 				XX,
@@ -70,7 +70,7 @@ final class NAssetNode extends StatementNode
 		assert($el !== null);
 		$tag->replaceNAttribute(new AuxiliaryNode(fn(PrintContext $context) => $context->format(
 			<<<'XX'
-				echo $this->global->assets->renderAttributes($ʟ_tmp, %dump, %dump);
+				echo $this->global->assets->renderAttributes($ʟ_asset, %dump, %dump);
 				XX,
 			strtolower($el->name),
 			self::findUsedAttributes($el),
